@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SnakePlayground } from "@/components/playful/SnakePlayground";
 import { HomeJsonLd } from "@/components/seo/HomeJsonLd";
 import { Section } from "@/components/ui/Section";
 import { pageMetadata } from "@/lib/seo";
@@ -299,6 +300,8 @@ export default function HomePage() {
             </ul>
           </div>
         </section>
+
+        <SnakePlayground />
 
         {/* CTA */}
         <div className="relative mt-20 overflow-hidden rounded-[2rem] text-center">
