@@ -15,14 +15,20 @@ const turnstileEnabled = turnstileSiteKey.length > 0;
 
 type Props = {
   groupRuns: CourseRun[];
+  individualRuns: CourseRun[];
   /** Počty přihlášek počítané do kapacity (bez zrušených / reklamací), podle `run.id`. */
   occupancyByRunId: Record<string, number>;
 };
 
-export function RegistrationForm({ groupRuns, occupancyByRunId }: Props) {
+export function RegistrationForm({
+  groupRuns,
+  individualRuns,
+  occupancyByRunId,
+}: Props) {
   const [format, setFormat] = useState<"skupina" | "individual">("skupina");
   /** Prázdný řetězec = bez výběru konkrétního termínu. */
   const [groupRunId, setGroupRunId] = useState("");
+  const [individualRunId, setIndividualRunId] = useState("");
   const [childName, setChildName] = useState("");
   const [childAge, setChildAge] = useState("12");
   const [parentName, setParentName] = useState("");
@@ -59,7 +65,9 @@ export function RegistrationForm({ groupRuns, occupancyByRunId }: Props) {
         runId:
           format === "skupina" && groupRunId.trim()
             ? groupRunId.trim()
-            : null,
+            : format === "individual" && individualRunId.trim()
+              ? individualRunId.trim()
+              : null,
         childName,
         childAge: Number(childAge),
         parentName,
@@ -123,6 +131,7 @@ export function RegistrationForm({ groupRuns, occupancyByRunId }: Props) {
             onChange={() => {
               setFormat("skupina");
               setGroupRunId("");
+              setIndividualRunId("");
             }}
             className="h-4 w-4 border-2 border-[var(--magic-ink)] text-violet-600"
           />
@@ -137,6 +146,7 @@ export function RegistrationForm({ groupRuns, occupancyByRunId }: Props) {
             onChange={() => {
               setFormat("individual");
               setGroupRunId("");
+              setIndividualRunId("");
             }}
             className="h-4 w-4 border-2 border-[var(--magic-ink)] text-violet-600"
           />
@@ -214,6 +224,73 @@ export function RegistrationForm({ groupRuns, occupancyByRunId }: Props) {
           <p className="mt-1 text-xs font-medium leading-relaxed text-slate-700">
             Přihlášku můžeš odeslat hned — konkrétní termín ti potvrdíme podle
             zájmu a věkové skupiny.
+          </p>
+        </div>
+      ) : null}
+
+      {format === "individual" && individualRuns.length > 0 ? (
+        <fieldset className="space-y-3 rounded-2xl border-2 border-violet-200 bg-violet-50/50 px-4 py-4 sm:px-5">
+          <legend className="font-display px-1 text-sm font-extrabold text-[var(--magic-ink)]">
+            Časový slot 1:1 (volitelně)
+          </legend>
+          <p className="text-xs font-medium leading-relaxed text-slate-600">
+            Pokud máme vypsaný konkrétní slot, můžeš ho vybrat — jinak nech
+            prázdné a čas domluvíme.
+          </p>
+          <label className="flex cursor-pointer items-start gap-2 rounded-xl border-2 border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] sm:text-sm">
+            <input
+              type="radio"
+              name="individual-run"
+              checked={individualRunId === ""}
+              onChange={() => setIndividualRunId("")}
+              className="mt-0.5 h-4 w-4 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600"
+            />
+            <span>Zatím nevybráno — domluvíme čas</span>
+          </label>
+          {individualRuns.map((run) => {
+            const counted = occupancyByRunId[run.id] ?? 0;
+            const free = spotsLeftEffective(run, counted);
+            const full = free <= 0;
+            return (
+              <label
+                key={run.id}
+                className={`flex cursor-pointer items-start gap-2 rounded-xl border-2 px-3 py-2.5 text-base font-semibold has-[:checked]:border-[var(--magic-ink)] sm:text-sm ${
+                  full
+                    ? "cursor-not-allowed border-slate-200 bg-slate-100/80 text-slate-500"
+                    : "border-violet-200 bg-white/90 text-slate-800 has-[:checked]:bg-white"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="individual-run"
+                  checked={individualRunId === run.id}
+                  onChange={() => setIndividualRunId(run.id)}
+                  disabled={full}
+                  className="mt-0.5 h-4 w-4 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600 disabled:opacity-40"
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="block font-bold">{run.label}</span>
+                  <span className="mt-0.5 block text-xs font-medium leading-relaxed text-slate-600">
+                    {run.description}
+                  </span>
+                  <span className="mt-1 block text-[11px] font-bold uppercase tracking-wide text-violet-700">
+                    {full
+                      ? "Obsazeno"
+                      : `Ještě ${free} ${free === 1 ? "místo" : free < 5 ? "místa" : "míst"}`}
+                  </span>
+                </span>
+              </label>
+            );
+          })}
+        </fieldset>
+      ) : null}
+      {format === "individual" && individualRuns.length === 0 ? (
+        <div className="rounded-2xl border-2 border-dashed border-violet-300 bg-violet-50/60 px-4 py-3">
+          <p className="text-sm font-semibold text-violet-900">
+            Veřejné 1:1 sloty zatím nejsou vypsané.
+          </p>
+          <p className="mt-1 text-xs font-medium leading-relaxed text-slate-700">
+            Přihlášku můžeš odeslat — konkrétní čas kurzu s tebou domluvíme.
           </p>
         </div>
       ) : null}

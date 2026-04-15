@@ -18,21 +18,23 @@ export function registrationCountsTowardRunCapacity(
 /** Přihlášky přiřazené k termínu (libovolný stav). */
 export function listRegistrationsOnRun(
   runId: string,
+  runFormat: "skupina" | "individual",
   registrations: RegistrationRecord[],
 ): RegistrationRecord[] {
   const id = runId.trim();
   if (!id) return [];
   return registrations.filter(
-    (r) => r.format === "skupina" && r.runId === id,
+    (r) => r.format === runFormat && r.runId === id,
   );
 }
 
 /** Počet míst „obsazených“ podle přihlášek (bez zrušených / reklamací). */
 export function countedOccupancyForRun(
   runId: string,
+  runFormat: "skupina" | "individual",
   registrations: RegistrationRecord[],
 ): number {
-  return listRegistrationsOnRun(runId, registrations).filter((r) =>
+  return listRegistrationsOnRun(runId, runFormat, registrations).filter((r) =>
     registrationCountsTowardRunCapacity(r.status),
   ).length;
 }
@@ -45,6 +47,7 @@ export type RunRegistrationRow = {
   parentEmail: string;
   status: RegistrationStatus;
   receivedAt?: string;
+  format: "skupina" | "individual";
 };
 
 export function buildRunOccupancyMap(
@@ -52,7 +55,8 @@ export function buildRunOccupancyMap(
 ): Record<string, RunRegistrationRow[]> {
   const map: Record<string, RunRegistrationRow[]> = {};
   for (const r of registrations) {
-    if (r.format !== "skupina" || !r.runId?.trim()) continue;
+    if (!r.runId?.trim()) continue;
+    if (r.format !== "skupina" && r.format !== "individual") continue;
     const id = r.runId;
     if (!map[id]) map[id] = [];
     map[id].push({
@@ -63,6 +67,7 @@ export function buildRunOccupancyMap(
       parentEmail: r.parentEmail,
       status: r.status,
       receivedAt: r.receivedAt,
+      format: r.format,
     });
   }
   for (const rows of Object.values(map)) {

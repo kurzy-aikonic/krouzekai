@@ -5,7 +5,7 @@ export type CourseRun = {
   label: string;
   /** Krátký popis termínu pro rodiče */
   description: string;
-  format: "skupina";
+  format: CourseFormat;
   capacity: number;
   /** Obsazeno — ruční override; skutečný počet z přihlášek bere větší z obou. */
   filled: number;

@@ -43,7 +43,7 @@ export function AdminRegistrationDetailForm({
       status,
       internalNotes,
     };
-    if (record.format === "skupina") {
+    if (record.format === "skupina" || record.format === "individual") {
       body.runId = runId === "" ? null : runId;
     }
     try {
@@ -203,13 +203,15 @@ export function AdminRegistrationDetailForm({
                 className="input-portal mt-1.5 block max-w-xl disabled:opacity-50"
               >
                 <option value="">— bez přiřazení —</option>
-                {courseRuns.map((run) => (
-                  <option key={run.id} value={run.id}>
-                    {run.label}
-                    {run.active === false ? " — zrušený" : ""} (ručně{" "}
-                    {run.filled}/{run.capacity})
-                  </option>
-                ))}
+                {courseRuns
+                  .filter((run) => run.format === "skupina")
+                  .map((run) => (
+                    <option key={run.id} value={run.id}>
+                      {run.label}
+                      {run.active === false ? " — zrušený" : ""} (ručně{" "}
+                      {run.filled}/{run.capacity})
+                    </option>
+                  ))}
               </select>
               <p className="mt-1 text-xs text-slate-500">
                 Přehled skutečných přihlášek podle termínů je v adminu na stránce{" "}
@@ -218,10 +220,32 @@ export function AdminRegistrationDetailForm({
               </p>
             </div>
           ) : (
-            <p className="text-sm text-slate-600">
-              Individuální kurz nemá veřejný výběr termínu v kalendáři — přiřazení
-              běhu řešíte mimo tento výběr (poznámka níže).
-            </p>
+            <div>
+              <label className="text-xs font-bold uppercase text-slate-500">
+                Individuální slot (volitelně)
+              </label>
+              <select
+                value={runId}
+                disabled={!writable}
+                onChange={(e) => setRunId(e.target.value)}
+                className="input-portal mt-1.5 block max-w-xl disabled:opacity-50"
+              >
+                <option value="">— bez přiřazení —</option>
+                {courseRuns
+                  .filter((run) => run.format === "individual")
+                  .map((run) => (
+                    <option key={run.id} value={run.id}>
+                      {run.label}
+                      {run.active === false ? " — zrušený" : ""} (ručně{" "}
+                      {run.filled}/{run.capacity})
+                    </option>
+                  ))}
+              </select>
+              <p className="mt-1 text-xs text-slate-500">
+                Vypsané 1:1 sloty spravujete v <strong>Termíny</strong>. Pokud v
+                nabídce žádný není, přiřazení řešíte poznámkou níže.
+              </p>
+            </div>
           )}
 
           <div>

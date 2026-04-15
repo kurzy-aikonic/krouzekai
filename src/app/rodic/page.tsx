@@ -44,8 +44,11 @@ function RegistrationCard({
   const code = getPublicRegistrationCode(r);
   const vs = variableSymbolFromRegistrationId(r.id);
   const platbaHref = `/platba?registrace=${encodeURIComponent(code)}`;
+  const runCandidate = r.runId ? runById.get(r.runId) : undefined;
   const run =
-    r.format === "skupina" && r.runId ? runById.get(r.runId) : undefined;
+    runCandidate && runCandidate.format === r.format
+      ? runCandidate
+      : undefined;
 
   return (
     <article className="rodic-print-card portal-card border-l-4 border-l-violet-500 p-5 sm:p-6">
@@ -95,30 +98,24 @@ function RegistrationCard({
         </div>
         <div>
           <dt className="text-xs font-bold uppercase tracking-wide text-slate-500">
-            Termín (skupina)
+            Termín
           </dt>
           <dd className="mt-0.5 text-slate-800">
-            {r.format === "skupina" ? (
-              run ? (
-                <>
-                  <span className="font-medium">{run.label}</span>
-                  <span className="mt-1 block text-xs text-slate-500">
-                    {run.description}
-                  </span>
-                </>
-              ) : r.runId ? (
-                <span className="text-slate-600">
-                  Termín už není v aktuální nabídce ({r.runId}). Napište nám pro
-                  upřesnění.
+            {run ? (
+              <>
+                <span className="font-medium">{run.label}</span>
+                <span className="mt-1 block text-xs text-slate-500">
+                  {run.description}
                 </span>
-              ) : (
-                <span className="text-slate-600">
-                  Zatím bez přiřazení — domluvíme s vámi.
-                </span>
-              )
+              </>
+            ) : r.runId ? (
+              <span className="text-slate-600">
+                Termín už není v aktuální nabídce ({r.runId}). Napište nám pro
+                upřesnění.
+              </span>
             ) : (
               <span className="text-slate-600">
-                Individuál — termín řešíme individuálně.
+                Zatím bez přiřazení — domluvíme s vámi.
               </span>
             )}
           </dd>

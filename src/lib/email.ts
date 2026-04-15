@@ -91,7 +91,7 @@ function buildInternalHtml(record: RegistrationRecord, runDisplay: string): stri
   <p style="margin: 0 0 8px;"><strong>Dítě:</strong> ${safe.childName} (${safe.childAge} let)</p>
   <p style="margin: 0 0 8px;"><strong>Stav:</strong> ${safe.status} <span style="color:#64748b;">(stav měňte v adminu nebo v souboru přihlášek — např. <code>kontaktovano</code>, <code>zaplaceno</code>, <code>zruseno</code>, <code>vraceny_penize</code>, <code>reklamace</code>)</span></p>
   <p style="margin: 0 0 8px;"><strong>Formát:</strong> ${safe.format}</p>
-  <p style="margin: 0 0 8px;"><strong>Termín (skupina):</strong> ${safe.runId}</p>
+  <p style="margin: 0 0 8px;"><strong>Termín:</strong> ${safe.runId}</p>
   <p style="margin: 0 0 8px;"><strong>Částka:</strong> ${safe.amount} Kč</p>
   <p style="margin: 12px 0 0;"><a href="${safe.link}">Orientační přehled platby (web)</a></p>
 </body>
@@ -151,9 +151,12 @@ export async function sendRegistrationConfirmation(
     return { ok: true, provider: "skipped", reason: "no_api_key" };
   }
 
+  const runCandidate = record.runId
+    ? await getCourseRunById(record.runId)
+    : undefined;
   const run =
-    record.format === "skupina" && record.runId
-      ? await getCourseRunById(record.runId)
+    runCandidate && runCandidate.format === record.format
+      ? runCandidate
       : undefined;
   const runLine =
     run != null

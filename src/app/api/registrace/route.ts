@@ -88,7 +88,7 @@ export async function POST(request: Request) {
 
   const merged = await listRegistrationsMerged();
 
-  if (data.format === "skupina" && data.runId) {
+  if (data.runId) {
     const run = await getCourseRunById(data.runId);
     if (!run || run.active === false) {
       return NextResponse.json(
@@ -96,7 +96,13 @@ export async function POST(request: Request) {
         { status: 422 },
       );
     }
-    const occupied = countedOccupancyForRun(data.runId, merged);
+    if (run.format !== data.format) {
+      return NextResponse.json(
+        { error: "Vybraný termín neodpovídá zvolenému formátu kurzu." },
+        { status: 422 },
+      );
+    }
+    const occupied = countedOccupancyForRun(data.runId, data.format, merged);
     if (spotsLeftEffective(run, occupied) <= 0) {
       return NextResponse.json(
         { error: "Tento termín je již plný." },

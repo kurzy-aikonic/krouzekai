@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { CourseRun } from "@/data/course-runs";
+import type { CourseFormat, CourseRun } from "@/data/course-runs";
 import { spotsLeftEffective } from "@/data/course-runs";
 import {
   type RunRegistrationRow,
@@ -11,20 +11,35 @@ import {
 } from "@/lib/course-run-registrations";
 import { registrationStatusPillClassName } from "@/lib/registration-status-ui";
 import { registrationStatusLabelsCs } from "@/types/registration";
+import type { CourseRunsPersistence } from "@/lib/course-runs-store";
 
 type Props = {
   initialRuns: CourseRun[];
   /** Všechny přihlášky s vyplněným runId (i u smazaných id termínů). */
   occupancyByRunId: Record<string, RunRegistrationRow[]>;
+  persistence: CourseRunsPersistence;
 };
 
-function emptyRun(): CourseRun {
+function emptyGroupRun(): CourseRun {
   return {
     id: `run-${crypto.randomUUID().slice(0, 10)}`,
     label: "",
     description: "",
     format: "skupina",
     capacity: 6,
+    filled: 0,
+    startsOn: new Date().toISOString().slice(0, 10),
+    active: true,
+  };
+}
+
+function emptyIndividualRun(): CourseRun {
+  return {
+    id: `run-${crypto.randomUUID().slice(0, 10)}`,
+    label: "",
+    description: "",
+    format: "individual",
+    capacity: 1,
     filled: 0,
     startsOn: new Date().toISOString().slice(0, 10),
     active: true,
@@ -39,6 +54,7 @@ function countedTowardCapacity(rows: RunRegistrationRow[]): number {
 export function CourseRunsAdminClient({
   initialRuns,
   occupancyByRunId,
+  persistence,
 }: Props) {
   const router = useRouter();
   const [runs, setRuns] = useState<CourseRun[]>(initialRuns);
@@ -54,21 +70,26 @@ export function CourseRunsAdminClient({
       const res = await fetch("/api/admin/course-runs", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
         body: JSON.stringify({ runs }),
       });
       const data: unknown = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const msg =
-          typeof data === "object" &&
-          data &&
-          "error" in data &&
-          typeof (data as { error?: string }).error === "string"
-            ? (data as { error: string }).error
-            : "Uložení se nezdařilo.";
-        setError(msg);
+        const o = data as { error?: string; hint?: string };
+        const base =
+          typeof o.error === "string" ? o.error : "Uložení se nezdařilo.";
+        const hint = typeof o.hint === "string" ? o.hint : "";
+        setError(hint ? `${base} ${hint}` : base);
         return;
       }
-      setMessage("Termíny uloženy do data/course-runs.json.");
+      const storage = (data as { storage?: string }).storage;
+      setMessage(
+        storage === "supabase"
+          ? "Termíny uloženy v Supabase."
+          : storage === "redis"
+            ? "Termíny uloženy v Redis (Upstash)."
+            : "Termíny uloženy do data/course-runs.json.",
+      );
       if (
         typeof data === "object" &&
         data &&
@@ -103,11 +124,53 @@ export function CourseRunsAdminClient({
     <div className="mt-8 space-y-6">
       <div className="portal-card border-violet-100 p-4 text-sm leading-relaxed text-slate-700 sm:p-5">
         <p>
-          Údaje se ukládají do{" "}
-          <code className="rounded bg-slate-100 px-1 text-xs">data/course-runs.json</code>.
-          Tabulka níže bere přihlášky z aktuálních dat (včetně stavu — zrušené se nepočítají
-          do kapacity). Volná místa na webu = kapacita minus větší z{" "}
-          <strong>ručního obsazeno</strong> a <strong>počtu přihlášek</strong>.
+          {persistence === "supabase" ? (
+            <>
+              Údaje se ukládají do <strong>Supabase</strong> (tabulka{" "}
+              <code className="rounded bg-slate-100 px-1 text-xs">
+                public.web_course_runs
+              </code>
+              ) přes service role — vhodné na Vercelu. Jednorázově spusťte SQL z{" "}
+              <code className="rounded bg-slate-100 px-1 text-xs">
+                web/supabase-course-runs.sql
+              </code>{" "}
+              a mějte v prostředí{" "}
+              <code className="rounded bg-slate-100 px-1 text-xs">
+                SUPABASE_URL
+              </code>{" "}
+              a{" "}
+              <code className="rounded bg-slate-100 px-1 text-xs">
+                SUPABASE_SERVICE_ROLE_KEY
+              </code>
+              .
+            </>
+          ) : persistence === "redis" ? (
+            <>
+              Údaje se ukládají do{" "}
+              <strong>Upstash Redis</strong> (klíč serveru), protože na Vercelu nelze zapisovat do
+              souboru v repozitáři a Supabase pro termíny není nakonfigurovaný. Nastavte{" "}
+              <code className="rounded bg-slate-100 px-1 text-xs">
+                UPSTASH_REDIS_REST_URL
+              </code>{" "}
+              a{" "}
+              <code className="rounded bg-slate-100 px-1 text-xs">
+                UPSTASH_REDIS_REST_TOKEN
+              </code>
+              .
+            </>
+          ) : (
+            <>
+              Údaje se ukládají do{" "}
+              <code className="rounded bg-slate-100 px-1 text-xs">
+                data/course-runs.json
+              </code>{" "}
+              (lokální server nebo vlastní hosting se zápisem na disk).
+            </>
+          )}{" "}
+          Skupinové řádky se nabízejí u přihlášky „Skupina“, individuální u „1:1“. Tabulka níže
+          bere přihlášky z aktuálních dat (včetně stavu — zrušené se nepočítají do kapacity).
+          Volná místa = kapacita minus větší z <strong>ručního obsazeno</strong> a{" "}
+          <strong>počtu přihlášek</strong> (u 1:1 typicky kapacita 1).
         </p>
         <p className="mt-2 text-xs text-slate-500">
           <strong>Zrušit termín</strong> odebere ho z nabídky na přihlášce; stávající
@@ -118,10 +181,17 @@ export function CourseRunsAdminClient({
       <div className="flex flex-wrap gap-3">
         <button
           type="button"
-          onClick={() => setRuns((p) => [...p, emptyRun()])}
+          onClick={() => setRuns((p) => [...p, emptyGroupRun()])}
           className="btn-portal-outline max-w-xs"
         >
-          + Přidat termín
+          + Skupinový termín
+        </button>
+        <button
+          type="button"
+          onClick={() => setRuns((p) => [...p, emptyIndividualRun()])}
+          className="btn-portal-outline max-w-xs"
+        >
+          + Individuální slot
         </button>
         <button
           type="button"
@@ -193,12 +263,14 @@ export function CourseRunsAdminClient({
       <div className="space-y-4">
         {runs.length === 0 ? (
           <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50/80 px-4 py-8 text-center text-sm text-slate-600">
-            Zatím žádné termíny. Přidejte řádek nebo uložte prázdný seznam — na
-            přihlášce se pak zobrazí jen obecná domluva.
+            Zatím žádné termíny. Přidejte skupinový běh nebo 1:1 slot, případně uložte prázdný
+            seznam — na přihlášce se pak zobrazí jen obecná domluva.
           </p>
         ) : (
           runs.map((run, index) => {
-            const rows = occupancyByRunId[run.id] ?? [];
+            const rows = (occupancyByRunId[run.id] ?? []).filter(
+              (row) => row.format === run.format,
+            );
             const counted = countedTowardCapacity(rows);
             const free = spotsLeftEffective(run, counted);
             const active = run.active !== false;
@@ -214,6 +286,9 @@ export function CourseRunsAdminClient({
                       Termín {index + 1}
                     </p>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <span className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-violet-900">
+                        {run.format === "skupina" ? "Skupina" : "1:1"}
+                      </span>
                       <span
                         className={`inline-flex rounded-full border px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide ${
                           active
@@ -331,6 +406,28 @@ export function CourseRunsAdminClient({
                 )}
 
                 <div className="grid gap-4 border-t border-slate-100 pt-4 sm:grid-cols-2">
+                  <div className="sm:col-span-2">
+                    <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                      Formát nabídky
+                    </label>
+                    <select
+                      value={run.format}
+                      onChange={(e) => {
+                        const f = e.target.value as CourseFormat;
+                        const patch: Partial<CourseRun> = { format: f };
+                        if (f === "individual") {
+                          patch.capacity = Math.min(run.capacity, 1) || 1;
+                        } else if (run.format === "individual" && run.capacity <= 1) {
+                          patch.capacity = 6;
+                        }
+                        updateAt(index, patch);
+                      }}
+                      className="input-portal mt-1.5 block max-w-md"
+                    >
+                      <option value="skupina">Skupinový běh</option>
+                      <option value="individual">Individuální 1:1</option>
+                    </select>
+                  </div>
                   <div className="sm:col-span-2">
                     <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
                       Technické id (bez mezer)

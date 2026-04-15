@@ -1,8 +1,8 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { getClientIp } from "@/lib/client-ip";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
 
@@ -18,22 +18,6 @@ const scopes = {
 } as const;
 
 export type RateLimitScope = keyof typeof scopes;
-
-let supabaseAdmin: SupabaseClient | null | undefined;
-
-function getSupabaseAdmin(): SupabaseClient | null {
-  if (supabaseAdmin !== undefined) return supabaseAdmin;
-  const url = process.env.SUPABASE_URL?.trim();
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
-  if (!url || !key) {
-    supabaseAdmin = null;
-    return null;
-  }
-  supabaseAdmin = createClient(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-  return supabaseAdmin;
-}
 
 type RpcResult = { allowed: boolean; retry_after?: number };
 

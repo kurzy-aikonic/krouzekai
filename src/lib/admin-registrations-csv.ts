@@ -27,7 +27,7 @@ const HEADER = [
 
 export function registrationsToCsv(
   rows: RegistrationRecord[],
-  runLabel: (runId: string | null) => string,
+  resolveRunLabel: (r: RegistrationRecord) => string,
 ): string {
   const lines = [
     HEADER.join(","),
@@ -44,7 +44,7 @@ export function registrationsToCsv(
         csvCell(r.format === "skupina" ? "skupina" : "individual"),
         csvCell(registrationStatusLabelsCs[r.status]),
         csvCell(r.runId ?? ""),
-        csvCell(runLabel(r.runId)),
+        csvCell(resolveRunLabel(r)),
         csvCell(r.internalNotes ?? ""),
       ].join(","),
     ),

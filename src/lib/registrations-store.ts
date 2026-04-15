@@ -202,11 +202,12 @@ export async function updateRegistration(
 
   if (patch.runId !== undefined) {
     if (patch.runId !== null) {
-      if (current.format !== "skupina") {
-        throw new Error("Termín lze přiřadit jen u skupinového kurzu.");
-      }
-      if (!(await getCourseRunById(patch.runId))) {
+      const run = await getCourseRunById(patch.runId);
+      if (!run) {
         throw new Error("Neplatný termín (runId).");
+      }
+      if (run.format !== current.format) {
+        throw new Error("Termín neodpovídá formátu přihlášky (skupina vs. 1:1).");
       }
       next.runId = patch.runId;
     } else {

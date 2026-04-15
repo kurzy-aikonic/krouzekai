@@ -17,7 +17,9 @@ export const metadata: Metadata = pageMetadata({
 export const dynamic = "force-dynamic";
 
 export default async function AktualniBehyPage() {
-  const runs = await listOfferedCourseRuns();
+  const runs = (await listOfferedCourseRuns()).filter(
+    (r) => r.format === "skupina",
+  );
   const merged = await listRegistrationsMerged();
 
   return (
@@ -51,7 +53,7 @@ export default async function AktualniBehyPage() {
         ) : (
           <ul className="mt-10 space-y-4">
             {runs.map((run) => {
-              const occ = countedOccupancyForRun(run.id, merged);
+              const occ = countedOccupancyForRun(run.id, "skupina", merged);
               const free = spotsLeftEffective(run, occ);
               return (
                 <li

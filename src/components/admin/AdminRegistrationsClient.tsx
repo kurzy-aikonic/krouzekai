@@ -16,9 +16,12 @@ import {
   registrationStatusLabelsCs,
 } from "@/types/registration";
 
-function runLabel(runId: string | null, courseRuns: CourseRun[]): string {
-  if (!runId) return "—";
-  return courseRuns.find((r) => r.id === runId)?.label ?? runId;
+function runLabel(r: RegistrationRecord, courseRuns: CourseRun[]): string {
+  if (!r.runId) return "—";
+  return (
+    courseRuns.find((cr) => cr.id === r.runId && cr.format === r.format)
+      ?.label ?? r.runId
+  );
 }
 
 type Props = {
@@ -96,7 +99,7 @@ export function AdminRegistrationsClient({
         r.childName,
         String(r.childAge),
         r.internalNotes ?? "",
-        runLabel(r.runId, courseRuns),
+        runLabel(r, courseRuns),
       ]
         .join(" ")
         .toLowerCase();
@@ -200,9 +203,7 @@ export function AdminRegistrationsClient({
   }
 
   function downloadFilteredCsv() {
-    const csv = registrationsToCsv(filtered, (rid) =>
-      runLabel(rid, courseRuns),
-    );
+    const csv = registrationsToCsv(filtered, (r) => runLabel(r, courseRuns));
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -465,7 +466,7 @@ export function AdminRegistrationsClient({
                   </span>
                 </td>
                 <td className="max-w-[200px] px-3 py-2 text-xs text-slate-600">
-                  {runLabel(r.runId, courseRuns)}
+                  {runLabel(r, courseRuns)}
                 </td>
                 <td className="px-3 py-2">
                   <span className="font-mono text-xs font-bold text-slate-700">

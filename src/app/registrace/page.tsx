@@ -16,11 +16,17 @@ export const metadata: Metadata = pageMetadata({
 export const dynamic = "force-dynamic";
 
 export default async function RegistracePage() {
-  const groupRuns = await listOfferedCourseRuns();
+  const offered = await listOfferedCourseRuns();
+  const groupRuns = offered.filter((r) => r.format === "skupina");
+  const individualRuns = offered.filter((r) => r.format === "individual");
   const merged = await listRegistrationsMerged();
   const occupancyByRunId: Record<string, number> = {};
-  for (const run of groupRuns) {
-    occupancyByRunId[run.id] = countedOccupancyForRun(run.id, merged);
+  for (const run of offered) {
+    occupancyByRunId[run.id] = countedOccupancyForRun(
+      run.id,
+      run.format,
+      merged,
+    );
   }
 
   return (
@@ -44,6 +50,7 @@ export default async function RegistracePage() {
         <div className="mt-10">
           <RegistrationForm
             groupRuns={groupRuns}
+            individualRuns={individualRuns}
             occupancyByRunId={occupancyByRunId}
           />
         </div>

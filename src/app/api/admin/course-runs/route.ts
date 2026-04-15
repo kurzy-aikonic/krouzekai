@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminSecret, verifyAdminRequest } from "@/lib/admin-auth";
 import {
+  courseRunsPersistenceMode,
   courseRunsPutSchema,
   listCourseRuns,
   replaceCourseRuns,
@@ -20,7 +21,11 @@ export async function GET(request: Request) {
   }
 
   const runs = await listCourseRuns();
-  return NextResponse.json({ ok: true, runs });
+  return NextResponse.json({
+    ok: true,
+    runs,
+    storage: courseRunsPersistenceMode(),
+  });
 }
 
 export async function PUT(request: Request) {
@@ -54,11 +59,27 @@ export async function PUT(request: Request) {
 
   try {
     await replaceCourseRuns(parsed.data.runs);
-    return NextResponse.json({ ok: true, runs: parsed.data.runs });
+    return NextResponse.json({
+      ok: true,
+      runs: parsed.data.runs,
+      storage: courseRunsPersistenceMode(),
+    });
   } catch (e) {
     console.error(e);
+    const err = e as NodeJS.ErrnoException & { message?: string };
+    const readOnly =
+      err.code === "EROFS" ||
+      err.code === "ENOTSUP" ||
+      err.code === "EACCES" ||
+      (typeof err.message === "string" &&
+        err.message.toLowerCase().includes("read-only"));
     return NextResponse.json(
-      { error: "Nepodařilo se uložit termíny." },
+      {
+        error: "Nepodařilo se uložit termíny.",
+        hint: readOnly
+          ? "Na Vercelu nejde zapisovat do souboru. Máte-li Supabase: spusťte SQL z web/supabase-course-runs.sql a používejte SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY. Bez Supabase lze použít Upstash (UPSTASH_REDIS_*)."
+          : undefined,
+      },
       { status: 500 },
     );
   }
