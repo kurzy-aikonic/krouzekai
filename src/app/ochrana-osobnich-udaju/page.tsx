@@ -23,16 +23,18 @@ export default function OchranaOsobnichUdajuPage() {
         <Prose>
           <h1>Ochrana osobních údajů</h1>
           <p>
-            Tento dokument popisuje, jak při provozu služby {site.name}{" "}
-            zpracováváme osobní údaje v souladu s GDPR a souvisejícími předpisy.
+            Tento dokument vás informuje o zpracování osobních údajů při službě{" "}
+            {site.name} v souladu s nařízením Evropského parlamentu a Rady (EU)
+            2016/679 (obecné nařízení o ochraně osobních údajů, &bdquo;GDPR&ldquo;)
+            a se zákonem č. 110/2019 Sb., o zpracování osobních údajů, ve znění
+            pozdějších předpisů, a souvisejícími předpisy České republiky a EU.
           </p>
-          <h2>1. Kdo zpracovává údaje</h2>
+          <h2>1. Správce osobních údajů</h2>
           <p>
-            Správcem osobních údajů je {site.company.legalName}, IČO{" "}
-            {site.company.ic}, sídlo {site.company.addressLine} (
-            {site.company.addressNote}). {site.company.registryMark}. Službu{" "}
-            {site.name} provozujeme jako součást nabídky skupiny{" "}
-            {site.parentSite.name}. Kontakt:{" "}
+            Správcem je {site.company.legalName}, IČO {site.company.ic}, sídlo{" "}
+            {site.company.addressLine} ({site.company.addressNote}).{" "}
+            {site.company.registryMark}. Službu {site.name} provozujeme v
+            návaznosti na značku {site.parentSite.name}. Kontakt správce:{" "}
             <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>, tel.{" "}
             <a href={`tel:${site.company.phoneTel}`}>
               {site.company.phoneDisplay}
@@ -40,87 +42,193 @@ export default function OchranaOsobnichUdajuPage() {
             .
           </p>
           <p>
-            Pověřence pro ochranu osobních údajů jsme nejmenovali; veškeré
-            dotazy ke zpracování můžete směřovat na výše uvedený kontakt.
+            Pověřence pro ochranu osobních údajů (DPO) jsme nejmenovali; nejsme
+            povinni jej mít podle čl. 37 GDPR. Dotazy ke zpracování osobních
+            údajů vyřizujeme na výše uvedeném kontaktu.
           </p>
-          <h2>2. Jaké údaje zpracováváme</h2>
-          <ul>
-            <li>Údaje zákonného zástupce: jméno, e-mail, telefon.</li>
-            <li>Údaje o účastníkovi kurzu: jméno, věk.</li>
-            <li>Údaje o zvoleném termínu a formátu kurzu.</li>
-            <li>Technické údaje nutné pro provoz webu (např. logy serveru).</li>
-          </ul>
-          <h2>3. Účel a právní základ</h2>
+          <h2>2. Jaké osobní údaje zpracováváme</h2>
+          <p>Zpracováváme zejména tyto kategorie údajů:</p>
           <ul>
             <li>
-              Vyřízení registrace, komunikace a realizace kurzu: čl. 6 odst. 1
-              písm. b) GDPR (plnění smlouvy).
+              <strong>Údaje zákonného zástupce (rodiče / objednatele):</strong>{" "}
+              jméno, e-mail, telefon.
             </li>
             <li>
-              Účetní a daňové povinnosti: čl. 6 odst. 1 písm. c) GDPR (splnění
-              právní povinnosti).
+              <strong>Údaje o účastníkovi kurzu (dítěti):</strong> jméno, věk.
             </li>
             <li>
-              Ochrana webu a prevence zneužití (rate limit, bezpečnostní logy):
-              čl. 6 odst. 1 písm. f) GDPR (oprávněný zájem).
+              <strong>Údaje o objednávce:</strong> zvolený formát kurzu
+              (skupina / individuální výuka), vybraný běh / termín, cena,
+              souhlas s obchodními podmínkami a s tímto dokumentem, stav přihlášky,
+              interní identifikátor přihlášky.
             </li>
             <li>
-              Marketingová nebo volitelná analytika pouze se souhlasem: čl. 6
-              odst. 1 písm. a) GDPR.
+              <strong>Přístup rodiče k přehledu přihlášky:</strong> pro ověření
+              identity při přihlášení přes odkaz v e-mailu zpracováváme údaje
+              nezbytné k vydání přístupu (např. kontrola jednorázového tokenu /
+              odkazu spojeného s vaší přihláškou a e-mailovou adresou).
+            </li>
+            <li>
+              <strong>Provozní a bezpečnostní údaje:</strong> technické údaje o
+              přístupu k webu (např. IP adresa v rozsahu nutném pro rate limiting,
+              logy serveru v nezbytném rozsahu), údaje související s ochranou
+              formuláře před zneužitím (viz Cloudflare Turnstile u registrace).
+            </li>
+            <li>
+              <strong>Interní poznámky správce:</strong> textové poznámky k
+              přihlášce vedené v administraci (nezveřejňujeme je účastníkům ani
+              návštěvníkům webu).
             </li>
           </ul>
+          <p>
+            Zvláštní kategorie osobních údajů ve smyslu čl. 9 GDPR (&bdquo;citlivé&ldquo; údaje) záměrně nevyžadujeme a nezpracováváme,
+            ledaže byste nám je dobrovolně sdělili v komunikaci; takové údaje
+            nebudeme dále zpracovávat bez zákonného důvodu.
+          </p>
+          <h2>3. Účely zpracování a právní základ (čl. 6 GDPR)</h2>
+          <ul>
+            <li>
+              <strong>Registrace, uzavření a plnění smlouvy o kurzu</strong>{" "}
+              (vyřízení objednávky, komunikace, organizace lekcí, potvrzení
+              účasti): právní základ{" "}
+              <strong>čl. 6 odst. 1 písm. b) GDPR</strong> (plnění smlouvy / kroky
+              před uzavřením smlouvy na žádost subjektu údajů).
+            </li>
+            <li>
+              <strong>Účetní a daňové povinnosti</strong> (vystavení a evidence
+              dokladů): právní základ{" "}
+              <strong>čl. 6 odst. 1 písm. c) GDPR</strong> (právní povinnost).
+            </li>
+            <li>
+              <strong>Ochrana webu, prevence podvodů a zneužití</strong> (např.
+              omezení počtu požadavků z jedné IP, ověření lidského přístupu u
+              formuláře): právní základ{" "}
+              <strong>čl. 6 odst. 1 písm. f) GDPR</strong> (oprávněný zájem
+              správce na bezpečném provozu služby); oprávněný zájem jsme
+              vyhodnotili v souladu s čl. 6 odst. 1 písm. f) GDPR a případně
+              provedli test proporcionality.
+            </li>
+            <li>
+              <strong>Volitelná analytika nebo marketing</strong> (pokud je na
+              webu zapnuto až po vašem souhlasu): právní základ{" "}
+              <strong>čl. 6 odst. 1 písm. a) GDPR</strong> (souhlas), který můžete
+              kdykoli odvolat bez vlivu na zákonnost zpracování před odvoláním.
+            </li>
+          </ul>
+          <p>
+            Poskytnutí údajů nutných pro registraci je smluvním a zákonným
+            požadavkem; bez nich objednávku nelze řádně vyřídit.
+          </p>
           <h2>4. Doba uchování</h2>
           <ul>
             <li>
-              Registrační a komunikační údaje uchováváme po dobu trvání kurzu a
-              následně maximálně 3 roky pro řešení dotazů a případných sporů.
+              Údaje z přihlášky a související komunikaci uchováváme po dobu
+              trvání kurzu a následně nejdéle <strong>3 roky</strong>, pokud
+              zákon nevyžaduje delší dobu (řešení sporů, reklamace, ochrana
+              právních nároků).
             </li>
             <li>
               Účetní a daňové doklady uchováváme po dobu stanovenou právními
-              předpisy (obvykle 10 let).
+              předpisy ČR (obvykle <strong>10 let</strong>).
             </li>
             <li>
-              Technické bezpečnostní logy uchováváme po nezbytně nutnou dobu,
-              zpravidla v řádu týdnů až měsíců.
+              Technické a bezpečnostní logy uchováváme po nezbytně nutnou dobu,
+              zpravidla <strong>řádově týdny až měsíce</strong>, podle nastavení
+              infrastruktury a bezpečnostních politik.
             </li>
           </ul>
           <h2>5. Příjemci a zpracovatelé</h2>
-          <p>Údaje mohou zpracovávat naši smluvní zpracovatelé, zejména:</p>
+          <p>
+            Údaje zpracováváme my a naši <strong>zpracovatelé</strong> podle čl.
+            28 GDPR, s nimiž máme uzavřené smlouvy o zpracování osobních údajů
+            nebo obdobné závazky. Mezi typické kategorie patří:
+          </p>
           <ul>
-            <li>hosting a infrastruktura webu,</li>
-            <li>e-mailová služba pro potvrzení registrace,</li>
-            <li>platební služby (pokud je aktivní online platba),</li>
-            <li>Supabase pro bezpečnostní omezení požadavků (rate limiting).</li>
+            <li>
+              <strong>Provoz webu a hosting</strong> (poskytovatel cloudové
+              infrastruktury, např. platforma pro nasazení aplikace).
+            </li>
+            <li>
+              <strong>Odesílání e-mailů</strong> — služba{" "}
+              <strong>Resend</strong> (transakční e-maily k přihlášce, přístupu
+              rodiče, případně interní notifikace).
+            </li>
+            <li>
+              <strong>Ochrana formuláře před spamem</strong> —{" "}
+              <strong>Cloudflare Turnstile</strong> při odeslání registrace
+              (ověření, že za odesláním stojí člověk).
+            </li>
+            <li>
+              <strong>Omezení zneužití rozhraní (rate limiting)</strong> — např.
+              služba <strong>Supabase</strong>, pokud je v projektu nakonfigurována.
+            </li>
+            <li>
+              <strong>Platební brána</strong> — pokud bude u aktivní platby zpracování
+              provádět třetí strana, budete informováni v pokynech k platbě a v
+              zásadách příslušného poskytovatele plateb.
+            </li>
           </ul>
           <p>
-            Se zpracovateli máme uzavřené odpovídající smluvní závazky dle čl.
-            28 GDPR.
+            Seznam konkrétních dodavatelů vám na požádání sdělíme u jednotlivých
+            zpracování, pokud to bude potřebné k uplatnění vašich práv.
           </p>
-          <h2>6. Předávání do třetích zemí</h2>
+          <h2>6. Předávání do třetích zemí (mimo EU/EHP)</h2>
           <p>
-            Pokud některý dodavatel zpracovává data mimo EU/EHP, předání
-            probíhá pouze při splnění podmínek GDPR (např. standardní smluvní
-            doložky nebo rozhodnutí o odpovídající ochraně).
+            Někteří zpracovatelé mohou osobní údaje zpracovávat i mimo Evropský
+            hospodářský prostor. Předání probíhá vždy v souladu s kapitolou V GDPR
+            — zejména na základě rozhodnutí Komise o odpovídající ochraně,
+            standardních smluvních doložek schválených Komisí, případně jiných
+            mechanismů stanovených GDPR.
           </p>
-          <h2>7. Práva subjektů údajů</h2>
+          <h2>7. Automatizované individuální rozhodování a profilování</h2>
           <p>
-            Máte právo na přístup, opravu, výmaz, omezení zpracování,
-            přenositelnost a vznést námitku, kde to předpisy připouštějí. Máte
-            právo podat stížnost u Úřadu pro ochranu osobních údajů.
+            Neprovádíme automatizované rozhodování ve smyslu čl. 22 GDPR ani
+            profilování, které by mělo pro vás právní účinky nebo se vás obdobně
+            významně dotýkalo.
           </p>
-          <h2>8. Cookies</h2>
+          <h2>8. Vaše práva</h2>
+          <p>V souladu s GDPR máte zejména tato práva:</p>
+          <ul>
+            <li>právo na přístup k osobním údajům (čl. 15 GDPR),</li>
+            <li>právo na opravu nepřesných údajů (čl. 16 GDPR),</li>
+            <li>
+              právo na výmaz (&bdquo;být zapomenut&ldquo;), omezení zpracování,
+              přenositelnost údajů, kde to předpisy připouštějí (čl. 17–20 GDPR),
+            </li>
+            <li>
+              právo vznést námitku proti zpracování založenému na oprávněném zájmu
+              (čl. 21 GDPR),
+            </li>
+            <li>
+              právo odvolat souhlas se zpracováním založeným na souhlasu, pokud ho
+              používáme (čl. 7 odst. 3 GDPR),
+            </li>
+            <li>
+              právo podat stížnost u Úřadu pro ochranu osobních údajů (viz oddíl
+              10 níže).
+            </li>
+          </ul>
           <p>
-            Informace o cookies najdete na stránce <a href="/cookies">Cookies</a>.
+            Žádosti o výkon práv podávejte na{" "}
+            <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>. O
+            opatřeních vám odpovíme bez zbytečného odkladu, obvykle do jednoho
+            měsíce; u složitých žádostí může být lhůta prodloužena v souladu s
+            GDPR.
           </p>
-          <h2>9. Kontaktní údaje dozorového úřadu</h2>
+          <h2>9. Cookies a podobné technologie</h2>
           <p>
-            Úřad pro ochranu osobních údajů:{" "}
+            Podrobnosti o cookies a ukládání v prohlížeči najdete na stránce{" "}
+            <a href="/cookies">Cookies</a>.
+          </p>
+          <h2>10. Dozorový úřad</h2>
+          <p>
+            Úřad pro ochranu osobních údajů, Pplk. Sochora 27, 170 00 Praha 7,{" "}
             <a
               href="https://www.uoou.cz/"
               target="_blank"
               rel="noopener noreferrer"
             >
-              uoou.cz
+              www.uoou.cz
             </a>
             .
           </p>

@@ -31,6 +31,7 @@ export const metadata: Metadata = rootMetadata;
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
   themeColor: "#c4b5fd",
   colorScheme: "light",
 };
@@ -45,7 +46,7 @@ export default function RootLayout({
       lang="cs"
       className={`${display.variable} ${body.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col text-[var(--magic-ink)]">
+      <body className="flex min-h-full flex-col overflow-x-clip text-[var(--magic-ink)]">
         <GlobalJsonLd />
         <MagicBackdrop />
         <LazyClickSparkles />

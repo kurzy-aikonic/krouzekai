@@ -29,7 +29,7 @@ export function Section({
         </h2>
       ) : null}
       {intro ? (
-        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-slate-700">
+        <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-700 sm:text-lg">
           {intro}
         </p>
       ) : null}

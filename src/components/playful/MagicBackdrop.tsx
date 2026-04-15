@@ -6,9 +6,9 @@ export function MagicBackdrop() {
       aria-hidden
     >
       <div className="magic-gradient-bg absolute inset-0" />
-      <div className="magic-blob magic-blob--a absolute -left-20 top-20 h-56 w-56 rounded-full opacity-55 blur-2xl sm:h-72 sm:w-72 sm:opacity-60 sm:blur-3xl" />
-      <div className="magic-blob magic-blob--b absolute -right-16 top-1/3 h-72 w-72 rounded-full opacity-45 blur-2xl sm:h-96 sm:w-96 sm:opacity-50 sm:blur-3xl" />
-      <div className="magic-blob magic-blob--c absolute bottom-0 left-1/3 h-64 w-64 -translate-x-1/2 rounded-full opacity-40 blur-2xl sm:h-80 sm:w-80 sm:opacity-45 sm:blur-3xl" />
+      <div className="magic-blob magic-blob--a absolute -left-20 top-20 h-48 w-48 rounded-full opacity-45 blur-xl sm:h-72 sm:w-72 sm:opacity-60 sm:blur-3xl" />
+      <div className="magic-blob magic-blob--b absolute -right-16 top-1/3 h-56 w-56 rounded-full opacity-40 blur-xl sm:h-96 sm:w-96 sm:opacity-50 sm:blur-3xl" />
+      <div className="magic-blob magic-blob--c absolute bottom-0 left-1/3 hidden h-64 w-64 -translate-x-1/2 rounded-full opacity-40 blur-2xl sm:block sm:h-80 sm:w-80 sm:opacity-45 sm:blur-3xl" />
       <svg
         className="magic-stars absolute inset-0 h-full w-full opacity-[0.35]"
         xmlns="http://www.w3.org/2000/svg"

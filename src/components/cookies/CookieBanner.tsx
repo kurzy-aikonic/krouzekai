@@ -36,7 +36,7 @@ export function CookieBanner() {
       role="dialog"
       aria-labelledby="cookie-banner-title"
       aria-live="polite"
-      className="fixed inset-x-0 bottom-0 z-50 border-t-[3px] border-[var(--magic-ink)] bg-gradient-to-r from-[#fef3c7] via-white to-[#e9d5ff] p-4 shadow-[0_-8px_0_#312e81] sm:p-6"
+      className="fixed inset-x-0 bottom-0 z-50 border-t-[3px] border-[var(--magic-ink)] bg-gradient-to-r from-[#fef3c7] via-white to-[#e9d5ff] p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-8px_0_#312e81] sm:p-6 sm:pb-[max(1.5rem,env(safe-area-inset-bottom))]"
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="text-sm text-slate-800">
@@ -58,18 +58,18 @@ export function CookieBanner() {
             .
           </p>
         </div>
-        <div className="flex flex-shrink-0 flex-wrap gap-2">
+        <div className="flex w-full flex-shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap">
           <button
             type="button"
             onClick={() => save("essential")}
-            className="font-display rounded-xl border-[3px] border-[var(--magic-ink)] bg-white px-4 py-2.5 text-sm font-bold text-[var(--magic-ink)] shadow-[3px_3px_0_#312e81] transition-transform hover:-translate-y-0.5"
+            className="font-display min-h-11 flex-1 rounded-xl border-[3px] border-[var(--magic-ink)] bg-white px-4 py-2.5 text-sm font-bold text-[var(--magic-ink)] shadow-[3px_3px_0_#312e81] transition-transform hover:-translate-y-0.5 sm:min-h-0 sm:flex-initial"
           >
             Jen nutné
           </button>
           <button
             type="button"
             onClick={() => save("all")}
-            className="font-display rounded-xl border-[3px] border-[var(--magic-ink)] bg-gradient-to-r from-[var(--magic-grape)] to-[var(--magic-pink)] px-4 py-2.5 text-sm font-bold text-white shadow-[3px_3px_0_#312e81] transition-transform hover:-translate-y-0.5"
+            className="font-display min-h-11 flex-1 rounded-xl border-[3px] border-[var(--magic-ink)] bg-gradient-to-r from-[var(--magic-grape)] to-[var(--magic-pink)] px-4 py-2.5 text-sm font-bold text-white shadow-[3px_3px_0_#312e81] transition-transform hover:-translate-y-0.5 sm:min-h-0 sm:flex-initial"
           >
             Všechno ano!
           </button>

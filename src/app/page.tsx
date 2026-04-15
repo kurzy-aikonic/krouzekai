@@ -75,32 +75,38 @@ export default function HomePage() {
   return (
     <>
       <HomeJsonLd />
-      <div className="relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+      <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-14">
         {/* Hero */}
-        <header className="relative">
-          <div className="float-slow absolute -right-4 top-0 text-4xl sm:right-8 sm:text-5xl" aria-hidden>
+        <header className="relative overflow-x-hidden">
+          <div
+            className="float-slow pointer-events-none absolute -right-2 top-0 hidden text-4xl sm:right-8 sm:block sm:text-5xl"
+            aria-hidden
+          >
             🚀
           </div>
-          <div className="float-delay absolute -left-2 top-24 text-3xl sm:left-4 sm:text-4xl" aria-hidden>
+          <div
+            className="float-delay pointer-events-none absolute -left-2 top-24 hidden text-3xl sm:left-4 sm:block sm:text-4xl"
+            aria-hidden
+          >
             🎮
           </div>
 
-          <div className="inline-flex items-center gap-2 rounded-full border-2 border-[var(--magic-ink)] bg-white px-4 py-1.5 font-display text-sm font-bold text-[var(--magic-ink)] shadow-[3px_3px_0_#312e81]">
+          <div className="inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full border-2 border-[var(--magic-ink)] bg-white px-3 py-2 font-display text-xs font-bold leading-snug text-[var(--magic-ink)] shadow-[3px_3px_0_#312e81] sm:px-4 sm:py-1.5 sm:text-sm">
             <span aria-hidden>👨‍👩‍👧</span>
-            Pro rodiče přehledně • Pro děti jako z arcade hry
+            <span>Pro rodiče přehledně • Pro děti jako z arcade hry</span>
           </div>
 
-          <h1 className="font-display mt-6 max-w-4xl text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+          <h1 className="font-display mt-5 max-w-4xl text-3xl font-extrabold leading-[1.12] tracking-tight sm:mt-6 sm:text-5xl lg:text-6xl">
             <span className="text-gradient-magic">Postav si vlastní hru,</span>
             <br />
             <span className="text-[var(--magic-ink)]">appku nebo web</span>
             <br />
-            <span className="text-2xl font-bold text-violet-700 sm:text-3xl lg:text-4xl">
+            <span className="text-lg font-bold text-violet-700 sm:text-3xl lg:text-4xl">
               — s AI, bez nudného programování ✨
             </span>
           </h1>
 
-          <p className="mt-6 max-w-2xl text-lg font-semibold leading-relaxed text-slate-800 sm:text-xl">
+          <p className="mt-5 max-w-2xl text-base font-semibold leading-relaxed text-slate-800 sm:mt-6 sm:text-lg md:text-xl">
             Pro zvídavé tvůrce{" "}
             <span className="rounded-lg bg-[var(--magic-sun)] px-2 py-0.5 font-display text-[var(--magic-ink)]">
               {site.audience.ageMin}–{site.audience.ageMax} let
@@ -120,11 +126,11 @@ export default function HomePage() {
             individuálně.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <Link href="/registrace" className="btn-magic">
+          <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
+            <Link href="/registrace" className="btn-magic w-full text-center sm:w-auto">
               Chci se přihlásit 🚀
             </Link>
-            <Link href="/jak-probiha" className="btn-magic-outline">
+            <Link href="/jak-probiha" className="btn-magic-outline w-full text-center sm:w-auto">
               Jak probíhá lekce
             </Link>
           </div>
@@ -380,7 +386,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/registrace"
-              className="mt-8 inline-flex items-center justify-center rounded-2xl border-[3px] border-white bg-gradient-to-r from-amber-300 via-orange-400 to-pink-400 px-8 py-4 font-display text-lg font-extrabold text-[var(--magic-ink)] shadow-[4px_4px_0_rgba(255,255,255,0.5)] transition-transform hover:scale-[1.05] active:scale-[0.98]"
+              className="mt-8 inline-flex min-h-11 w-full max-w-sm items-center justify-center rounded-2xl border-[3px] border-white bg-gradient-to-r from-amber-300 via-orange-400 to-pink-400 px-6 py-3.5 font-display text-base font-extrabold text-[var(--magic-ink)] shadow-[4px_4px_0_rgba(255,255,255,0.5)] transition-transform hover:scale-[1.05] active:scale-[0.98] sm:w-auto sm:max-w-none sm:px-8 sm:py-4 sm:text-lg"
             >
               Start registrace! 🚀
             </Link>

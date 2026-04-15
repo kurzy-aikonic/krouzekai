@@ -27,6 +27,15 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+}
+
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -52,11 +61,20 @@ html {
     animation: none !important;
   }
   .magic-stars {
-    opacity: 0.22 !important;
+    opacity: 0.18 !important;
   }
   .float-slow,
   .float-delay {
     animation: none !important;
+  }
+  .rainbow-strip {
+    animation: none !important;
+    background-position: 0% 50%;
+  }
+  .magic-gradient-bg {
+    background:
+      radial-gradient(ellipse 100% 50% at 50% -10%, #c4b5fd 0%, transparent 45%),
+      linear-gradient(180deg, #eef2ff 0%, #fdf4ff 50%, #ecfeff 100%);
   }
 }
 
@@ -164,7 +182,7 @@ body {
 
 .btn-magic {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  @apply inline-flex items-center justify-center rounded-2xl px-6 py-3.5 text-base font-bold text-white shadow-lg transition-all duration-200;
+  @apply inline-flex min-h-11 items-center justify-center rounded-2xl px-6 py-3.5 text-base font-bold text-white shadow-lg transition-all duration-200 sm:min-h-0;
   background: linear-gradient(135deg, #7c3aed, #db2777, #f97316);
   background-size: 200% 200%;
   box-shadow:
@@ -183,7 +201,7 @@ body {
 
 .btn-magic-outline {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  @apply inline-flex items-center justify-center rounded-2xl border-[3px] border-[var(--magic-ink)] bg-white px-6 py-3.5 text-base font-bold text-[var(--magic-ink)] shadow-md transition-all duration-200;
+  @apply inline-flex min-h-11 items-center justify-center rounded-2xl border-[3px] border-[var(--magic-ink)] bg-white px-6 py-3.5 text-base font-bold text-[var(--magic-ink)] shadow-md transition-all duration-200 sm:min-h-0;
 }
 .btn-magic-outline:hover {
   transform: translateY(-2px);
@@ -278,7 +296,7 @@ body {
 }
 
 .input-playful {
-  @apply mt-1 w-full rounded-xl border-2 border-[var(--magic-ink)] bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 shadow-[2px_2px_0_#312e81] transition-shadow focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-400/50;
+  @apply mt-1 w-full rounded-xl border-2 border-[var(--magic-ink)] bg-white px-3 py-2.5 text-base font-semibold text-slate-900 shadow-[2px_2px_0_#312e81] transition-shadow focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-400/50 sm:text-sm;
 }
 
 .snake-details > summary {
@@ -303,6 +321,7 @@ body {
 
 .legal-prose {
   @apply max-w-2xl space-y-4 leading-relaxed text-slate-700;
+  overflow-wrap: anywhere;
 }
 
 .legal-prose h1 {
@@ -363,7 +382,7 @@ body {
 }
 
 .input-portal {
-  @apply w-full min-h-[2.75rem] rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition-colors;
+  @apply w-full min-h-[2.75rem] rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-base font-medium text-slate-900 shadow-sm transition-colors sm:text-sm;
   @apply placeholder:font-normal placeholder:text-slate-400 hover:border-slate-300;
   @apply focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-400/45;
 }

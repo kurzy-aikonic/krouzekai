@@ -16,6 +16,10 @@ export function ClickSparkles() {
   useEffect(() => {
     const main = document.getElementById("obsah");
     if (!main) return;
+    if (typeof window.matchMedia === "function") {
+      const narrow = window.matchMedia("(max-width: 639px)");
+      if (narrow.matches) return;
+    }
 
     function onClick(e: MouseEvent) {
       const el = document.getElementById("obsah");

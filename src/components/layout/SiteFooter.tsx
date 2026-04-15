@@ -43,10 +43,10 @@ export function SiteFooter() {
             </p>
             <a
               href={`mailto:${site.contactEmail}`}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border-2 border-[var(--magic-ink)] bg-white px-4 py-2 font-display text-sm font-bold text-[var(--magic-ink)] shadow-[3px_3px_0_#312e81] transition-transform hover:-translate-y-0.5"
+              className="mt-4 inline-flex max-w-full items-center gap-2 break-words rounded-xl border-2 border-[var(--magic-ink)] bg-white px-4 py-2.5 font-display text-sm font-bold text-[var(--magic-ink)] shadow-[3px_3px_0_#312e81] transition-transform hover:-translate-y-0.5"
             >
               <span aria-hidden>✉️</span>
-              {site.contactEmail}
+              <span className="min-w-0 break-all">{site.contactEmail}</span>
             </a>
             <a
               href={`tel:${site.company.phoneTel}`}
@@ -114,10 +114,6 @@ export function SiteFooter() {
             ))}
           </nav>
         </div>
-        <p className="mt-10 rounded-2xl border-2 border-dashed border-violet-300 bg-white/60 p-4 text-center text-xs text-slate-600">
-          Právní texty jsou kostra — před spuštěním doplň a nech zkontrolovat
-          právníkem.
-        </p>
       </div>
     </footer>
   );

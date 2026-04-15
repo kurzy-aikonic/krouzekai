@@ -115,7 +115,7 @@ export function RegistrationForm({ groupRuns, occupancyByRunId }: Props) {
           Kurz probíhá vždy online — každá lekce {site.pricing.lessonMinutes}{" "}
           minut, cyklus má {site.pricing.lessons} lekcí.
         </p>
-        <label className="flex cursor-pointer items-center gap-2 rounded-xl border-2 border-violet-200 bg-violet-50/50 px-3 py-2 text-sm font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] has-[:checked]:bg-white">
+        <label className="flex cursor-pointer items-center gap-2 rounded-xl border-2 border-violet-200 bg-violet-50/50 px-3 py-2 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] has-[:checked]:bg-white sm:text-sm">
           <input
             type="radio"
             name="format"
@@ -129,7 +129,7 @@ export function RegistrationForm({ groupRuns, occupancyByRunId }: Props) {
           Skupina (max. {site.pricing.groupMaxStudents}) —{" "}
           {site.pricing.skupinaCourse} Kč / {site.pricing.lessons} lekcí
         </label>
-        <label className="flex cursor-pointer items-center gap-2 rounded-xl border-2 border-violet-200 bg-violet-50/50 px-3 py-2 text-sm font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] has-[:checked]:bg-white">
+        <label className="flex cursor-pointer items-center gap-2 rounded-xl border-2 border-violet-200 bg-violet-50/50 px-3 py-2 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] has-[:checked]:bg-white sm:text-sm">
           <input
             type="radio"
             name="format"
@@ -159,7 +159,7 @@ export function RegistrationForm({ groupRuns, occupancyByRunId }: Props) {
             Můžeš vybrat konkrétní běh — nebo nechat prázdné a domluvíme se
             později.
           </p>
-          <label className="flex cursor-pointer items-start gap-2 rounded-xl border-2 border-violet-200 bg-white/90 px-3 py-2.5 text-sm font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)]">
+          <label className="flex cursor-pointer items-start gap-2 rounded-xl border-2 border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] sm:text-sm">
             <input
               type="radio"
               name="skupina-run"
@@ -176,7 +176,7 @@ export function RegistrationForm({ groupRuns, occupancyByRunId }: Props) {
             return (
               <label
                 key={run.id}
-                className={`flex cursor-pointer items-start gap-2 rounded-xl border-2 px-3 py-2.5 text-sm font-semibold has-[:checked]:border-[var(--magic-ink)] ${
+                className={`flex cursor-pointer items-start gap-2 rounded-xl border-2 px-3 py-2.5 text-base font-semibold has-[:checked]:border-[var(--magic-ink)] sm:text-sm ${
                   full
                     ? "cursor-not-allowed border-slate-200 bg-slate-100/80 text-slate-500"
                     : "border-violet-200 bg-white/90 text-slate-800 has-[:checked]:bg-white"

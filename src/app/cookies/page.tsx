@@ -27,11 +27,21 @@ export default function CookiesPage() {
           localStorage). Zpracování probíhá v souladu s pravidly EU/CZ pro
           soukromí v elektronických komunikacích a s GDPR.
         </p>
-        <h2>Nezbytné cookies</h2>
+        <h2>Nezbytné cookies a technologie</h2>
         <p>
-          Nutné pro základní funkce webu (např. uložení volby v cookie liště a
-          bezpečnostní funkce formuláře). Tyto technologie používáme bez
-          souhlasu, protože jsou nezbytné pro provoz služby.
+          Nutné pro základní funkce webu (např. uložení volby v cookie liště,
+          technický provoz aplikace). Tyto technologie používáme bez souhlasu,
+          protože jsou nezbytné pro provoz služby.
+        </p>
+        <p>
+          Na stránce <a href="/registrace">Registrace</a> může být pro ochranu
+          formuláře před roboty načten widget <strong>Cloudflare Turnstile</strong>.
+          Turnstile může v souvislosti s ověřením uložit vlastní cookies nebo
+          podobné identifikátory v doméně Cloudflare; jde o zpracování podle
+          pravidel společnosti Cloudflare a podle našich zásad ochrany osobních
+          údajů (oprávněný zájem / plnění smlouvy a bezpečnost). Bez úspěšného
+          ověření (pokud je Turnstile v prostředí zapnuto) nelze formulář v některých
+          konfiguracích odeslat.
         </p>
         <h2>Analytické cookies</h2>
         <p>
@@ -45,12 +55,19 @@ export default function CookiesPage() {
           změnilo, bude tato stránka aktualizována a marketingové cookies budou
           podmíněny souhlasem.
         </p>
-        <h2>Jaký nástroj aktuálně používáme</h2>
+        <h2>Jaké nástroje aktuálně používáme</h2>
         <ul>
           <li>
-            Ukládáme volbu souhlasu uživatele do localStorage (`krouzek-cookie-consent`).
+            Volbu v cookie liště ukládáme do úložiště prohlížeče (localStorage,
+            klíč <code className="rounded bg-slate-100 px-1">krouzek-cookie-consent</code>
+            ).
           </li>
           <li>Bez souhlasu nenačítáme volitelnou analytiku.</li>
+          <li>
+            Transakční e-maily (potvrzení přihlášky, odkazy pro rodiče) zpracovává
+            náš e-mailový dodavatel (např. Resend); nejde o cookies na tomto webu,
+            ale o zpracování údajů u příjemce podle smlouvy o zpracování.
+          </li>
         </ul>
         <h2>Jak volbu změnit</h2>
         <p>
