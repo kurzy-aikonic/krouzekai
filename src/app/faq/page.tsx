@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { FaqJsonLd } from "@/components/seo/FaqJsonLd";
 import { faqItems } from "@/data/faq";
-import { pageMetadata } from "@/lib/seo";
+import { metaDescriptions, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: "Časté otázky (FAQ)",
-  description:
-    "Odpovědi na otázky rodičů: je to programování, vhodný věk, platba, bezpečnost AI, cena kurzu.",
+  description: metaDescriptions.faq,
   path: "/faq",
 });
 
@@ -18,6 +18,12 @@ export default function FaqPage() {
 
   return (
     <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Úvod", path: "/" },
+          { name: "Časté otázky", path: "/faq" },
+        ]}
+      />
       <FaqJsonLd items={jsonLdItems} />
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
         <h1 className="page-h1">Časté otázky ❓</h1>

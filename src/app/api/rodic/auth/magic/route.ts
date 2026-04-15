@@ -1,0 +1,39 @@
+import { NextResponse } from "next/server";
+import {
+  PARENT_SESSION_COOKIE,
+  parentAuthSecretConfigured,
+  signSessionValue,
+  verifyMagicToken,
+} from "@/lib/parent-auth";
+import { site } from "@/lib/site-config";
+
+export const dynamic = "force-dynamic";
+
+export async function GET(request: Request) {
+  if (!parentAuthSecretConfigured()) {
+    return NextResponse.redirect(new URL("/rodic/prihlaseni", site.baseUrl));
+  }
+
+  const url = new URL(request.url);
+  const token = url.searchParams.get("token")?.trim() ?? "";
+  const email = verifyMagicToken(token);
+
+  const failRedirect = NextResponse.redirect(
+    new URL("/rodic/prihlaseni?chyba=odkaz", site.baseUrl),
+  );
+
+  if (!email) {
+    return failRedirect;
+  }
+
+  const session = signSessionValue(email);
+  const ok = NextResponse.redirect(new URL("/rodic", site.baseUrl));
+  ok.cookies.set(PARENT_SESSION_COOKIE, session, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7,
+    path: "/",
+  });
+  return ok;
+}

@@ -42,3 +42,4 @@ next-env.d.ts
 
 # přihlášky (dev / vlastní server)
 /data/registrations.jsonl
+/data/parent-accounts.jsonl

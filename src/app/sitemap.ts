@@ -7,6 +7,7 @@ const routes: { path: string; changeFrequency: ChangeFreq; priority: number }[] 
   [
     { path: "", changeFrequency: "weekly", priority: 1 },
     { path: "/registrace", changeFrequency: "weekly", priority: 0.95 },
+    { path: "/aktualni-behy", changeFrequency: "weekly", priority: 0.88 },
     { path: "/jak-probiha", changeFrequency: "monthly", priority: 0.85 },
     { path: "/faq", changeFrequency: "monthly", priority: 0.85 },
     { path: "/kontakt", changeFrequency: "yearly", priority: 0.7 },

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { BrandSubtitle } from "@/components/layout/BrandSubtitle";
+import { SocialIcons } from "@/components/layout/SocialIcons";
 import { site } from "@/lib/site-config";
 
 const legal = [
@@ -29,12 +31,15 @@ export function SiteFooter() {
             <p className="font-display text-2xl font-extrabold text-[var(--magic-ink)]">
               {site.name}
             </p>
+            <BrandSubtitle className="mt-1.5 text-sm sm:text-base" />
             <p className="mt-2 text-base font-semibold text-violet-900/80">
               Online kroužek • vibecoding bez nudy
             </p>
             <p className="mt-3 text-sm leading-relaxed text-slate-700">
-              Pro děti 10–15 let. Rodiče vidí přehledně, co dítě získá — a proč
-              to celé vypadá jako z jiný planety. Schválně. 🛸
+              Pro děti {site.audience.ageMin}–{site.audience.ageMax} let;
+              skupiny skládáme podle věku, aby tempo sedělo všem. Rodiče vidí
+              přehledně, co dítě získá — a proč to celé vypadá jako z jiný
+              planety. Schválně. 🛸
             </p>
             <a
               href={`mailto:${site.contactEmail}`}
@@ -43,14 +48,60 @@ export function SiteFooter() {
               <span aria-hidden>✉️</span>
               {site.contactEmail}
             </a>
+            <a
+              href={`tel:${site.company.phoneTel}`}
+              className="mt-2 inline-flex items-center gap-2 rounded-xl border-2 border-violet-200 bg-white/90 px-4 py-2 font-display text-sm font-bold text-violet-900 shadow-[2px_2px_0_#c4b5fd] transition-transform hover:-translate-y-0.5"
+            >
+              <span aria-hidden>📞</span>
+              {site.company.phoneDisplay}
+            </a>
+            <p className="mt-3 text-xs font-medium leading-relaxed text-slate-600">
+              {site.company.legalName}
+              <br />
+              IČO {site.company.ic} · {site.company.addressLine}
+              <br />({site.company.addressNote})
+            </p>
+            <p className="mt-3 text-sm font-semibold text-violet-900/90">
+              Součást značky{" "}
+              <a
+                href={site.parentSite.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-display font-extrabold text-[var(--magic-ink)] underline decoration-wavy decoration-violet-400 hover:text-violet-600"
+              >
+                {site.parentSite.name}
+              </a>
+              {" — "}
+              {site.parentSite.tagline}
+            </p>
+            <div className="mt-4">
+              <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-800">
+                Sledujte nás
+              </p>
+              <SocialIcons className="mt-2" />
+            </div>
           </div>
           <nav
             className="flex flex-col gap-3"
-            aria-label="Právní informace"
+            aria-label="Důležité odkazy"
           >
             <p className="font-display text-sm font-extrabold uppercase tracking-wide text-violet-800">
               Důležité odkazy
             </p>
+            <Link
+              href="/aktualni-behy"
+              className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
+            >
+              <span aria-hidden>📅</span>
+              Aktuální běhy
+            </Link>
+            <Link
+              href="/rodic/prihlaseni"
+              className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
+            >
+              <span aria-hidden>📚</span>
+              Přehled pro rodiče
+            </Link>
             {legal.map((item) => (
               <Link
                 key={item.href}

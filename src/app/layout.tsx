@@ -3,15 +3,17 @@ import { Baloo_2, Nunito } from "next/font/google";
 import { CookieBannerHost } from "@/components/cookies/CookieBannerHost";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-import { ClickSparkles } from "@/components/playful/ClickSparkles";
+import { LazyClickSparkles } from "@/components/playful/LazyClickSparkles";
 import { MagicBackdrop } from "@/components/playful/MagicBackdrop";
+import { GlobalJsonLd } from "@/components/seo/GlobalJsonLd";
 import { rootMetadata } from "@/lib/seo";
 import "./globals.css";
 
 const display = Baloo_2({
   variable: "--font-display",
   subsets: ["latin", "latin-ext"],
-  weight: ["600", "700", "800"],
+  /** Stačí 700/800 — display font se u nás nepoužívá na „semibold“. */
+  weight: ["700", "800"],
   display: "swap",
   adjustFontFallback: true,
 });
@@ -44,8 +46,9 @@ export default function RootLayout({
       className={`${display.variable} ${body.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col text-[var(--magic-ink)]">
+        <GlobalJsonLd />
         <MagicBackdrop />
-        <ClickSparkles />
+        <LazyClickSparkles />
         <a
           href="#obsah"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-2xl focus:border-2 focus:border-[var(--magic-ink)] focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-[var(--magic-ink)] focus:shadow-[4px_4px_0_#312e81]"

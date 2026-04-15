@@ -1,13 +1,33 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { rejectOversizedJsonBody } from "@/lib/json-body-limit";
 import { createCheckoutSession } from "@/lib/payment";
+import { rateLimitResponse } from "@/lib/rate-limit";
+import {
+  isRegistrationUuidLookup,
+  isShortRegistrationCodeLookup,
+} from "@/lib/registration-code";
 import { findRegistrationById } from "@/lib/registrations-store";
 
 const bodySchema = z.object({
-  registrationId: z.string().uuid(),
+  registrationId: z
+    .string()
+    .min(5)
+    .max(36)
+    .refine(
+      (s) =>
+        isRegistrationUuidLookup(s) || isShortRegistrationCodeLookup(s),
+      "Neplatné ID přihlášky.",
+    ),
 });
 
 export async function POST(request: Request) {
+  const tooLarge = rejectOversizedJsonBody(request);
+  if (tooLarge) return tooLarge;
+
+  const limited = await rateLimitResponse(request, "checkout");
+  if (limited) return limited;
+
   let json: unknown;
   try {
     json = await request.json();

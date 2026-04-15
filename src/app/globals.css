@@ -45,6 +45,21 @@ html {
   }
 }
 
+/* Úzké displeje: žádné animované pozadí ani „plavání“ emoji — výrazně levnější GPU */
+@media (max-width: 639px) {
+  .magic-blob,
+  .magic-stars {
+    animation: none !important;
+  }
+  .magic-stars {
+    opacity: 0.22 !important;
+  }
+  .float-slow,
+  .float-delay {
+    animation: none !important;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -319,4 +334,92 @@ body {
 
 .legal-prose strong {
   @apply font-semibold text-slate-900;
+}
+
+/* --- Portál (admin / rodič): společný vizuální jazyk --- */
+.portal-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -15%, rgba(167, 139, 250, 0.18), transparent 52%),
+    linear-gradient(180deg, #f1f5f9 0%, #eef2ff 38%, #f8fafc 100%);
+}
+
+.portal-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid rgb(226 232 240 / 0.95);
+  background: rgb(255 255 255 / 0.88);
+  backdrop-filter: blur(10px);
+}
+
+.portal-card {
+  border-radius: 1rem;
+  border: 1px solid rgb(226 232 240);
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgb(15 23 42 / 0.04),
+    0 8px 24px rgb(124 58 237 / 0.06);
+}
+
+.input-portal {
+  @apply w-full min-h-[2.75rem] rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition-colors;
+  @apply placeholder:font-normal placeholder:text-slate-400 hover:border-slate-300;
+  @apply focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-400/45;
+}
+
+.btn-portal-primary {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  @apply inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-sm transition-colors;
+  @apply hover:bg-violet-700 active:bg-violet-800 disabled:pointer-events-none disabled:opacity-50;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2;
+}
+
+.btn-portal-outline {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  @apply inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-xl border-2 border-violet-700 bg-white px-4 py-2.5 text-sm font-extrabold text-violet-900 shadow-sm transition-colors;
+  @apply hover:bg-violet-50 active:bg-violet-100 disabled:pointer-events-none disabled:opacity-50;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2;
+}
+
+.btn-portal-dark {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  @apply inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-xl bg-slate-800 px-4 py-2.5 text-sm font-extrabold text-white shadow-sm transition-colors;
+  @apply hover:bg-slate-900 active:bg-slate-950 disabled:pointer-events-none disabled:opacity-50;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2;
+}
+
+.btn-portal-ghost {
+  @apply inline-flex min-h-[2.75rem] items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 shadow-sm transition-colors;
+  @apply hover:border-slate-300 hover:bg-slate-50 disabled:opacity-50;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2;
+}
+
+.alert-error {
+  @apply rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-900;
+}
+
+.alert-success {
+  @apply rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-950;
+}
+
+/* --- Tisk: přehled pro rodiče (Ctrl+P) --- */
+@media print {
+  body {
+    background: #fff !important;
+    color: #0f172a;
+  }
+  .portal-shell {
+    background: #fff !important;
+    min-height: auto;
+  }
+  .rodic-print-card,
+  .portal-card {
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    break-inside: avoid;
+  }
+  a[href]::after {
+    content: "";
+  }
 }

@@ -20,6 +20,13 @@ export function CheckoutButton({ registrationId }: Props) {
         body: JSON.stringify({ registrationId }),
       });
       const data = (await res.json()) as { url?: string; error?: string };
+      if (res.status === 429) {
+        setError(
+          data.error ??
+            "Příliš mnoho pokusů o platbu. Zkuste to za chvíli znovu.",
+        );
+        return;
+      }
       if (!res.ok || !data.url) {
         setError(data.error ?? "Platbu se nepodařilo zahájit.");
         return;

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { site } from "@/lib/site-config";
+import { metaDescriptions } from "@/lib/seo-copy";
 
 /** Bezpečná základní URL pro metadata a kanonické odkazy. */
 export function getSiteUrl(): URL {
@@ -10,18 +11,40 @@ export function getSiteUrl(): URL {
   }
 }
 
+/** Absolutní URL pro kanonické odkazy, JSON-LD a Open Graph. */
+export function absoluteUrl(path: string): string {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return new URL(normalized, getSiteUrl()).toString();
+}
+
+/** Krátký popis služby pro schema.org (Organization / WebSite / Course). */
+export function rootSchemaDescription(): string {
+  return `Online kroužek pro děti ${site.audience.ageMin}–${site.audience.ageMax} let: ${site.pricing.lessonMinutes} min týdně, ${site.pricing.lessons} lekcí. Skupiny skládáme podle věku — tempo i témata sedí danému segmentu. Děti tvoří vlastní hru, appku nebo web s AI — bez klasického programování.`;
+}
+
 export const seoKeywords = [
-  "AI kroužek",
+  "Kroužek umělé inteligence",
+  "kroužek umělé inteligence online",
+  "krouzekumeleinteligence",
+  "kroužek AI",
+  "AI kroužek pro děti",
+  "kurz AI pro děti",
+  "ChatGPT pro děti",
+  "Claude",
+  "Cursor",
   "vibecoding",
+  "promptování",
   "kurz pro děti",
   "online kurz",
   "tvorba her",
-  "ChatGPT",
   "programování bez kódu",
-  "děti 10–15 let",
+  `děti ${site.audience.ageMin}–${site.audience.ageMax} let`,
+  "Aikonic",
+  "AIKONIC",
 ] as const;
 
 const ogImageFromEnv = process.env.NEXT_PUBLIC_OG_IMAGE;
+const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 
 function openGraphImages(): NonNullable<Metadata["openGraph"]>["images"] {
   if (!ogImageFromEnv) return undefined;
@@ -67,12 +90,17 @@ export function pageMetadata(input: PageSeoInput): Metadata {
   const canonical = new URL(path || "/", base).toString();
   const ogImages = defaultOgImages;
   const twitterImage = ogImages ? firstOgUrl(ogImages) : undefined;
+  const hasOgImage = Boolean(twitterImage);
 
   return {
     title: input.title,
     description: input.description,
+    keywords: [...seoKeywords],
     alternates: {
       canonical,
+      languages: {
+        "cs-CZ": canonical,
+      },
     },
     robots: input.noIndex
       ? { index: false, follow: true }
@@ -87,7 +115,7 @@ export function pageMetadata(input: PageSeoInput): Metadata {
       ...(ogImages ? { images: ogImages } : {}),
     },
     twitter: {
-      card: "summary_large_image",
+      card: hasOgImage ? "summary_large_image" : "summary",
       title: input.title,
       description: input.description,
       ...(twitterImage ? { images: [twitterImage] } : {}),
@@ -95,19 +123,26 @@ export function pageMetadata(input: PageSeoInput): Metadata {
   };
 }
 
+/** Export popisů pro stránky (jeden zdroj pravdy). */
+export { metaDescriptions };
+
 /** Globální metadata pro root layout (doplní se o metadataBase). */
 export const rootMetadata: Metadata = {
   metadataBase: getSiteUrl(),
   title: {
-    default: `${site.shortName} — ${site.name}`,
+    default: site.name,
     template: `%s — ${site.shortName}`,
   },
-  description:
-    "Online kroužek: vlastní hra, appka nebo web s AI — bez programování. Pro děti 10–15 let. Skupina max. 6 nebo kurz 1:1.",
+  description: metaDescriptions.home,
   applicationName: site.shortName,
   authors: [{ name: site.lektor.name, url: getSiteUrl().toString() }],
   creator: site.lektor.name,
+  publisher: site.shortName,
+  category: "education",
   keywords: [...seoKeywords],
+  ...(googleSiteVerification
+    ? { verification: { google: googleSiteVerification } }
+    : {}),
   formatDetection: {
     email: false,
     address: false,
@@ -117,17 +152,15 @@ export const rootMetadata: Metadata = {
     type: "website",
     locale: "cs_CZ",
     siteName: site.shortName,
-    title: `${site.shortName} — ${site.name}`,
-    description:
-      "Online kroužek: vlastní hra, appka nebo web s AI — bez programování. Pro děti 10–15 let.",
+    title: site.name,
+    description: metaDescriptions.home,
     url: getSiteUrl().toString(),
     ...(defaultOgImages ? { images: defaultOgImages } : {}),
   },
   twitter: {
-    card: "summary_large_image",
-    title: `${site.shortName} — ${site.name}`,
-    description:
-      "Online kroužek: vlastní hra, appka nebo web s AI — bez programování. Pro děti 10–15 let.",
+    card: rootTwitterImage ? "summary_large_image" : "summary",
+    title: site.name,
+    description: metaDescriptions.home,
     ...(rootTwitterImage ? { images: [rootTwitterImage] } : {}),
   },
   robots: {

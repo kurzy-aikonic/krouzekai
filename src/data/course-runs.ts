@@ -7,18 +7,26 @@ export type CourseRun = {
   description: string;
   format: "skupina";
   capacity: number;
-  /** Obsazeno — upravuj ručně nebo napoj admin/sync */
+  /** Obsazeno — ruční override; skutečný počet z přihlášek bere větší z obou. */
   filled: number;
   /** ISO datum začátku (informativně) */
   startsOn: string;
+  /**
+   * false = termín zrušený v nabídce (registrace ho neuvidí; stávající přihlášky zůstávají).
+   * U záznamů bez pole se bere true.
+   */
+  active?: boolean;
 };
 
-/** Pilotní běhy — uprav podle reálných termínů. */
-export const courseRuns: CourseRun[] = [
+/**
+ * Výchozí běhy, pokud soubor `data/course-runs.json` ještě neexistuje.
+ * Po uložení termínů v adminu se používá jen JSON (může být i prázdné pole).
+ */
+export const defaultCourseRuns: CourseRun[] = [
   {
     id: "run-2026-04-ut",
     label: "Úterý 16:00 — start duben 2026",
-    description: "Online, 60 minut, 12 lekcí. Skupina max. 6 dětí.",
+    description: "Online, 60 minut, 10 lekcí. Skupina max. 6 dětí.",
     format: "skupina",
     capacity: 6,
     filled: 0,
@@ -27,7 +35,7 @@ export const courseRuns: CourseRun[] = [
   {
     id: "run-2026-04-ct",
     label: "Čtvrtek 16:00 — start duben 2026",
-    description: "Online, 60 minut, 12 lekcí. Skupina max. 6 dětí.",
+    description: "Online, 60 minut, 10 lekcí. Skupina max. 6 dětí.",
     format: "skupina",
     capacity: 6,
     filled: 0,
@@ -35,10 +43,12 @@ export const courseRuns: CourseRun[] = [
   },
 ];
 
-export function getRunById(id: string): CourseRun | undefined {
-  return courseRuns.find((r) => r.id === id);
-}
-
 export function spotsLeft(run: CourseRun): number {
   return Math.max(0, run.capacity - run.filled);
+}
+
+/** Volná místa s ohledem na ruční `filled` i počet přihlášek. */
+export function spotsLeftEffective(run: CourseRun, registrationCount: number): number {
+  const occupied = Math.max(run.filled, registrationCount);
+  return Math.max(0, run.capacity - occupied);
 }

@@ -1,0 +1,13 @@
+{
+  "runs": [
+    {
+      "id": "run-2026-04-ut",
+      "label": "Úterý 16:00 — start duben 2026",
+      "description": "Online, 60 minut, 10 lekcí. Skupina max. 6 dětí.",
+      "format": "skupina",
+      "capacity": 6,
+      "filled": 0,
+      "startsOn": "2026-04-07"
+    }
+  ]
+}

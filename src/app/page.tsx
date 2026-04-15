@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SchoolStudyDemo } from "@/components/playful/SchoolStudyDemo";
-import { SnakePlayground } from "@/components/playful/SnakePlayground";
+import { HomeInteractiveDemos } from "@/components/playful/HomeInteractiveDemos";
 import { HomeJsonLd } from "@/components/seo/HomeJsonLd";
 import { Section } from "@/components/ui/Section";
-import { pageMetadata } from "@/lib/seo";
+import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = pageMetadata({
   title: site.name,
-  description:
-    "Online kroužek pro děti 10–15 let: vlastní hra, appka nebo web s AI (vibecoding) — bez klasického programování. Skupina max. 6 nebo kurz 1:1.",
+  description: metaDescriptions.home,
   path: "/",
 });
 
@@ -105,14 +103,21 @@ export default function HomePage() {
           <p className="mt-6 max-w-2xl text-lg font-semibold leading-relaxed text-slate-800 sm:text-xl">
             Pro zvídavé tvůrce{" "}
             <span className="rounded-lg bg-[var(--magic-sun)] px-2 py-0.5 font-display text-[var(--magic-ink)]">
-              10–15 let
+              {site.audience.ageMin}–{site.audience.ageMax} let
             </span>
-            . Skupinka max. 6 nebo kurz 1:1. Žádná suchá teorie — jen nápad,
+            . Skupiny skládáme podle věku — tempo i témata ladíme na konkrétní
+            segment, ne na jeden univerzální mix. Skupinka max.{" "}
+            {p.groupMaxStudents} nebo kurz 1:1. Žádná suchá teorie — jen nápad,
             AI a{" "}
             <span className="underline decoration-wavy decoration-[var(--magic-pink)] decoration-2">
               hotová věc
             </span>
             , kterou si můžeš osahat.
+          </p>
+          <p className="mt-4 max-w-2xl text-sm font-semibold leading-relaxed text-violet-900 sm:text-base">
+            Právě otevíráme první běhy — žádné vymyšlené recenze, jen jasná
+            nabídka. Po přihlášce s vámi domluvíme termín a věkový blok
+            individuálně.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -133,10 +138,58 @@ export default function HomePage() {
           <p className="mt-2 text-base leading-relaxed text-slate-800">
             Tenhle web vypadá „dětsky“ schválně — stejně jako chceme, aby děti
             vnímaly kurz: hra, tvoření, radost. Pod kapotou je pořád všechno
-            srozumitelně a bezpečně. A ano — přesně takhle se dá dnes stavět web:
-            barvy, animace, typografie… o tom na kroužku taky mluvíme.
+            srozumitelně a bezpečně. Kroužky vedeme ve věkových blocích; přesné
+            rozmezí k danému termínu vám potvrdíme — jde nám o to, aby byl kurz
+            pro každého srozumitelný a zároveň dostatečně výživný. A ano —
+            přesně takhle se dá dnes stavět web: barvy, animace, typografie… o
+            tom na kroužku taky mluvíme. Kurzy teprve startujeme — až budeme mít
+            první hotové běhy, přidáme na web férové ohlasy a ukázky projektů od
+            dětí.
           </p>
         </div>
+
+        <Section
+          title="Jak to proběhne po přihlášce"
+          intro="Jednoduše, krok za krokem. Bez složitostí."
+          className="mt-16"
+        >
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="card-playful bg-white">
+              <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-700">
+                Krok 1
+              </p>
+              <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-800">
+                Odešlete přihlášku
+              </p>
+              <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">
+                Vyplníte dítě + kontakt na rodiče. Zabere to pár minut.
+              </p>
+            </div>
+            <div className="card-playful bg-white">
+              <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-700">
+                Krok 2
+              </p>
+              <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-800">
+                Ozveme se a doladíme termín
+              </p>
+              <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">
+                Podle věku, zájmu a dostupnosti domluvíme nejvhodnější běh.
+              </p>
+            </div>
+            <div className="card-playful bg-white">
+              <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-700">
+                Krok 3
+              </p>
+              <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-800">
+                Faktura, platba a start kurzu
+              </p>
+              <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">
+                Po domluvě zašleme fakturu; po úhradě potvrdíme místo a pošleme
+                organizační info k první lekci.
+              </p>
+            </div>
+          </div>
+        </Section>
 
         <div className="mt-16 grid gap-12 lg:grid-cols-3 lg:gap-10">
           <Section
@@ -184,8 +237,11 @@ export default function HomePage() {
                 💰
               </div>
               <h2 className="font-display text-xl font-extrabold text-[var(--magic-ink)]">
-                Ceny (pilot)
+                Ceny
               </h2>
+              <p className="mt-2 text-xs font-semibold text-violet-800">
+                {p.lessons} lekcí × {p.lessonMinutes} min · vždy online
+              </p>
               <p className="mt-3 text-sm font-semibold text-slate-800">
                 <span className="rounded-md bg-white/80 px-1">Skupina</span>{" "}
                 {p.skupinaPerLesson} Kč / lekce →{" "}
@@ -202,7 +258,12 @@ export default function HomePage() {
                 </span>{" "}
                 kurz
               </p>
-              <p className="mt-3 text-xs font-medium text-slate-600">{p.vatNote}</p>
+              <p className="mt-3 text-xs font-medium leading-relaxed text-slate-600">
+                Skupina: termín domluvíme po registraci. Kurz spustíme od{" "}
+                {p.groupMinStudentsToOpen} přihlášených, ve skupině nejvýše{" "}
+                {p.groupMaxStudents} dětí.
+              </p>
+              <p className="mt-2 text-xs font-medium text-slate-600">{p.vatNote}</p>
               <Link href="/registrace" className="btn-magic mt-5 w-full text-center">
                 Jdu do toho!
               </Link>
@@ -229,7 +290,7 @@ export default function HomePage() {
 
         <Section
           title="Co si odneseš domů"
-          intro="Nejen diplom do šuplíku — ale něco, co jde ukázat."
+          intro="Cíl kurzu — něco, co půjde ukázat. Konkrétní projekt doladíme podle věku a tempa skupiny."
           className="mt-20"
         >
           <ul className="grid gap-4 sm:grid-cols-2">
@@ -252,15 +313,17 @@ export default function HomePage() {
         <Section title="Pro koho to je" className="mt-20">
           <div className="rounded-3xl border-[3px] border-[var(--magic-ink)] bg-gradient-to-r from-fuchsia-50 via-white to-amber-50 p-6 sm:p-8">
             <p className="text-lg font-medium leading-relaxed text-slate-800">
-              Pro děti, které milují technologie a chtějí{" "}
-              <strong>tvořit</strong>, ne jen scrollovat. Není to klasický kurz
-              programování — tady stavíš věci s AI. Rodiče u toho dostanou klid:
-              všechno vysvětlíme lidsky a bezpečně.
+              Pro děti {site.audience.ageMin} až {site.audience.ageMax} let,
+              které milují technologie a chtějí <strong>tvořit</strong>, ne jen
+              scrollovat. Skupiny dělíme podle věku, aby úroveň seděla všem v
+              kurzu — žádný univerzální „one size fits all“. Není to klasický
+              kurz programování — tady stavíš věci s AI. Rodiče u toho dostanou
+              klid: všechno vysvětlíme lidsky a bezpečně.
             </p>
           </div>
         </Section>
 
-        <Section title={`Kdo to vede — ${site.lektor.name}`} className="mt-20">
+        <Section title="Kdo to vede" className="mt-20">
           <div className="card-playful max-w-2xl bg-gradient-to-br from-violet-50 to-indigo-100">
             <p className="font-display text-sm font-extrabold uppercase tracking-wide text-violet-700">
               {site.lektor.role}
@@ -269,8 +332,8 @@ export default function HomePage() {
               {site.lektor.bioShort}
             </p>
             <p className="mt-4 font-medium leading-relaxed text-slate-800">
-              U dětí ho to baví nejvíc — nemají zábrany a jdou do toho po hlavě.
-              Přesně jak má být. 🎯
+              S dětmi pracujeme nejradši — nemají zábrany a jdou do toho po
+              hlavě. Přesně jak má být. 🎯
             </p>
           </div>
         </Section>
@@ -302,20 +365,18 @@ export default function HomePage() {
           </div>
         </section>
 
-        <SnakePlayground />
-
-        <SchoolStudyDemo />
+        <HomeInteractiveDemos />
 
         {/* CTA */}
         <div className="relative mt-20 overflow-hidden rounded-[2rem] text-center">
           <div className="rainbow-strip absolute inset-0 opacity-90" aria-hidden />
           <div className="relative m-[3px] rounded-[1.85rem] bg-[var(--magic-ink)] px-6 py-12 sm:px-10 sm:py-14">
             <h2 className="font-display text-2xl font-extrabold text-white sm:text-4xl">
-              Přidej se k pilotnímu běhu
+              Přidej se k prvním běhům
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-base font-medium text-violet-200">
-              Vyber termín, vyplň formulář — a my se ozveme s dalšími kroky.
-              Jednoduchý quest. 🗺️
+              Vyplň přihlášku — ozveme se a domluvíme termín i formát. Jednoduchý
+              quest. 🗺️
             </p>
             <Link
               href="/registrace"

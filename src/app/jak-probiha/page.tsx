@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { Section } from "@/components/ui/Section";
-import { pageMetadata } from "@/lib/seo";
+import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = pageMetadata({
   title: "Jak probíhá lekce",
-  description:
-    "Formát online lekce AI kroužku: délka 60 minut, co mít připravené, role rodiče. Kurz pro děti 10–15 let.",
+  description: metaDescriptions.jakProbiha,
   path: "/jak-probiha",
 });
 
 const blocks = [
   {
     title: "Délka a režim",
-    body: `Každá lekce trvá ${site.pricing.lessonMinutes} minut, jednou týdně. Kurz má ${site.pricing.lessons} lekcí (pilotní běh zhruba tři měsíce). Probíhá online — odkaz na hovor dostanete před začátkem.`,
+    body: `Každá lekce trvá ${site.pricing.lessonMinutes} minut, jednou týdně, vždy online. Kurz má ${site.pricing.lessons} lekcí (${site.pricing.lessons} týdnů). Odkaz na hovor dostanete před začátkem.`,
   },
   {
     title: "Co dítě potřebuje u sebe",
@@ -31,7 +31,14 @@ const blocks = [
 
 export default function JakProbihaPage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+    <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Úvod", path: "/" },
+          { name: "Jak probíhá lekce", path: "/jak-probiha" },
+        ]}
+      />
+      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       <h1 className="page-h1">Jak probíhá lekce ⚡</h1>
       <p className="mt-4 text-slate-600 leading-relaxed">
         Stručně a srozumitelně pro rodiče i děti — aby bylo jasné, co čekat před
@@ -45,5 +52,6 @@ export default function JakProbihaPage() {
         ))}
       </div>
     </div>
+    </>
   );
 }
