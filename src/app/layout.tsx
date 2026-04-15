@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Baloo_2, Nunito } from "next/font/google";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { CookieBannerHost } from "@/components/cookies/CookieBannerHost";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -47,6 +48,7 @@ export default function RootLayout({
       className={`${display.variable} ${body.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col overflow-x-clip text-[var(--magic-ink)]">
+        <GoogleAnalytics />
         <GlobalJsonLd />
         <MagicBackdrop />
         <LazyClickSparkles />

@@ -1,10 +1,11 @@
 import { appendFile, mkdir } from "fs/promises";
 import path from "path";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 export type RegistrationPayload = Record<string, unknown>;
 
 /**
- * Uloží přihlášku: webhook (doporučeno v produkci) nebo append do JSONL (dev / VPS).
+ * Uloží přihlášku: webhook, nebo Supabase (Vercel), nebo append do JSONL (lokálně / VPS).
  */
 const WEBHOOK_TIMEOUT_MS = 15_000;
 
@@ -28,6 +29,26 @@ export async function persistRegistration(
     });
     if (!res.ok) {
       throw new Error(`Webhook odpověděl ${res.status}`);
+    }
+    return;
+  }
+
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    const receivedAt = new Date().toISOString();
+    const withMeta: RegistrationPayload = { ...payload, receivedAt };
+    const id =
+      typeof withMeta.id === "string" ? String(withMeta.id).trim() : "";
+    if (!id) {
+      throw new Error("Chybí id přihlášky pro uložení do Supabase.");
+    }
+    const { error } = await supabase.from("web_registrations").insert({
+      id,
+      payload: withMeta,
+      updated_at: receivedAt,
+    });
+    if (error) {
+      throw new Error(error.message);
     }
     return;
   }

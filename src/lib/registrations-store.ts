@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "fs/promises";
 import path from "path";
 import { getCourseRunById } from "@/lib/course-runs-store";
+import { getSupabaseAdmin } from "@/lib/supabase-admin";
 import type { PaymentProduct } from "@/lib/payment";
 import { normalizeParentEmail } from "@/lib/parent-auth";
 import {
@@ -106,11 +107,7 @@ async function readAllLines(): Promise<string[]> {
   }
 }
 
-/**
- * Sloučí JSONL podle `id` — poslední řádek pro dané id vyhrává (historické duplicity).
- */
-export async function listRegistrationsMerged(): Promise<RegistrationRecord[]> {
-  const lines = await readAllLines();
+function recordsFromJsonlLines(lines: string[]): RegistrationRecord[] {
   const byId = new Map<string, RegistrationRecord>();
   for (const line of lines) {
     try {
@@ -121,6 +118,72 @@ export async function listRegistrationsMerged(): Promise<RegistrationRecord[]> {
     } catch {
       continue;
     }
+  }
+  return Array.from(byId.values());
+}
+
+async function loadRegistrationsFromSupabase(): Promise<RegistrationRecord[]> {
+  const supabase = getSupabaseAdmin();
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("web_registrations")
+    .select("payload");
+  if (error) {
+    console.error("[registrations] Supabase read:", error.message);
+    return [];
+  }
+  if (!data?.length) return [];
+  const out: RegistrationRecord[] = [];
+  for (const row of data) {
+    const p = row.payload;
+    if (!p || typeof p !== "object") continue;
+    const o = p as Record<string, unknown>;
+    if (!isRecord(o)) continue;
+    try {
+      out.push(normalizeRecord(o));
+    } catch {
+      continue;
+    }
+  }
+  return out;
+}
+
+function registrationRecordToPayload(record: RegistrationRecord): Record<string, unknown> {
+  return JSON.parse(JSON.stringify(record)) as Record<string, unknown>;
+}
+
+async function upsertRegistrationInSupabase(record: RegistrationRecord): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  if (!supabase) {
+    throw new Error("Supabase není nakonfigurováno.");
+  }
+  const payload = registrationRecordToPayload(record);
+  const now = new Date().toISOString();
+  const { error } = await supabase.from("web_registrations").upsert(
+    {
+      id: record.id,
+      payload,
+      updated_at: now,
+    },
+    { onConflict: "id" },
+  );
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+/**
+ * Sloučí JSONL + Supabase podle `id` — záznam ze Supabase přepíše stejné id ze souboru.
+ */
+export async function listRegistrationsMerged(): Promise<RegistrationRecord[]> {
+  const fromFile = recordsFromJsonlLines(await readAllLines());
+  const fromDb = await loadRegistrationsFromSupabase();
+  const byId = new Map<string, RegistrationRecord>();
+  for (const r of fromFile) {
+    byId.set(r.id, r);
+  }
+  for (const r of fromDb) {
+    byId.set(r.id, r);
   }
   return Array.from(byId.values()).sort((a, b) =>
     String(b.receivedAt ?? "").localeCompare(String(a.receivedAt ?? "")),
@@ -140,7 +203,8 @@ export async function listRegistrationsByParentEmail(
 
 /**
  * Najde přihlášku podle technického UUID nebo podle krátkého `registrationCode`.
- * Na Vercelu bez souboru vrací null.
+ * Zdroje: `data/registrations.jsonl` + Supabase `web_registrations` (sloučeno).
+ * Při pouhém webhooku (`REGISTRATIONS_WEBHOOK_URL`) tato funkce data z webhooku nevidí.
  */
 export async function findRegistrationById(
   lookup: string,
@@ -216,6 +280,12 @@ export async function updateRegistration(
   }
 
   all[idx] = next;
+
+  const supabase = getSupabaseAdmin();
+  if (supabase) {
+    await upsertRegistrationInSupabase(next);
+    return next;
+  }
 
   const body =
     all
@@ -297,15 +367,25 @@ export async function bulkUpdateRegistrationStatus(
   });
 
   if (updated > 0) {
-    const body =
-      nextList
-        .sort((a, b) =>
-          String(b.receivedAt ?? "").localeCompare(String(a.receivedAt ?? "")),
-        )
-        .map((r) => JSON.stringify(r))
-        .join("\n") + (nextList.length ? "\n" : "");
+    const supabase = getSupabaseAdmin();
+    if (supabase) {
+      for (const r of nextList) {
+        if (!targetIds.has(r.id)) continue;
+        const orig = all.find((x) => x.id === r.id);
+        if (!orig || orig.status === newStatus) continue;
+        await upsertRegistrationInSupabase(r);
+      }
+    } else {
+      const body =
+        nextList
+          .sort((a, b) =>
+            String(b.receivedAt ?? "").localeCompare(String(a.receivedAt ?? "")),
+          )
+          .map((r) => JSON.stringify(r))
+          .join("\n") + (nextList.length ? "\n" : "");
 
-    await writeFile(registrationsPath(), body, "utf-8");
+      await writeFile(registrationsPath(), body, "utf-8");
+    }
   }
 
   return { updated, alreadyHadStatus, notFound };

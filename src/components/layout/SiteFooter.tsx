@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CookieSettingsButton } from "@/components/cookies/CookieSettingsButton";
 import { BrandSubtitle } from "@/components/layout/BrandSubtitle";
 import { SocialIcons } from "@/components/layout/SocialIcons";
 import { site } from "@/lib/site-config";
@@ -112,6 +113,10 @@ export function SiteFooter() {
                 {item.label}
               </Link>
             ))}
+            <p className="flex flex-wrap items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)]">
+              <span aria-hidden>⚙️</span>
+              <CookieSettingsButton />
+            </p>
           </nav>
         </div>
       </div>
