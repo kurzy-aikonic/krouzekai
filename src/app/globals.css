@@ -28,6 +28,7 @@
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
+  scrollbar-gutter: stable;
   -webkit-text-size-adjust: 100%;
 }
 

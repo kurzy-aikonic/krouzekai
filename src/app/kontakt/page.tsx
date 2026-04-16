@@ -5,7 +5,7 @@ import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Kontakt",
+  title: "Kontakt a informace",
   description: metaDescriptions.kontakt,
   path: "/kontakt",
 });

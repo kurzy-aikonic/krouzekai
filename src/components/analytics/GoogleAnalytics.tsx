@@ -32,7 +32,10 @@ export function GoogleAnalytics() {
   useEffect(() => {
     const sync = () => {
       if (!GA_ID) return;
-      setEnabled(analyticsConsentGranted());
+      setEnabled((prev) => {
+        const next = analyticsConsentGranted();
+        return prev === next ? prev : next;
+      });
     };
     queueMicrotask(sync);
     window.addEventListener("krouzek-cookie-consent", sync);
@@ -57,9 +60,9 @@ export function GoogleAnalytics() {
       onLoad={() => {
         const gtag = getGtag();
         if (typeof gtag !== "function") return;
+        // `config` with `send_page_view: true` logs the first pageview for initial load.
         gtag("config", GA_ID, { send_page_view: true });
         lastReportedPath.current = pathname;
-        sendPageView();
       }}
     />
   );

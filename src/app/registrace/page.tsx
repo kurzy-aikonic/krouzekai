@@ -8,7 +8,7 @@ import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Registrace na kurz",
+  title: "Registrace na AI kroužek",
   description: metaDescriptions.registrace,
   path: "/registrace",
 });

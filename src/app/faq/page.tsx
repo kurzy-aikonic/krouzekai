@@ -5,7 +5,7 @@ import { faqItems } from "@/data/faq";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Časté otázky (FAQ)",
+  title: "Časté otázky o kroužku (FAQ)",
   description: metaDescriptions.faq,
   path: "/faq",
 });

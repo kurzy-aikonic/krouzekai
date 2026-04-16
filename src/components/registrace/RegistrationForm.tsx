@@ -1,8 +1,9 @@
 "use client";
 
-import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import type { TurnstileInstance } from "@marsidev/react-turnstile";
 import type { CourseRun } from "@/data/course-runs";
 import { spotsLeftEffective } from "@/data/course-runs";
 import { site } from "@/lib/site-config";
@@ -12,6 +13,11 @@ const turnstileSiteKey =
     ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY.trim()
     : "";
 const turnstileEnabled = turnstileSiteKey.length > 0;
+const TurnstileClient = dynamic(
+  () =>
+    import("@marsidev/react-turnstile").then((m) => m.Turnstile),
+  { ssr: false },
+);
 
 type Props = {
   groupRuns: CourseRun[];
@@ -455,7 +461,7 @@ export function RegistrationForm({
           <p className="mb-3 text-xs font-medium leading-relaxed text-slate-600">
             Jednorázové ověření chrání formulář před spamem (Cloudflare Turnstile).
           </p>
-          <Turnstile
+          <TurnstileClient
             ref={turnstileRef}
             siteKey={turnstileSiteKey}
             onSuccess={(t) => setTurnstileToken(t)}

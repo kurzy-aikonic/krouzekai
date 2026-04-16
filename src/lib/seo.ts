@@ -44,13 +44,17 @@ export const seoKeywords = [
 ] as const;
 
 const ogImageFromEnv = process.env.NEXT_PUBLIC_OG_IMAGE;
+const ogImageFallback = "/logo_krouzek_umele_iteligence_edited.png";
 const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 
 function openGraphImages(): NonNullable<Metadata["openGraph"]>["images"] {
-  if (!ogImageFromEnv) return undefined;
+  const candidate = ogImageFromEnv?.trim() || ogImageFallback;
   try {
-    const url = new URL(ogImageFromEnv, getSiteUrl());
-    return [{ url: url.toString(), width: 1200, height: 630, alt: site.name }];
+    const url = new URL(candidate, getSiteUrl());
+    if (ogImageFromEnv?.trim()) {
+      return [{ url: url.toString(), width: 1200, height: 630, alt: site.name }];
+    }
+    return [{ url: url.toString(), alt: site.name }];
   } catch {
     return undefined;
   }
@@ -100,6 +104,7 @@ export function pageMetadata(input: PageSeoInput): Metadata {
       canonical,
       languages: {
         "cs-CZ": canonical,
+        "x-default": canonical,
       },
     },
     robots: input.noIndex

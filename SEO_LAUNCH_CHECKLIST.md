@@ -67,7 +67,7 @@ Otevři v prohlížeči (nahraď doménu, pokud je jiná):
 1. **OG obrázek**  
    - Nahraj do `web/public/` např. `og.png` (**1200×630** px).  
    - V produkci nastav `NEXT_PUBLIC_OG_IMAGE=/og.png` (nebo plnou absolutní URL, pokud hostuješ obrázek jinde).  
-   - Bez této proměnné Twitter/LinkedIn použijí „summary“ bez velkého náhledu.
+   - Bez této proměnné se použije fallback obrázek z kódu; pro nejlepší náhled ve feedech stejně doporučujeme vlastní **banner 1200×630** a `NEXT_PUBLIC_OG_IMAGE=/og.png`.
 2. **Facebook Sharing Debugger**  
    - [developers.facebook.com/tools/debug](https://developers.facebook.com/tools/debug/)  
    - Zadej URL úvodní stránky, případně „Scrape Again“ po změně OG tagů.
@@ -93,6 +93,55 @@ Otevři v prohlížeči (nahraď doménu, pokud je jiná):
 
 ---
 
+## Fáze 7 — Provoz: měření, indexace a vylepšování (doporučený režim)
+
+Cíl je **stabilní signál pro Google** (technika + obsah) a **uzavřená smyčka**: data → úprava titulku/popisu nebo obsahu → ověření → sledování dopadu.
+
+### 7.1 Týden 0–1 (hned po ověření GSC)
+
+1. **Majetek v GSC**  
+   - Preferuj **doménovou** property (`krouzekumeleinteligence.cz`), pokud to DNS dovolí — vidíš http/https i případné subdomény v jednom přehledu.  
+   - Ujisti se, že kanonická adresa v kódu (`NEXT_PUBLIC_SITE_URL`) odpovídá tomu, co uživatelé i robot vidí v prohlížeči (bez zbytečného přesměrovacího řetězce www / non-www).
+2. **Sitemap**  
+   - Jednou odešli `sitemap.xml`. Chyby ve „Sitemaps“ řeš hned (404 sitemap, špatná doména).  
+3. **Kontrola adresy URL** (priorita)  
+   - `/`, `/registrace`, `/faq`, `/aktualni-behy`, `/jak-probiha`.  
+   - **Požádat o indexování** použij střídmě (denní limit) — nejdřív úvod a registraci.  
+4. **Rich Results**  
+   - Znovu projdi `/` a `/faq` po každé větší úpravě JSON-LD nebo šablon stránky.
+
+### 7.2 Týden 2–4 (první data)
+
+1. **Výkon → Stránky**  
+   - Seřaď podle **imprese** (ne jen kliky). Najdi stránky s vysokými impresemi a **nízkým CTR** — typicky pomůže zpřesnění `title` / `description` (už máte centrálně v `seo-copy.ts` a `pageMetadata`).  
+2. **Výkon → Dotazy**  
+   - Rozliš **značkové** dotazy (název kroužku, doména) vs **ne-značkové** (např. „online kroužek ai pro děti“). Na ne-značkové cílí obsah na úvodu / FAQ / „jak probíhá“.  
+3. **Pokrytí**  
+   - Sleduj „Vyloučeno z indexu“ vs „Chyba“ vs „V indexu“. U chyb řeš příčinu (404, noindex omylem, server 5xx).  
+   - Stav „Objeveno – zatím není v indexu“ je častý u nových webů; pomáhá kvalitní **vnitřní prolinkování** z `aikonic.cz` a z úvodní stránky na registraci / termíny / FAQ.
+
+### 7.3 Průběžně (měsíčně nebo po větších změnách)
+
+1. **PageSpeed / Core Web Vitals** (vzorek URL: úvod, registrace, FAQ)  
+   - [PageSpeed Insights](https://pagespeed.web.dev/) — řeš hlavně **LCP** a **CLS** na mobilu.  
+2. **Sdílení a náhledy**  
+   - Jakmile nasadíš `og.png` (1200×630) a `NEXT_PUBLIC_OG_IMAGE`, po každé změně OG znovu projdi Facebook Debugger a LinkedIn Post Inspector (cache náhledů).  
+3. **Duplicity a kanonikál**  
+   - V GSC ověř, že důležité URL nemají duplicitní kanonikál mimo vlastní doménu.  
+4. **Analytika vs GDPR**  
+   - Metriky z GA ber jen jako orientační, pokud část návštěvníků nesouhlasí s cookies — doplň interpretaci o **GSC Výkon** (agregát bez cookies na straně uživatele).
+
+### 7.4 Bing (volitelné, nízká nákladová přidaná hodnota)
+
+- [Bing Webmaster Tools](https://www.bing.com/webmasters) — import z GSC nebo ruční ověření, odeslání stejné sitemap.
+
+### 7.5 Off-page (rozumně, bez spamu)
+
+- Trvalý **kontextový odkaz** z `aikonic.cz` (stránka kurzů / blog / patička), ideálně s přirozeným kotvícím textem.  
+- Partneři / školy / rodičovské komunity jen tam, kde dává odkaz smysl — kvalita > počet.
+
+---
+
 ## Rychlý odkaz — nástroje
 
 - [Search Console](https://search.google.com/search-console)  
@@ -101,7 +150,8 @@ Otevři v prohlížeči (nahraď doménu, pokud je jiná):
 - [PageSpeed Insights](https://pagespeed.web.dev/) (LCP, CLS, mobil)  
 - [Facebook Debugger](https://developers.facebook.com/tools/debug/)  
 - [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/)
+- [Bing Webmaster Tools](https://www.bing.com/webmasters)
 
 ---
 
-*Poslední aktualizace checklistu: podle stavu projektu v `web/` (Next.js App Router, JSON-LD, sitemap.ts, robots.ts).*
+*Poslední aktualizace checklistu: Next.js App Router, JSON-LD, sitemap.ts, robots.ts; doplněna fáze 7 (provoz a měření).*

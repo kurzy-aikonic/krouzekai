@@ -9,7 +9,7 @@ import { listRegistrationsMerged } from "@/lib/registrations-store";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Aktuální běhy",
+  title: "Aktuální termíny kroužku",
   description: metaDescriptions.aktualniBehy,
   path: "/aktualni-behy",
 });
