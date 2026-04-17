@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { z } from "zod";
+import { apiJson } from "@/lib/api-response";
 import { sendParentPortalMagicLink } from "@/lib/email";
 import { rejectOversizedJsonBody } from "@/lib/json-body-limit";
 import {
@@ -19,8 +19,11 @@ const bodySchema = z.object({
 
 export async function POST(request: Request) {
   if (!parentAuthSecretConfigured()) {
-    return NextResponse.json(
-      { error: "Přihlášení rodičů není na serveru aktivní (PARENT_AUTH_SECRET)." },
+    return apiJson(
+      {
+        error:
+          "Přihlášení rodičů není na serveru aktivní (PARENT_AUTH_SECRET).",
+      },
       { status: 503 },
     );
   }
@@ -35,12 +38,12 @@ export async function POST(request: Request) {
   try {
     json = await request.json();
   } catch {
-    return NextResponse.json({ error: "Neplatný JSON." }, { status: 400 });
+    return apiJson({ error: "Neplatný JSON." }, { status: 400 });
   }
 
   const parsed = bodySchema.safeParse(json);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Zadejte platný e-mail." }, { status: 422 });
+    return apiJson({ error: "Zadejte platný e-mail." }, { status: 422 });
   }
 
   const email = normalizeParentEmail(parsed.data.email);
@@ -53,14 +56,14 @@ export async function POST(request: Request) {
     const sent = await sendParentPortalMagicLink(email, magicUrl);
     if (!sent.ok) {
       console.error("[rodic/magic-request]", sent);
-      return NextResponse.json(
+      return apiJson(
         { error: "Nepodařilo se odeslat e-mail. Zkuste to později." },
         { status: 500 },
       );
     }
   }
 
-  return NextResponse.json({
+  return apiJson({
     ok: true,
     message:
       "Pokud u nás máte přihlášku na tento e-mail, poslali jsme vám odkaz. Zkontrolujte schránku (i spam).",

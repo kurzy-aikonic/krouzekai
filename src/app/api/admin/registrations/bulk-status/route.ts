@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
 import { z } from "zod";
+import { apiJson } from "@/lib/api-response";
 import { getAdminSecret, verifyAdminRequest } from "@/lib/admin-auth";
 import { bulkUpdateRegistrationStatus } from "@/lib/registrations-store";
+import { rateLimitResponse } from "@/lib/rate-limit";
 import { registrationStatuses } from "@/types/registration";
 
 export const dynamic = "force-dynamic";
@@ -13,26 +14,26 @@ const bodySchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const limited = await rateLimitResponse(request, "adminApi");
+  if (limited) return limited;
+
   if (!getAdminSecret()) {
-    return NextResponse.json(
-      { error: "ADMIN_SECRET není nastaven." },
-      { status: 503 },
-    );
+    return apiJson({ error: "ADMIN_SECRET není nastaven." }, { status: 503 });
   }
   if (!verifyAdminRequest(request)) {
-    return NextResponse.json({ error: "Neautorizováno." }, { status: 401 });
+    return apiJson({ error: "Neautorizováno." }, { status: 401 });
   }
 
   let json: unknown;
   try {
     json = await request.json();
   } catch {
-    return NextResponse.json({ error: "Neplatný JSON." }, { status: 400 });
+    return apiJson({ error: "Neplatný JSON." }, { status: 400 });
   }
 
   const parsed = bodySchema.safeParse(json);
   if (!parsed.success) {
-    return NextResponse.json(
+    return apiJson(
       { error: "Neplatná data.", details: parsed.error.flatten() },
       { status: 422 },
     );
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
       parsed.data.lookups,
       parsed.data.status,
     );
-    return NextResponse.json({
+    return apiJson({
       ok: true,
       ...result,
       /** Hromadná změna neposílá e-maily rodičům (jinak než úprava jednoho záznamu). */
@@ -52,7 +53,7 @@ export async function POST(request: Request) {
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Chyba úložiště.";
     if (msg.includes("REGISTRATIONS_WEBHOOK_URL")) {
-      return NextResponse.json(
+      return apiJson(
         {
           error:
             "Hromadná úprava není k dispozici: přihlášky jdou jen na webhook (bez lokálního JSONL).",
@@ -61,6 +62,6 @@ export async function POST(request: Request) {
       );
     }
     console.error(e);
-    return NextResponse.json({ error: "Nepodařilo se uložit." }, { status: 500 });
+    return apiJson({ error: "Nepodařilo se uložit." }, { status: 500 });
   }
 }

@@ -28,7 +28,7 @@ export default async function PlatbaPage({ searchParams }: PageProps) {
 
   if (!rawId) {
     return (
-      <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-2xl px-6 py-12 sm:px-6 sm:py-16">
         <h1 className="page-h1">Platba 💳</h1>
         <p className="mt-4 font-medium leading-relaxed text-slate-700">
           Orientační přehled platby se zobrazí z odkazu v potvrzovacím e-mailu po
@@ -56,7 +56,7 @@ export default async function PlatbaPage({ searchParams }: PageProps) {
     !isShortRegistrationCodeLookup(rawId)
   ) {
     return (
-      <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-2xl px-6 py-12 sm:px-6 sm:py-16">
         <h1 className="page-h1">Neplatný odkaz 😕</h1>
         <p className="mt-4 font-medium text-slate-700">
           Odkaz na platbu je poškozený. Kontaktujte nás e-mailem.
@@ -78,7 +78,7 @@ export default async function PlatbaPage({ searchParams }: PageProps) {
         : "Kurz";
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
+    <div className="mx-auto max-w-2xl px-6 py-12 sm:px-6 sm:py-16">
       <h1 className="page-h1">Platba kurzovného 💰</h1>
       <p className="mt-3 text-sm font-medium leading-relaxed text-slate-700">
         Faktury zatím řešíme <strong>individuálně</strong> (bez automatické

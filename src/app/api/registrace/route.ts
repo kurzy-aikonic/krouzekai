@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
-import { NextResponse } from "next/server";
 import { z } from "zod";
+import { apiJson } from "@/lib/api-response";
 import { getClientIp } from "@/lib/client-ip";
 import { spotsLeftEffective } from "@/data/course-runs";
 import { countedOccupancyForRun } from "@/lib/course-run-registrations";
@@ -53,12 +53,12 @@ export async function POST(request: Request) {
   try {
     json = await request.json();
   } catch {
-    return NextResponse.json({ error: "Neplatný JSON." }, { status: 400 });
+    return apiJson({ error: "Neplatný JSON." }, { status: 400 });
   }
 
   const parsed = bodySchema.safeParse(json);
   if (!parsed.success) {
-    return NextResponse.json(
+    return apiJson(
       {
         error: "Zkontrolujte vyplněné údaje.",
         ...(process.env.NODE_ENV === "development"
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
     const ip = getClientIp(request);
     const ok = await verifyTurnstileToken(turnstileToken, ip);
     if (!ok) {
-      return NextResponse.json(
+      return apiJson(
         {
           error:
             "Ověření proti robotům se nepodařilo. Obnovte stránku a zkuste to znovu.",
@@ -91,23 +91,20 @@ export async function POST(request: Request) {
   if (data.runId) {
     const run = await getCourseRunById(data.runId);
     if (!run || run.active === false) {
-      return NextResponse.json(
+      return apiJson(
         { error: "Tento termín není v nabídce nebo byl zrušen." },
         { status: 422 },
       );
     }
     if (run.format !== data.format) {
-      return NextResponse.json(
+      return apiJson(
         { error: "Vybraný termín neodpovídá zvolenému formátu kurzu." },
         { status: 422 },
       );
     }
     const occupied = countedOccupancyForRun(data.runId, data.format, merged);
     if (spotsLeftEffective(run, occupied) <= 0) {
-      return NextResponse.json(
-        { error: "Tento termín je již plný." },
-        { status: 409 },
-      );
+      return apiJson({ error: "Tento termín je již plný." }, { status: 409 });
     }
   }
 
@@ -137,7 +134,7 @@ export async function POST(request: Request) {
     await persistRegistration(record);
   } catch (e) {
     console.error(e);
-    return NextResponse.json(
+    return apiJson(
       { error: "Nepodařilo se uložit přihlášku. Zkuste to znovu." },
       { status: 500 },
     );
@@ -149,7 +146,7 @@ export async function POST(request: Request) {
 
   const paymentPath = `/platba?registrace=${encodeURIComponent(registrationCode)}`;
 
-  return NextResponse.json(
+  return apiJson(
     {
       ok: true,
       registrationId: id,

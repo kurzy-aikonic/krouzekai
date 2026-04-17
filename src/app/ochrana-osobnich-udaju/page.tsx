@@ -19,7 +19,7 @@ export default function OchranaOsobnichUdajuPage() {
           { name: "Ochrana osobních údajů", path: "/ochrana-osobnich-udaju" },
         ]}
       />
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16">
         <Prose>
           <h1>Ochrana osobních údajů</h1>
           <p>
@@ -58,7 +58,7 @@ export default function OchranaOsobnichUdajuPage() {
             </li>
             <li>
               <strong>Údaje o objednávce:</strong> zvolený formát kurzu
-              (skupina / individuální výuka), vybraný běh / termín, cena,
+              (skupina / individuální výuka), vybraný termín, cena,
               souhlas s obchodními podmínkami a s tímto dokumentem, stav přihlášky,
               interní identifikátor přihlášky.
             </li>
@@ -78,6 +78,12 @@ export default function OchranaOsobnichUdajuPage() {
               <strong>Interní poznámky správce:</strong> textové poznámky k
               přihlášce vedené v administraci (nezveřejňujeme je účastníkům ani
               návštěvníkům webu).
+            </li>
+            <li>
+              <strong>Záznamy online lekcí (audio/video):</strong> pokud je
+              nahrávání aktivní, pořizujeme záznam v rozsahu nezbytném pro
+              bezpečnost účastníků, kontrolu kvality výuky a případné řešení
+              reklamací nebo sporů.
             </li>
           </ul>
           <p>
@@ -114,6 +120,12 @@ export default function OchranaOsobnichUdajuPage() {
               <strong>čl. 6 odst. 1 písm. a) GDPR</strong> (souhlas), který můžete
               kdykoli odvolat bez vlivu na zákonnost zpracování před odvoláním.
             </li>
+            <li>
+              <strong>Nahrávání online lekcí</strong> (bezpečnost, kvalita výuky,
+              řešení reklamací a ochrana právních nároků): právní základ{" "}
+              <strong>čl. 6 odst. 1 písm. a) GDPR</strong> (souhlas zákonného
+              zástupce), který lze kdykoli odvolat pro budoucnost.
+            </li>
           </ul>
           <p>
             Poskytnutí údajů nutných pro registraci je smluvním a zákonným
@@ -135,6 +147,12 @@ export default function OchranaOsobnichUdajuPage() {
               Technické a bezpečnostní logy uchováváme po nezbytně nutnou dobu,
               zpravidla <strong>řádově týdny až měsíce</strong>, podle nastavení
               infrastruktury a bezpečnostních politik.
+            </li>
+            <li>
+              Záznamy online lekcí uchováváme zpravidla nejdéle{" "}
+              <strong>6 měsíců od konání lekce</strong>; delší uchování je možné
+              pouze po dobu nezbytnou pro řešení konkrétní reklamace, stížnosti
+              nebo právního sporu.
             </li>
           </ul>
           <h2>5. Příjemci a zpracovatelé</h2>
@@ -171,6 +189,11 @@ export default function OchranaOsobnichUdajuPage() {
           <p>
             Seznam konkrétních dodavatelů vám na požádání sdělíme u jednotlivých
             zpracování, pokud to bude potřebné k uplatnění vašich práv.
+          </p>
+          <p>
+            Záznamy lekcí neposkytujeme třetím osobám pro marketingové účely a
+            neprodáváme je. Přístup k nim mají jen oprávněné osoby v rámci
+            interního provozu správce a smluvní zpracovatelé v nezbytném rozsahu.
           </p>
           <h2>6. Předávání do třetích zemí (mimo EU/EHP)</h2>
           <p>
@@ -214,6 +237,11 @@ export default function OchranaOsobnichUdajuPage() {
             opatřeních vám odpovíme bez zbytečného odkladu, obvykle do jednoho
             měsíce; u složitých žádostí může být lhůta prodloužena v souladu s
             GDPR.
+          </p>
+          <p>
+            Pokud je zpracování založeno na souhlasu (např. nahrávání lekcí),
+            můžete souhlas kdykoli odvolat. Odvolání nemá zpětný účinek na již
+            zákonně provedené zpracování před okamžikem odvolání.
           </p>
           <h2>9. Cookies a podobné technologie</h2>
           <p>

@@ -3,12 +3,13 @@ import Link from "next/link";
 import { HomeInteractiveDemos } from "@/components/playful/HomeInteractiveDemos";
 import { HomeJsonLd } from "@/components/seo/HomeJsonLd";
 import { Section } from "@/components/ui/Section";
-import { metaDescriptions, pageMetadata } from "@/lib/seo";
+import { pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Online AI kroužek pro děti",
-  description: metaDescriptions.home,
+  title: "Kroužek umělé inteligence pro děti | Postav si hru s AI",
+  description:
+    "Moderní online kroužek pro děti 10–17 let. Učíme tvořit aplikace, weby a hry pomocí AI bez nutnosti programování. Přihlašte se nezávazně!",
   path: "/",
 });
 
@@ -75,7 +76,7 @@ export default function HomePage() {
   return (
     <>
       <HomeJsonLd />
-      <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-14">
+      <div className="relative mx-auto max-w-6xl px-6 py-10 pb-28 sm:px-6 sm:py-14 sm:pb-14">
         {/* Hero */}
         <header className="relative overflow-x-hidden">
           <div
@@ -89,11 +90,6 @@ export default function HomePage() {
             aria-hidden
           >
             🎮
-          </div>
-
-          <div className="inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full border-2 border-[var(--magic-ink)] bg-white px-3 py-2 font-display text-xs font-bold leading-snug text-[var(--magic-ink)] shadow-[3px_3px_0_#312e81] sm:px-4 sm:py-1.5 sm:text-sm">
-            <span aria-hidden>👨‍👩‍👧</span>
-            <span>Pro rodiče přehledně • Pro děti jako z arcade hry</span>
           </div>
 
           <h1 className="font-display mt-5 max-w-4xl text-3xl font-extrabold leading-[1.12] tracking-tight sm:mt-6 sm:text-5xl lg:text-6xl">
@@ -121,14 +117,15 @@ export default function HomePage() {
             , kterou si můžeš osahat.
           </p>
           <p className="mt-4 max-w-2xl text-sm font-semibold leading-relaxed text-violet-900 sm:text-base">
-            Právě otevíráme první běhy — žádné vymyšlené recenze, jen jasná
-            nabídka. Po přihlášce s vámi domluvíme termín a věkový blok
+            Hrajeme fér — právě otevíráme první termíny, takže tu zatím
+            nenajdete žádné ohlasy. Ty vaše budou první! Po přihlášce s vámi
+            domluvíme termín a věkový blok
             individuálně.
           </p>
 
           <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
             <Link href="/registrace" className="btn-magic w-full text-center sm:w-auto">
-              Chci se přihlásit 🚀
+              Nezávazně přihlásit dítě 🚀
             </Link>
             <Link href="/jak-probiha" className="btn-magic-outline w-full text-center sm:w-auto">
               Jak probíhá lekce
@@ -149,7 +146,7 @@ export default function HomePage() {
             pro každého srozumitelný a zároveň dostatečně výživný. A ano —
             přesně takhle se dá dnes stavět web: barvy, animace, typografie… o
             tom na kroužku taky mluvíme. Kurzy teprve startujeme — až budeme mít
-            první hotové běhy, přidáme na web férové ohlasy a ukázky projektů od
+            první hotové termíny, přidáme na web férové ohlasy a ukázky projektů od
             dětí.
           </p>
         </div>
@@ -168,7 +165,12 @@ export default function HomePage() {
                 Odešlete přihlášku
               </p>
               <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">
-                Vyplníte dítě + kontakt na rodiče. Zabere to pár minut.
+                Vyplníte údaje o dítěti a kontakt na vás. Zabere to asi 30
+                vteřin.
+              </p>
+              <p className="mt-1 text-xs italic font-medium leading-relaxed text-slate-500">
+                Přihláška je nezávazná. Termíny navrhneme tak, aby vám zapadly
+                do rozvrhu.
               </p>
             </div>
             <div className="card-playful bg-white">
@@ -179,7 +181,7 @@ export default function HomePage() {
                 Ozveme se a doladíme termín
               </p>
               <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">
-                Podle věku, zájmu a dostupnosti domluvíme nejvhodnější běh.
+                Podle věku, zájmu a dostupnosti domluvíme nejvhodnější termín.
               </p>
             </div>
             <div className="card-playful bg-white">
@@ -251,37 +253,41 @@ export default function HomePage() {
               <p className="mt-3 text-sm font-semibold text-slate-800">
                 <span className="rounded-md bg-white/80 px-1">Skupina</span>{" "}
                 {p.skupinaPerLesson} Kč / lekce →{" "}
-                <span className="font-display text-lg text-violet-700">
-                  {p.skupinaCourse} Kč
+                <span className="font-display text-lg font-extrabold text-violet-700">
+                  {p.skupinaCourse.toLocaleString("cs-CZ")} Kč
                 </span>{" "}
                 kurz
+                <span className="ml-2 rounded-full border border-violet-300 bg-violet-100 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-violet-800">
+                  Nejoblíbenější
+                </span>
               </p>
               <p className="mt-2 text-sm font-semibold text-slate-800">
                 <span className="rounded-md bg-white/80 px-1">1:1</span>{" "}
                 {p.individualPerLesson} Kč / lekce →{" "}
                 <span className="font-display text-lg text-violet-700">
-                  {p.individualCourse} Kč
+                  {p.individualCourse.toLocaleString("cs-CZ")} Kč
                 </span>{" "}
                 kurz
               </p>
               <p className="mt-3 text-xs font-medium leading-relaxed text-slate-600">
-                Skupina: termín domluvíme po registraci. Kurz spustíme od{" "}
-                {p.groupMinStudentsToOpen} přihlášených, ve skupině nejvýše{" "}
-                {p.groupMaxStudents} dětí.
+                Skupina: termín domluvíme po registraci. Kurz otevíráme už od{" "}
+                {p.groupMinStudentsToOpen} přihlášených, maximální kapacita je{" "}
+                {p.groupMaxStudents} dětí pro zachování individuálního přístupu.
               </p>
               <p className="mt-2 text-xs font-medium text-slate-600">{p.vatNote}</p>
               <Link href="/registrace" className="btn-magic mt-5 w-full text-center">
-                Jdu do toho!
+                Nezávazně přihlásit dítě 🚀
               </Link>
             </div>
 
             <div className="card-playful bg-gradient-to-br from-cyan-50 to-sky-100">
               <h2 className="font-display flex items-center gap-2 text-xl font-extrabold text-[var(--magic-ink)]">
-                <span aria-hidden>🎒</span> Co sbalit
+                <span aria-hidden>🎒</span> Technické požadavky
               </h2>
               <ul className="mt-4 space-y-3 text-sm font-semibold text-slate-800">
                 <li className="flex items-center gap-2">
-                  <span className="text-lg">💻</span> Notebook nebo tablet
+                  <span className="text-lg">💻</span> PC nebo notebook s
+                  přístupem na internet
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-lg">⌨️</span> Umíš psát a klikat v prohlížeči
@@ -322,9 +328,10 @@ export default function HomePage() {
               Pro děti {site.audience.ageMin} až {site.audience.ageMax} let,
               které milují technologie a chtějí <strong>tvořit</strong>, ne jen
               scrollovat. Skupiny dělíme podle věku, aby úroveň seděla všem v
-              kurzu — žádný univerzální „one size fits all“. Není to klasický
-              kurz programování — tady stavíš věci s AI. Rodiče u toho dostanou
-              klid: všechno vysvětlíme lidsky a bezpečně.
+              kurzu — žádný univerzální mix, kde by se starší nudili a mladší
+              nestíhali. Není to klasický kurz programování — tady stavíš věci s
+              AI. A rodiče mohou být v klidu: všechno dětem vysvětlíme
+              srozumitelně, lidsky a s důrazem na kyberbezpečnost.
             </p>
           </div>
         </Section>
@@ -337,6 +344,16 @@ export default function HomePage() {
             <p className="mt-3 font-medium leading-relaxed text-slate-800">
               {site.lektor.bioShort}
             </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {["Česká spořitelna", "ČEZ", "Škoda Auto"].map((company) => (
+                <span
+                  key={company}
+                  className="rounded-full border border-violet-300 bg-white px-3 py-1 text-xs font-extrabold text-violet-800"
+                >
+                  {company}
+                </span>
+              ))}
+            </div>
             <p className="mt-4 font-medium leading-relaxed text-slate-800">
               S dětmi pracujeme nejradši — nemají zábrany a jdou do toho po
               hlavě. Přesně jak má být. 🎯
@@ -378,7 +395,7 @@ export default function HomePage() {
           <div className="rainbow-strip absolute inset-0 opacity-90" aria-hidden />
           <div className="relative m-[3px] rounded-[1.85rem] bg-[var(--magic-ink)] px-6 py-12 sm:px-10 sm:py-14">
             <h2 className="font-display text-2xl font-extrabold text-white sm:text-4xl">
-              Přidej se k prvním běhům
+              Přidej se k prvním termínům
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-base font-medium text-violet-200">
               Vyplň přihlášku — ozveme se a domluvíme termín i formát. Jednoduchý
@@ -388,10 +405,20 @@ export default function HomePage() {
               href="/registrace"
               className="mt-8 inline-flex min-h-11 w-full max-w-sm items-center justify-center rounded-2xl border-[3px] border-white bg-gradient-to-r from-amber-300 via-orange-400 to-pink-400 px-6 py-3.5 font-display text-base font-extrabold text-[var(--magic-ink)] shadow-[4px_4px_0_rgba(255,255,255,0.5)] transition-transform hover:scale-[1.05] active:scale-[0.98] sm:w-auto sm:max-w-none sm:px-8 sm:py-4 sm:text-lg"
             >
-              Start registrace! 🚀
+              Nezávazně přihlásit dítě 🚀
             </Link>
+            <p className="mx-auto mt-3 max-w-lg text-xs font-semibold text-violet-200">
+              Odeslání přihlášky je nezávazné. Termín doladíme podle vašich
+              časových možností.
+            </p>
           </div>
         </div>
+        <Link
+          href="/registrace"
+          className="mobile-sticky-cta btn-magic fixed bottom-4 right-4 z-50 px-4 py-3 text-sm shadow-2xl sm:bottom-6 sm:right-6 sm:text-base"
+        >
+          Nezávazně přihlásit dítě 🚀
+        </Link>
       </div>
     </>
   );

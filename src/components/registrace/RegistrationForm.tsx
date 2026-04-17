@@ -142,7 +142,8 @@ export function RegistrationForm({
             className="h-4 w-4 border-2 border-[var(--magic-ink)] text-violet-600"
           />
           Skupina (max. {site.pricing.groupMaxStudents}) —{" "}
-          {site.pricing.skupinaCourse} Kč / {site.pricing.lessons} lekcí
+          {site.pricing.skupinaCourse.toLocaleString("cs-CZ")} Kč /{" "}
+          {site.pricing.lessons} lekcí
         </label>
         <label className="flex cursor-pointer items-center gap-2 rounded-xl border-2 border-violet-200 bg-violet-50/50 px-3 py-2 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] has-[:checked]:bg-white sm:text-sm">
           <input
@@ -156,11 +157,12 @@ export function RegistrationForm({
             }}
             className="h-4 w-4 border-2 border-[var(--magic-ink)] text-violet-600"
           />
-          Individuální 1:1 — {site.pricing.individualCourse} Kč /{" "}
+          Individuální 1:1 —{" "}
+          {site.pricing.individualCourse.toLocaleString("cs-CZ")} Kč /{" "}
           {site.pricing.lessons} lekcí
         </label>
         <p className="text-xs font-medium leading-relaxed text-slate-600">
-          Skupinový běh otevřeme od {site.pricing.groupMinStudentsToOpen}{" "}
+          Skupinový termín otevřeme od {site.pricing.groupMinStudentsToOpen}{" "}
           přihlášených (kapacita max. {site.pricing.groupMaxStudents} dětí na
           lekci). Individuál: {site.pricing.individualPerLesson} Kč / lekce.
         </p>
@@ -172,7 +174,7 @@ export function RegistrationForm({
             Termín skupiny (volitelně)
           </legend>
           <p className="text-xs font-medium leading-relaxed text-slate-600">
-            Můžeš vybrat konkrétní běh — nebo nechat prázdné a domluvíme se
+            Můžeš vybrat konkrétní termín — nebo nechat prázdné a domluvíme se
             později.
           </p>
           <label className="flex cursor-pointer items-start gap-2 rounded-xl border-2 border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] sm:text-sm">
@@ -451,7 +453,9 @@ export function RegistrationForm({
               zásadami ochrany osobních údajů
             </a>{" "}
             a souhlasím se zpracováním údajů za účelem registrace a komunikace o
-            kurzu.
+            kurzu, včetně interního nahrávání online lekcí pro bezpečnost,
+            kontrolu kvality a případné řešení reklamací (bez veřejného šíření
+            či prodeje záznamů).
           </span>
         </label>
       </div>
@@ -488,6 +492,10 @@ export function RegistrationForm({
       >
         {status === "loading" ? "Odesílám… ✨" : "Odeslat přihlášku 🚀"}
       </button>
+      <p className="text-center text-xs font-semibold text-slate-600">
+        Odeslání přihlášky je nezávazné. Termín doladíme podle vašich časových
+        možností.
+      </p>
 
       {status === "success" ? (
         <div
@@ -495,7 +503,7 @@ export function RegistrationForm({
           aria-live="polite"
           className="space-y-3 rounded-2xl border-2 border-emerald-600 bg-emerald-50 px-4 py-4 text-sm font-semibold text-emerald-950"
         >
-          <p>{message}</p>
+          <p>Mise zahájena! 🚀 Ozveme se vám do 24 hodin s návrhem termínů.</p>
           {paymentUrl ? (
             <Link
               href={paymentUrl}

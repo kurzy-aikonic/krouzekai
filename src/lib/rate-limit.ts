@@ -1,20 +1,30 @@
+import type { NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { NextResponse } from "next/server";
 import { getClientIp } from "@/lib/client-ip";
+import { apiJson } from "@/lib/api-response";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
 
 const scopes = {
-  registrace: { limit: 10, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
+  /** Veřejná přihláška — citlivé na spam. */
+  registrace: { limit: 8, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
   checkout: { limit: 30, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
-  rodicMagic: { limit: 6, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
-  rodicPrihlaseni: {
-    limit: 30,
-    windowLabel: "1 h" as const,
-    windowMs: ONE_HOUR_MS,
-  },
+  /** Požadavek na magic odkaz e-mailem — přísněji než běžné přihlášení. */
+  rodicMagic: { limit: 5, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
+  /** GET dokončení magic odkazu (redirect + cookie). */
+  rodicMagicConsume: { limit: 25, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
+  /** Heslo rodiče. */
+  rodicPrihlaseni: { limit: 20, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
+  /** Registrace účtu rodiče (heslo). */
+  rodicRegister: { limit: 8, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
+  /** Veřejný výpis termínů (GET). */
+  courseRunsPublic: { limit: 180, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
+  /** Admin API (po ověření nebo u loginu). */
+  adminApi: { limit: 200, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
+  /** Přihlášení do adminu (sdílené tajemství) — proti brute force. */
+  adminLogin: { limit: 12, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
 } as const;
 
 export type RateLimitScope = keyof typeof scopes;
@@ -98,7 +108,7 @@ function ratelimiter(scope: RateLimitScope): Ratelimit | null {
 }
 
 function tooManyResponse(retryAfterSec: number) {
-  return NextResponse.json(
+  return apiJson(
     { error: "Příliš mnoho požadavků. Zkuste to za chvíli znovu." },
     {
       status: 429,

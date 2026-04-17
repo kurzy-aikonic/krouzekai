@@ -1,6 +1,6 @@
-import { timingSafeEqual } from "crypto";
+import { createHmac, timingSafeEqual } from "crypto";
 
-/** HttpOnly cookie — hodnota = stejný řetězec jako ADMIN_SECRET (viz .env.example). */
+/** HttpOnly cookie — podepsaná session (viz `signAdminSession`), ne otevřený ADMIN_SECRET. */
 export const ADMIN_SESSION_COOKIE = "krouzek_admin_session";
 
 export function adminSecretConfigured(): boolean {
@@ -29,7 +29,25 @@ export function constantTimeEqual(a: string, b: string): boolean {
 export function verifyAdminCookie(token: string | undefined): boolean {
   const secret = getAdminSecret();
   if (!secret || token == null || token === "") return false;
-  return constantTimeEqual(token, secret);
+  const i = token.lastIndexOf(".");
+  if (i <= 0) return false;
+  const body = token.slice(0, i);
+  const sig = token.slice(i + 1);
+  if (!body || !sig) return false;
+  const expected = createHmac("sha256", secret).update(body).digest("base64url");
+  return constantTimeEqual(sig, expected);
+}
+
+/** Podepsaná hodnota session cookie (nikdy neukládá ADMIN_SECRET v otevřeném tvaru). */
+export function signAdminSession(): string | null {
+  const secret = getAdminSecret();
+  if (!secret) return null;
+  const body = Buffer.from(
+    JSON.stringify({ t: "admin", iat: Date.now() }),
+    "utf8",
+  ).toString("base64url");
+  const sig = createHmac("sha256", secret).update(body).digest("base64url");
+  return `${body}.${sig}`;
 }
 
 /** Ověření pro route handlery: Bearer token nebo session cookie. */

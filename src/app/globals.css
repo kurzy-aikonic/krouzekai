@@ -77,6 +77,31 @@ html {
       radial-gradient(ellipse 100% 50% at 50% -10%, #c4b5fd 0%, transparent 45%),
       linear-gradient(180deg, #eef2ff 0%, #fdf4ff 50%, #ecfeff 100%);
   }
+  .mobile-sticky-cta {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    justify-content: center;
+    text-align: center;
+    line-height: 1.2;
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+  }
+  .snake-summary {
+    gap: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .snake-summary .snake-closed-hint,
+  .snake-summary .snake-open-hint {
+    align-self: flex-start;
+  }
+  .snake-details canvas {
+    width: 100%;
+    height: auto;
+  }
+  .input-playful {
+    font-size: 16px;
+  }
 }
 
 body {
@@ -191,10 +216,8 @@ body {
     0 0 0 3px rgba(255, 255, 255, 0.35) inset;
 }
 .btn-magic:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow:
-    0 8px 24px rgba(124, 58, 237, 0.5),
-    0 0 0 3px rgba(255, 255, 255, 0.45) inset;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 .btn-magic:active {
   transform: translateY(0) scale(0.98);
@@ -205,16 +228,16 @@ body {
   @apply inline-flex min-h-11 items-center justify-center rounded-2xl border-[3px] border-[var(--magic-ink)] bg-white px-6 py-3.5 text-base font-bold text-[var(--magic-ink)] shadow-md transition-all duration-200 sm:min-h-0;
 }
 .btn-magic-outline:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 0 #312e81;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .card-playful {
   @apply rounded-3xl border-[3px] border-[var(--magic-ink)] bg-white p-5 shadow-[6px_6px_0_#312e81] transition-transform duration-200;
 }
 .card-playful:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 8px 8px 0 #312e81;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .sparkle-burst {

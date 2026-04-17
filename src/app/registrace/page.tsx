@@ -37,11 +37,11 @@ export default async function RegistracePage() {
           { name: "Registrace", path: "/registrace" },
         ]}
       />
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16">
         <h1 className="page-h1">Registrace 📝</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
           Vyplňte údaje o dítěti ({site.audience.ageMin}–{site.audience.ageMax}{" "}
-          let) a zákonném zástupci. První běhy právě otevíráme — díky věku na
+          let) a zákonném zástupci. První termíny právě otevíráme — díky věku na
           přihlášce vás zařadíme do správného tempa a konkrétní termín s vámi
           domluvíme individuálně podle zájmu. Po odeslání vás kontaktujeme,
           domluvíme podmínky a pak zašleme fakturu — platbu řešíme až po této

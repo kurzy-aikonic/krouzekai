@@ -78,7 +78,7 @@ export const site = {
     /** Max. dětí ve skupině na lekci. */
     groupMaxStudents: 6,
     /** Min. přihlášených ke spuštění skupinového běhu. */
-    groupMinStudentsToOpen: 6,
+    groupMinStudentsToOpen: 3,
     vatNote: "Poskytovatel není plátcem DPH.",
   },
 } as const;

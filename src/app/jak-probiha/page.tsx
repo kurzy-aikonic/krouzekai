@@ -38,7 +38,7 @@ export default function JakProbihaPage() {
           { name: "Jak probíhá lekce", path: "/jak-probiha" },
         ]}
       />
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16">
       <h1 className="page-h1">Jak probíhá lekce ⚡</h1>
       <p className="mt-4 text-slate-600 leading-relaxed">
         Stručně a srozumitelně pro rodiče i děti — aby bylo jasné, co čekat před

@@ -265,10 +265,10 @@ export function SnakePlayground() {
             </p>
           </div>
         </div>
-        <span className="font-display snake-closed-hint text-sm font-bold text-violet-600 sm:mt-0 sm:text-right">
+        <span className="font-display snake-closed-hint inline-flex items-center rounded-xl border-2 border-violet-300 bg-violet-100 px-3 py-1.5 text-sm font-bold text-violet-700 transition-transform duration-200 hover:-translate-y-1 hover:scale-[1.02] sm:mt-0 sm:text-right">
           Rozbal a hraj ▼
         </span>
-        <span className="snake-open-hint font-display text-sm font-bold text-emerald-700 sm:text-right">
+        <span className="snake-open-hint font-display inline-flex items-center rounded-xl border-2 border-emerald-300 bg-emerald-100 px-3 py-1.5 text-sm font-bold text-emerald-700 transition-transform duration-200 hover:-translate-y-1 hover:scale-[1.02] sm:text-right">
           Zavři ▲
         </span>
       </summary>

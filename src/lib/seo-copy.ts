@@ -8,7 +8,7 @@ export const metaDescriptions = {
 
   jakProbiha: `Jak probíhá online lekce ${site.name}: ${site.pricing.lessonMinutes} minut týdně, celkem ${site.pricing.lessons} lekcí. Přehled průběhu, technických požadavků i role rodiče.`,
 
-  faq: `Časté otázky ke ${site.name}: věk ${site.audience.ageMin}–${site.audience.ageMax} let, průběh lekcí, ceny, platba, bezpečnost práce s AI i organizace prvních běhů.`,
+  faq: `Časté otázky ke ${site.name}: věk ${site.audience.ageMin}–${site.audience.ageMax} let, průběh lekcí, ceny, platba, bezpečnost práce s AI i organizace prvních termínů.`,
 
   kontakt: `Kontakt na ${site.name}: e-mail ${site.contactEmail}, telefon ${site.company.phoneDisplay}. Provozovatel ${site.company.legalName} (IČO ${site.company.ic}).`,
 
@@ -20,5 +20,5 @@ export const metaDescriptions = {
 
   platba: `Orientační přehled platby po registraci do ${site.name}: převod, variabilní symbol a další platební údaje. Finální pokyny posíláme po individuální domluvě.`,
 
-  aktualniBehy: `Aktuální termíny skupinových běhů ${site.name}: přehled vypsaných kurzů, kapacit a dostupnosti míst. Registrace probíhá online.`,
+  aktualniBehy: `Aktuální termíny skupin ${site.name}: přehled vypsaných kurzů, kapacit a dostupnosti míst. Registrace probíhá online.`,
 } as const;

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { apiJson } from "@/lib/api-response";
 import { getAdminSecret, verifyAdminRequest } from "@/lib/admin-auth";
 import {
   courseRunsPersistenceMode,
@@ -6,22 +6,23 @@ import {
   listCourseRuns,
   replaceCourseRuns,
 } from "@/lib/course-runs-store";
+import { rateLimitResponse } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
+  const limited = await rateLimitResponse(request, "adminApi");
+  if (limited) return limited;
+
   if (!getAdminSecret()) {
-    return NextResponse.json(
-      { error: "ADMIN_SECRET není nastaven." },
-      { status: 503 },
-    );
+    return apiJson({ error: "ADMIN_SECRET není nastaven." }, { status: 503 });
   }
   if (!verifyAdminRequest(request)) {
-    return NextResponse.json({ error: "Neautorizováno." }, { status: 401 });
+    return apiJson({ error: "Neautorizováno." }, { status: 401 });
   }
 
   const runs = await listCourseRuns();
-  return NextResponse.json({
+  return apiJson({
     ok: true,
     runs,
     storage: courseRunsPersistenceMode(),
@@ -29,26 +30,26 @@ export async function GET(request: Request) {
 }
 
 export async function PUT(request: Request) {
+  const limited = await rateLimitResponse(request, "adminApi");
+  if (limited) return limited;
+
   if (!getAdminSecret()) {
-    return NextResponse.json(
-      { error: "ADMIN_SECRET není nastaven." },
-      { status: 503 },
-    );
+    return apiJson({ error: "ADMIN_SECRET není nastaven." }, { status: 503 });
   }
   if (!verifyAdminRequest(request)) {
-    return NextResponse.json({ error: "Neautorizováno." }, { status: 401 });
+    return apiJson({ error: "Neautorizováno." }, { status: 401 });
   }
 
   let json: unknown;
   try {
     json = await request.json();
   } catch {
-    return NextResponse.json({ error: "Neplatný JSON." }, { status: 400 });
+    return apiJson({ error: "Neplatný JSON." }, { status: 400 });
   }
 
   const parsed = courseRunsPutSchema.safeParse(json);
   if (!parsed.success) {
-    return NextResponse.json(
+    return apiJson(
       {
         error: "Neplatná data.",
         details: parsed.error.flatten(),
@@ -59,7 +60,7 @@ export async function PUT(request: Request) {
 
   try {
     await replaceCourseRuns(parsed.data.runs);
-    return NextResponse.json({
+    return apiJson({
       ok: true,
       runs: parsed.data.runs,
       storage: courseRunsPersistenceMode(),
@@ -73,7 +74,7 @@ export async function PUT(request: Request) {
       err.code === "EACCES" ||
       (typeof err.message === "string" &&
         err.message.toLowerCase().includes("read-only"));
-    return NextResponse.json(
+    return apiJson(
       {
         error: "Nepodařilo se uložit termíny.",
         hint: readOnly

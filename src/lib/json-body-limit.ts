@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import type { NextResponse } from "next/server";
+import { apiJson } from "@/lib/api-response";
 
 const MAX_BYTES = 32 * 1024;
 
@@ -8,13 +9,10 @@ export function rejectOversizedJsonBody(request: Request): NextResponse | null {
   if (raw == null) return null;
   const n = Number(raw);
   if (!Number.isFinite(n) || n < 0) {
-    return NextResponse.json({ error: "Neplatná hlavička požadavku." }, { status: 400 });
+    return apiJson({ error: "Neplatná hlavička požadavku." }, { status: 400 });
   }
   if (n > MAX_BYTES) {
-    return NextResponse.json(
-      { error: "Tělo požadavku je příliš velké." },
-      { status: 413 },
-    );
+    return apiJson({ error: "Tělo požadavku je příliš velké." }, { status: 413 });
   }
   return null;
 }

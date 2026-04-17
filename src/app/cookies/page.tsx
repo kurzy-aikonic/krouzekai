@@ -21,7 +21,7 @@ export default function CookiesPage() {
           { name: "Zásady cookies", path: "/cookies" },
         ]}
       />
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16">
         <Prose>
         <h1>Cookies a podobné technologie</h1>
         <p>

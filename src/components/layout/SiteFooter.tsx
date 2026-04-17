@@ -27,8 +27,8 @@ export function SiteFooter() {
         />
       </svg>
       <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-14 sm:px-6">
-        <div className="flex flex-col gap-10 lg:flex-row lg:justify-between">
-          <div className="max-w-md">
+        <div className="flex flex-col items-center gap-10 text-center">
+          <div className="max-w-md text-center">
             <p className="font-display text-2xl font-extrabold text-[var(--magic-ink)]">
               {site.name}
             </p>
@@ -75,15 +75,15 @@ export function SiteFooter() {
               {" — "}
               {site.parentSite.tagline}
             </p>
-            <div className="mt-4">
+            <div className="mt-4 text-center">
               <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-800">
                 Sledujte nás
               </p>
-              <SocialIcons className="mt-2" />
+              <SocialIcons className="mt-2 justify-center" />
             </div>
           </div>
           <nav
-            className="flex flex-col gap-3"
+            className="flex flex-col items-center gap-3 text-center"
             aria-label="Důležité odkazy"
           >
             <p className="font-display text-sm font-extrabold uppercase tracking-wide text-violet-800">
@@ -94,7 +94,7 @@ export function SiteFooter() {
               className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
             >
               <span aria-hidden>📅</span>
-              Aktuální běhy
+              Aktuální termíny
             </Link>
             <Link
               href="/rodic/prihlaseni"
@@ -113,7 +113,7 @@ export function SiteFooter() {
                 {item.label}
               </Link>
             ))}
-            <p className="flex flex-wrap items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)]">
+            <p className="flex flex-wrap items-center justify-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)]">
               <span aria-hidden>⚙️</span>
               <CookieSettingsButton />
             </p>

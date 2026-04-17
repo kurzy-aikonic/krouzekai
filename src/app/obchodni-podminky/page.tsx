@@ -19,7 +19,7 @@ export default function ObchodniPodminkyPage() {
           { name: "Obchodní podmínky", path: "/obchodni-podminky" },
         ]}
       />
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16">
       <Prose>
         <h1>Obchodní podmínky</h1>
         <p>
@@ -69,8 +69,8 @@ export default function ObchodniPodminkyPage() {
           Nabízíme tyto formáty:{" "}
           <strong>skupinový kurz</strong> (maximálně {site.pricing.groupMaxStudents}{" "}
           účastníků ve skupině) a <strong>individuální výuka 1:1</strong>.
-          Konkrétní běhy, termíny a dostupná kapacita jsou uvedeny na webu (např.{" "}
-          <a href="/aktualni-behy">Aktuální běhy</a>
+          Konkrétní termíny a dostupná kapacita jsou uvedeny na webu (např.{" "}
+          <a href="/aktualni-behy">Aktuální termíny</a>
           ) a v průběhu objednávky.
         </p>
         <h2>3. Objednávka a uzavření smlouvy</h2>
@@ -156,24 +156,44 @@ export default function ObchodniPodminkyPage() {
         <p>
           Účastník se zavazuje chovat v online lekcích slušně, nešířit nevhodný
           obsah a dodržovat pokyny lektora. Zákonný zástupce odpovídá za to, že
-          prostředí pro účast dítěte je vhodné. Bez souhlasu neprovádíme
-          systematické nahrávání lekcí pro třetí osoby.
+          prostředí pro účast dítěte je vhodné.
         </p>
-        <h2>10. Duševní vlastnictví</h2>
+        <h2>10. Nahrávání online lekcí (bezpečnost, kvalita, reklamace)</h2>
+        <p>
+          Za účelem ochrany dítěte, lektora a poskytovatele, zajištění kvality
+          výuky a doložení průběhu při řešení reklamací nebo sporných situací
+          může poskytovatel pořizovat <strong>audio/video záznam online lekcí</strong>.
+          Právním základem je <strong>souhlas zákonného zástupce</strong>, který
+          je udělován při registraci.
+        </p>
+        <p>
+          Záznamy slouží výhradně pro <strong>interní účely</strong> poskytovatele
+          (zejména bezpečnost, kontrola kvality, řešení stížností a reklamací).
+          Nejsou určeny k veřejnému zveřejnění, marketingu ani prodeji třetím
+          osobám.
+        </p>
+        <p>
+          Záznamy uchováváme po dobu nezbytně nutnou, zpravidla nejdéle{" "}
+          <strong>6 měsíců od konání lekce</strong>, pokud delší dobu nevyžaduje
+          ochrana právních nároků v konkrétním případě (např. probíhající
+          reklamace nebo spor). Po uplynutí doby uchování záznam bezpečně
+          odstraníme.
+        </p>
+        <h2>11. Duševní vlastnictví</h2>
         <p>
           Materiály poskytnuté v kurzu (texty, ukázky, struktura lekcí) jsou
           chráněny právy duševního vlastnictví. Slouží pouze pro osobní potřebu
           účastníka v rámci kurzu; další šíření, komerční využití nebo zpřístupnění
           třetím osobám bez souhlasu poskytovatele není přípustné.
         </p>
-        <h2>11. Ochrana osobních údajů</h2>
+        <h2>12. Ochrana osobních údajů</h2>
         <p>
           Zpracování osobních údajů upravuje dokument{" "}
           <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a> na tomto
           webu, včetně informací podle čl. 13 a 14 nařízení Evropského parlamentu
           a Rady (EU) 2016/679 (GDPR).
         </p>
-        <h2>12. Mimosoudní řešení sporů</h2>
+        <h2>13. Mimosoudní řešení sporů</h2>
         <p>
           Spotřebitel má právo obrátit se na Českou obchodní inspekci (
           <a
@@ -194,7 +214,7 @@ export default function ObchodniPodminkyPage() {
           </a>
           .
         </p>
-        <h2>13. Závěrečná ustanovení</h2>
+        <h2>14. Závěrečná ustanovení</h2>
         <p>
           Právní vztahy se řídí právem České republiky. Soudní příslušnost se
           řídí obecnými ustanoveními; u spotřebitele platí zákonná příslušnost

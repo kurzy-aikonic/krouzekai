@@ -19,7 +19,7 @@ export default function KontaktPage() {
           { name: "Kontakt", path: "/kontakt" },
         ]}
       />
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16">
         <h1 className="page-h1">Kontakt ✉️</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
           Máte dotaz k termínům, formátu nebo vhodnosti kurzu pro vaše dítě?

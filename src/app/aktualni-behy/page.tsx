@@ -27,15 +27,15 @@ export default async function AktualniBehyPage() {
       <BreadcrumbJsonLd
         items={[
           { name: "Úvod", path: "/" },
-          { name: "Aktuální běhy", path: "/aktualni-behy" },
+          { name: "Aktuální termíny", path: "/aktualni-behy" },
         ]}
       />
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-        <h1 className="page-h1">Aktuální běhy 📅</h1>
+      <div className="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16">
+        <h1 className="page-h1">Aktuální termíny 📅</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
           Přehled skupinových termínů, které právě nabízíme na webu. Přihlášku
           vyplníte na stránce registrace — tam můžete (volitelně) vybrat konkrétní
-          běh, pokud je v nabídce volno.
+          termín, pokud je v nabídce volno.
         </p>
         {runs.length === 0 ? (
           <div className="card-playful mt-10 p-6 text-sm leading-relaxed text-slate-700">

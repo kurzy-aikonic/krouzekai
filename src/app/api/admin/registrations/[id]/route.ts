@@ -1,11 +1,12 @@
-import { NextResponse } from "next/server";
 import { z } from "zod";
+import { apiJson } from "@/lib/api-response";
 import { getAdminSecret, verifyAdminRequest } from "@/lib/admin-auth";
+import { sendRegistrationStatusChangeNotice } from "@/lib/email";
 import {
   findRegistrationById,
   updateRegistration,
 } from "@/lib/registrations-store";
-import { sendRegistrationStatusChangeNotice } from "@/lib/email";
+import { rateLimitResponse } from "@/lib/rate-limit";
 import { registrationStatuses } from "@/types/registration";
 
 export const dynamic = "force-dynamic";
@@ -19,49 +20,49 @@ const patchSchema = z.object({
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function PATCH(request: Request, context: RouteContext) {
+  const limited = await rateLimitResponse(request, "adminApi");
+  if (limited) return limited;
+
   if (!getAdminSecret()) {
-    return NextResponse.json(
-      { error: "ADMIN_SECRET není nastaven." },
-      { status: 503 },
-    );
+    return apiJson({ error: "ADMIN_SECRET není nastaven." }, { status: 503 });
   }
   if (!verifyAdminRequest(request)) {
-    return NextResponse.json({ error: "Neautorizováno." }, { status: 401 });
+    return apiJson({ error: "Neautorizováno." }, { status: 401 });
   }
 
   const { id } = await context.params;
   if (!id) {
-    return NextResponse.json({ error: "Chybí id." }, { status: 400 });
+    return apiJson({ error: "Chybí id." }, { status: 400 });
   }
 
   let json: unknown;
   try {
     json = await request.json();
   } catch {
-    return NextResponse.json({ error: "Neplatný JSON." }, { status: 400 });
+    return apiJson({ error: "Neplatný JSON." }, { status: 400 });
   }
 
   const parsed = patchSchema.safeParse(json);
   if (!parsed.success) {
-    return NextResponse.json(
+    return apiJson(
       { error: "Neplatná data.", details: parsed.error.flatten() },
       { status: 422 },
     );
   }
 
   if (Object.keys(parsed.data).length === 0) {
-    return NextResponse.json({ error: "Prázdná úprava." }, { status: 422 });
+    return apiJson({ error: "Prázdná úprava." }, { status: 422 });
   }
 
   const existing = await findRegistrationById(id);
   if (!existing) {
-    return NextResponse.json({ error: "Přihláška nenalezena." }, { status: 404 });
+    return apiJson({ error: "Přihláška nenalezena." }, { status: 404 });
   }
 
   try {
     const updated = await updateRegistration(id, parsed.data);
     if (!updated) {
-      return NextResponse.json({ error: "Přihláška nenalezena." }, { status: 404 });
+      return apiJson({ error: "Přihláška nenalezena." }, { status: 404 });
     }
     if (
       parsed.data.status !== undefined &&
@@ -75,11 +76,11 @@ export async function PATCH(request: Request, context: RouteContext) {
         },
       );
     }
-    return NextResponse.json({ ok: true, item: updated });
+    return apiJson({ ok: true, item: updated });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Chyba úložiště.";
     if (msg.includes("REGISTRATIONS_WEBHOOK_URL")) {
-      return NextResponse.json(
+      return apiJson(
         {
           error:
             "Úpravy nejsou k dispozici: přihlášky jdou jen na webhook (bez lokálního JSONL).",
@@ -88,9 +89,9 @@ export async function PATCH(request: Request, context: RouteContext) {
       );
     }
     if (msg.includes("Neplatný") || msg.includes("Termín")) {
-      return NextResponse.json({ error: msg }, { status: 422 });
+      return apiJson({ error: msg }, { status: 422 });
     }
     console.error(e);
-    return NextResponse.json({ error: "Nepodařilo se uložit." }, { status: 500 });
+    return apiJson({ error: "Nepodařilo se uložit." }, { status: 500 });
   }
 }
