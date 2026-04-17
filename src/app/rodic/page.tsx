@@ -133,7 +133,7 @@ function RegistrationCard({
           href="/jak-probiha"
           className="btn-portal-outline sm:w-auto sm:min-w-[11rem]"
         >
-          Jak probíhá lekce
+          Jak to u nás funguje
         </Link>
       </div>
       <p className="mt-4 text-xs leading-relaxed text-slate-500 print:hidden">

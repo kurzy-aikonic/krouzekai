@@ -493,8 +493,8 @@ export function RegistrationForm({
         {status === "loading" ? "Odesílám… ✨" : "Odeslat přihlášku 🚀"}
       </button>
       <p className="text-center text-xs font-semibold text-slate-600">
-        Odeslání přihlášky je nezávazné. Termín doladíme podle vašich časových
-        možností.
+        Odeslání přihlášky je nezávazné. Po potvrzení otevřených termínů vám
+        pošleme dostupné varianty.
       </p>
 
       {status === "success" ? (

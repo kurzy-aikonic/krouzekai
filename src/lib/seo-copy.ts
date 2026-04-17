@@ -6,7 +6,7 @@ export const metaDescriptions = {
 
   registrace: `Registrace na ${site.name}: online kurz pro děti ${site.audience.ageMin}–${site.audience.ageMax} let, formát skupina nebo 1:1. Po přihlášce domlouváme termín i detaily individuálně.`,
 
-  jakProbiha: `Jak probíhá online lekce ${site.name}: ${site.pricing.lessonMinutes} minut týdně, celkem ${site.pricing.lessons} lekcí. Přehled průběhu, technických požadavků i role rodiče.`,
+  jakProbiha: `Jak to u nás funguje v ${site.name}: ${site.pricing.lessonMinutes} minut jednou za 14 dní, celkem ${site.pricing.lessons} lekcí. Přehled průběhu, technických požadavků i role rodiče.`,
 
   faq: `Časté otázky ke ${site.name}: věk ${site.audience.ageMin}–${site.audience.ageMax} let, průběh lekcí, ceny, platba, bezpečnost práce s AI i organizace prvních termínů.`,
 

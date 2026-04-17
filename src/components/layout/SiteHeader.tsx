@@ -8,7 +8,7 @@ import { site } from "@/lib/site-config";
 
 const nav = [
   { href: "/", label: "O kurzu", emoji: "🎓" },
-  { href: "/jak-probiha", label: "Jak probíhá výuka", emoji: "⚡" },
+  { href: "/jak-probiha", label: "Jak to u nás funguje", emoji: "⚡" },
   { href: "/faq", label: "Časté otázky", emoji: "❓" },
   { href: "/kontakt", label: "Kontakt", emoji: "✉️" },
   { href: "/registrace", label: "Registrace", emoji: "🚀" },
@@ -18,6 +18,8 @@ export function SiteHeader() {
   const pathname = usePathname();
   const menuId = useId();
   const [menuOpen, setMenuOpen] = useState(false);
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
@@ -77,9 +79,16 @@ export function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className="font-display wiggle-hover flex min-h-10 items-center gap-1 rounded-xl border-2 border-[var(--magic-ink)] bg-white px-2.5 py-2 text-xs font-bold text-[var(--magic-ink)] shadow-[2px_2px_0_#312e81] sm:px-3 sm:text-sm"
+              aria-current={isActive(item.href) ? "page" : undefined}
+              className={`font-display wiggle-hover flex min-h-10 items-center gap-1 whitespace-nowrap rounded-xl border-2 px-2.5 py-2 text-[11px] font-bold shadow-[2px_2px_0_#312e81] lg:px-3 lg:text-sm ${
+                isActive(item.href)
+                  ? "border-violet-700 bg-violet-100 text-violet-900"
+                  : "border-[var(--magic-ink)] bg-white text-[var(--magic-ink)]"
+              }`}
             >
-              <span aria-hidden>{item.emoji}</span>
+              <span className="hidden lg:inline" aria-hidden>
+                {item.emoji}
+              </span>
               <span>{item.label}</span>
             </Link>
           ))}
@@ -115,7 +124,12 @@ export function SiteHeader() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="font-display flex min-h-12 items-center gap-3 rounded-xl border-2 border-[var(--magic-ink)] bg-white px-4 py-3 text-base font-bold text-[var(--magic-ink)] shadow-[2px_2px_0_#312e81] active:bg-violet-50"
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    className={`font-display flex min-h-12 items-center gap-3 rounded-xl border-2 px-4 py-3 text-base font-bold shadow-[2px_2px_0_#312e81] active:bg-violet-50 ${
+                      isActive(item.href)
+                        ? "border-violet-700 bg-violet-100 text-violet-900"
+                        : "border-[var(--magic-ink)] bg-white text-[var(--magic-ink)]"
+                    }`}
                     onClick={closeMenu}
                   >
                     <span className="text-xl" aria-hidden>

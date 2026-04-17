@@ -5,7 +5,7 @@ import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Jak probíhá online lekce",
+  title: "Jak to u nás funguje",
   description: metaDescriptions.jakProbiha,
   path: "/jak-probiha",
 });
@@ -13,7 +13,7 @@ export const metadata: Metadata = pageMetadata({
 const blocks = [
   {
     title: "Délka a režim",
-    body: `Každá lekce trvá ${site.pricing.lessonMinutes} minut, jednou týdně, vždy online. Kurz má ${site.pricing.lessons} lekcí (${site.pricing.lessons} týdnů). Odkaz na hovor dostanete před začátkem.`,
+    body: `Každá lekce trvá ${site.pricing.lessonMinutes} minut, probíhá jednou za 14 dní a vždy online. Kurz má ${site.pricing.lessons} lekcí (cca ${site.pricing.lessons * 2} týdnů). Odkaz na hovor dostanete před začátkem.`,
   },
   {
     title: "Co dítě potřebuje u sebe",
@@ -35,11 +35,11 @@ export default function JakProbihaPage() {
       <BreadcrumbJsonLd
         items={[
           { name: "Úvod", path: "/" },
-          { name: "Jak probíhá lekce", path: "/jak-probiha" },
+          { name: "Jak to u nás funguje", path: "/jak-probiha" },
         ]}
       />
       <div className="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16">
-      <h1 className="page-h1">Jak probíhá lekce ⚡</h1>
+      <h1 className="page-h1">Jak to u nás funguje ⚡</h1>
       <p className="mt-4 text-slate-600 leading-relaxed">
         Stručně a srozumitelně pro rodiče i děti — aby bylo jasné, co čekat před
         první hodinou.

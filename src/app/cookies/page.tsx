@@ -56,7 +56,7 @@ export default function CookiesPage() {
           Pro přihlášení do <strong>interního adminu</strong> (
           <a href="/admin/login">/admin</a>) a do{" "}
           <strong>rodičovského přehledu</strong> (
-          <a href="/rodic/prihlaseni">/rodic</a>) používáme{" "}
+          <a href="/rodic/prihlaseni">/rodic/prihlaseni</a>) používáme{" "}
           <strong>technické cookies relace</strong> (httpOnly, vázané na doménu
           webu). Slouží výhradně k udržení přihlášení a bezpečnosti relace;{" "}
           <strong>není je možné vypnout v cookie liště</strong>, protože nejsou

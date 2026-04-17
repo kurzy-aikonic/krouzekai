@@ -27,8 +27,8 @@ export function SiteFooter() {
         />
       </svg>
       <div className="relative mx-auto max-w-6xl px-4 pb-10 pt-14 sm:px-6">
-        <div className="flex flex-col items-center gap-10 text-center">
-          <div className="max-w-md text-center">
+        <div className="grid gap-10 text-center md:grid-cols-12 md:items-start md:gap-8 md:text-left">
+          <div className="md:col-span-8 md:max-w-none">
             <p className="font-display text-2xl font-extrabold text-[var(--magic-ink)]">
               {site.name}
             </p>
@@ -42,20 +42,22 @@ export function SiteFooter() {
               přehledně, co dítě získá, jak výuka probíhá a jak zajišťujeme
               bezpečné prostředí.
             </p>
-            <a
-              href={`mailto:${site.contactEmail}`}
-              className="mt-4 inline-flex max-w-full items-center gap-2 break-words rounded-xl border-2 border-[var(--magic-ink)] bg-white px-4 py-2.5 font-display text-sm font-bold text-[var(--magic-ink)] shadow-[3px_3px_0_#312e81] transition-transform hover:-translate-y-0.5"
-            >
-              <span aria-hidden>✉️</span>
-              <span className="min-w-0 break-all">{site.contactEmail}</span>
-            </a>
-            <a
-              href={`tel:${site.company.phoneTel}`}
-              className="mt-2 inline-flex items-center gap-2 rounded-xl border-2 border-violet-200 bg-white/90 px-4 py-2 font-display text-sm font-bold text-violet-900 shadow-[2px_2px_0_#c4b5fd] transition-transform hover:-translate-y-0.5"
-            >
-              <span aria-hidden>📞</span>
-              {site.company.phoneDisplay}
-            </a>
+            <div className="mt-4 flex flex-col items-center gap-2 md:items-start">
+              <a
+                href={`mailto:${site.contactEmail}`}
+                className="inline-flex max-w-full items-center gap-2 break-words rounded-xl border-2 border-[var(--magic-ink)] bg-white px-4 py-2.5 font-display text-sm font-bold text-[var(--magic-ink)] shadow-[3px_3px_0_#312e81] transition-transform hover:-translate-y-0.5"
+              >
+                <span aria-hidden>✉️</span>
+                <span className="min-w-0 break-all">{site.contactEmail}</span>
+              </a>
+              <a
+                href={`tel:${site.company.phoneTel}`}
+                className="inline-flex items-center gap-2 rounded-xl border-2 border-violet-200 bg-white/90 px-4 py-2 font-display text-sm font-bold text-violet-900 shadow-[2px_2px_0_#c4b5fd] transition-transform hover:-translate-y-0.5"
+              >
+                <span aria-hidden>📞</span>
+                {site.company.phoneDisplay}
+              </a>
+            </div>
             <p className="mt-3 text-xs font-medium leading-relaxed text-slate-600">
               {site.company.legalName}
               <br />
@@ -75,15 +77,15 @@ export function SiteFooter() {
               {" — "}
               {site.parentSite.tagline}
             </p>
-            <div className="mt-4 text-center">
+            <div className="mt-4 text-center md:text-left">
               <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-800">
                 Sledujte nás
               </p>
-              <SocialIcons className="mt-2 justify-center" />
+              <SocialIcons className="mt-2 justify-center md:justify-start" />
             </div>
           </div>
           <nav
-            className="flex flex-col items-center gap-3 text-center"
+            className="flex flex-col items-center gap-3 border-t-2 border-violet-200/70 pt-6 text-center md:col-span-4 md:items-start md:border-t-0 md:border-l-2 md:pt-0 md:pl-6 md:text-left"
             aria-label="Důležité odkazy"
           >
             <p className="font-display text-sm font-extrabold uppercase tracking-wide text-violet-800">
@@ -113,7 +115,7 @@ export function SiteFooter() {
                 {item.label}
               </Link>
             ))}
-            <p className="flex flex-wrap items-center justify-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)]">
+            <p className="flex flex-wrap items-center justify-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] md:justify-start">
               <span aria-hidden>⚙️</span>
               <CookieSettingsButton />
             </p>

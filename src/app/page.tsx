@@ -9,7 +9,7 @@ import { site } from "@/lib/site-config";
 export const metadata: Metadata = pageMetadata({
   title: "Kroužek umělé inteligence pro děti | Vaše dítě vytvoří hru s AI",
   description:
-    "Moderní online kroužek pro děti 10–17 let. Učíme tvořit aplikace, weby a hry pomocí AI bez nutnosti programování. Přihlašte se nezávazně!",
+    "Moderní online kroužek pro děti 10–17 let. Učíme tvořit aplikace, weby a hry pomocí AI bez nutnosti programování. Přihlaste se nezávazně!",
   path: "/",
 });
 
@@ -103,7 +103,7 @@ export default function HomePage() {
           </h1>
 
           <p className="mt-5 max-w-2xl text-base font-semibold leading-relaxed text-slate-800 sm:mt-6 sm:text-lg md:text-xl">
-            Pro zvídavé tvůrce{" "}
+            Pro děti, které chtějí tvořit, a rodiče, kteří chtějí jasný výsledek{" "}
             <span className="rounded-lg bg-[var(--magic-sun)] px-2 py-0.5 font-display text-[var(--magic-ink)]">
               {site.audience.ageMin}–{site.audience.ageMax} let
             </span>
@@ -128,7 +128,7 @@ export default function HomePage() {
               Nezávazně přihlásit dítě 🚀
             </Link>
             <Link href="/jak-probiha" className="btn-magic-outline w-full text-center sm:w-auto">
-              Jak probíhá lekce
+              Jak to u nás funguje
             </Link>
           </div>
         </header>
@@ -148,8 +148,8 @@ export default function HomePage() {
           intro="Jednoduše, krok za krokem. Bez složitostí."
           className="mt-16"
         >
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="card-playful bg-white">
+          <div className="grid items-stretch gap-4 sm:grid-cols-3">
+            <div className="card-playful h-full bg-white">
               <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-700">
                 Krok 1
               </p>
@@ -161,11 +161,11 @@ export default function HomePage() {
                 vteřin.
               </p>
               <p className="mt-1 text-xs italic font-medium leading-relaxed text-slate-500">
-                Přihláška je nezávazná. Termíny navrhneme tak, aby vám zapadly
-                do rozvrhu.
+                Přihláška je nezávazná. Po potvrzení otevřených termínů vám
+                pošleme dostupné varianty.
               </p>
             </div>
-            <div className="card-playful bg-white">
+            <div className="card-playful h-full bg-white">
               <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-700">
                 Krok 2
               </p>
@@ -176,7 +176,7 @@ export default function HomePage() {
                 Podle věku, zájmu a dostupnosti domluvíme nejvhodnější termín.
               </p>
             </div>
-            <div className="card-playful bg-white">
+            <div className="card-playful h-full bg-white">
               <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-700">
                 Krok 3
               </p>
@@ -293,7 +293,7 @@ export default function HomePage() {
         </div>
 
         <Section
-          title="Co si odneseš domů"
+          title="Co si dítě odnese z kurzu"
           intro="Cílem je konkrétní výstup. Projekt vždy doladíme podle věku, tempa a zájmu dítěte."
           className="mt-20"
         >
@@ -399,8 +399,8 @@ export default function HomePage() {
               Nezávazně přihlásit dítě 🚀
             </Link>
             <p className="mx-auto mt-3 max-w-lg text-xs font-semibold text-violet-200">
-              Odeslání přihlášky je nezávazné. Termín doladíme podle vašich
-              časových možností.
+              Odeslání přihlášky je nezávazné. Po potvrzení otevřených termínů
+              vám pošleme dostupné varianty.
             </p>
           </div>
         </div>

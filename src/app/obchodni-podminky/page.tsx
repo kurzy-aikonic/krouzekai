@@ -61,9 +61,9 @@ export default function ObchodniPodminkyPage() {
           praktické využití umělé inteligence (programování a tvorba s AI —
           &bdquo;vibecoding&ldquo;), probíhající v českém jazyce distančním
           způsobem (videohovor). Kurz sestává z {site.pricing.lessons} lekcí po{" "}
-          {site.pricing.lessonMinutes} minutách, obvykle jednou týdně, vždy
+          {site.pricing.lessonMinutes} minutách, obvykle jednou za 14 dní, vždy
           online; podrobnosti o průběhu jsou na stránce{" "}
-          <a href="/jak-probiha">Jak probíhá lekce</a>.
+          <a href="/jak-probiha">Jak to u nás funguje</a>.
         </p>
         <p>
           Nabízíme tyto formáty:{" "}

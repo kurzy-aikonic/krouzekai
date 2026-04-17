@@ -22,12 +22,8 @@ export const faqItems: { q: string; a: string }[] = [
     a: "Ano. Děti učíme etiku, ochranu soukromí a kyberbezpečnost hned od první lekce.",
   },
   {
-    q: "Co když dítě zmešká lekci?",
-    a: "Doplníme v obchodních podmínkách konkrétní pravidlo (náhrada / záznam). Cílem je, aby dítě nespadlo z tempa — domluvíme individuálně.",
-  },
-  {
     q: "Jak probíhá platba?",
-    a: "Po registraci vás kontaktujeme a domluvíme podmínky. Fakturu zatím vystavujeme a posíláme individuálně (fyzicky / poštou dle domluvy), nikoli automaticky z webu. Po obdržení faktury platíte podle uvedených údajů. Online platební brána může být doplněna později.",
+    a: "Po registraci vás kontaktujeme a domluvíme podmínky. Fakturu vystavujeme a posíláme individuálně, nikoli automaticky z webu. Po obdržení faktury platíte podle uvedených údajů.",
   },
   {
     q: "Je práce s AI pro děti bezpečná?",
@@ -51,6 +47,6 @@ export const faqItems: { q: string; a: string }[] = [
   },
   {
     q: "Jak zjistím stav přihlášky a platby?",
-    a: `Po přihlášce vás budeme kontaktovat e-mailem. Můžete také použít přehled pro rodiče na webu (přihlášení stejným e-mailem jako u přihlášky) — uvidíte stav a odkaz na orientační platební přehled.`,
+    a: `Po přihlášce vás budeme kontaktovat e-mailem. Stav i platební přehled najdete v přehledu pro rodiče na adrese /rodic/prihlaseni (přihlášení stejným e-mailem jako u přihlášky).`,
   },
 ];
