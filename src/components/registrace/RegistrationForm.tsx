@@ -174,8 +174,8 @@ export function RegistrationForm({
             Termín skupiny (volitelně)
           </legend>
           <p className="text-xs font-medium leading-relaxed text-slate-600">
-            Můžeš vybrat konkrétní termín — nebo nechat prázdné a domluvíme se
-            později.
+            Můžete vybrat konkrétní termín, nebo nechat pole prázdné a domluvit
+            se s námi později.
           </p>
           <label className="flex cursor-pointer items-start gap-2 rounded-xl border-2 border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] sm:text-sm">
             <input
@@ -230,7 +230,7 @@ export function RegistrationForm({
             Konkrétní termíny zatím nejsou vypsané.
           </p>
           <p className="mt-1 text-xs font-medium leading-relaxed text-slate-700">
-            Přihlášku můžeš odeslat hned — konkrétní termín ti potvrdíme podle
+            Přihlášku můžete odeslat hned - konkrétní termín vám potvrdíme podle
             zájmu a věkové skupiny.
           </p>
         </div>
@@ -242,8 +242,8 @@ export function RegistrationForm({
             Časový slot 1:1 (volitelně)
           </legend>
           <p className="text-xs font-medium leading-relaxed text-slate-600">
-            Pokud máme vypsaný konkrétní slot, můžeš ho vybrat — jinak nech
-            prázdné a čas domluvíme.
+            Pokud máme vypsaný konkrétní slot, můžete ho vybrat - jinak nechte
+            pole prázdné a čas domluvíme.
           </p>
           <label className="flex cursor-pointer items-start gap-2 rounded-xl border-2 border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] sm:text-sm">
             <input
@@ -298,7 +298,7 @@ export function RegistrationForm({
             Veřejné 1:1 sloty zatím nejsou vypsané.
           </p>
           <p className="mt-1 text-xs font-medium leading-relaxed text-slate-700">
-            Přihlášku můžeš odeslat — konkrétní čas kurzu s tebou domluvíme.
+            Přihlášku můžete odeslat - konkrétní čas kurzu s vámi domluvíme.
           </p>
         </div>
       ) : null}

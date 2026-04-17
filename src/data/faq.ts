@@ -35,7 +35,7 @@ export const faqItems: { q: string; a: string }[] = [
   },
   {
     q: "Kolik to stojí?",
-    a: `Skupina ${site.pricing.skupinaCourse} Kč za ${site.pricing.lessons} lekcí (${site.pricing.skupinaPerLesson} Kč / lekce), 1:1 je ${site.pricing.individualCourse} Kč za kurz (${site.pricing.individualPerLesson} Kč / lekce). ${site.pricing.vatNote}`,
+    a: `Skupina ${site.pricing.skupinaCourse.toLocaleString("cs-CZ")} Kč za ${site.pricing.lessons} lekcí (${site.pricing.skupinaPerLesson.toLocaleString("cs-CZ")} Kč / lekce), 1:1 je ${site.pricing.individualCourse.toLocaleString("cs-CZ")} Kč za kurz (${site.pricing.individualPerLesson.toLocaleString("cs-CZ")} Kč / lekce). ${site.pricing.vatNote}`,
   },
   {
     q: "Kdy se skupinový kurz skutečně rozběhne?",

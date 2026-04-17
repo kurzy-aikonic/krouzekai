@@ -7,7 +7,7 @@ import { pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Kroužek umělé inteligence pro děti | Postav si hru s AI",
+  title: "Kroužek umělé inteligence pro děti | Vaše dítě vytvoří hru s AI",
   description:
     "Moderní online kroužek pro děti 10–17 let. Učíme tvořit aplikace, weby a hry pomocí AI bez nutnosti programování. Přihlašte se nezávazně!",
   path: "/",
@@ -17,15 +17,15 @@ const learnItems = [
   {
     emoji: "🎨",
     title: "Vibecoding",
-    text: "Řekneš AI, co chceš — a ona ti pomůže složit hru, appku nebo web.",
-    example: "Např. „Udělej mi pixelovou hru, kde sbírám hvězdy.“",
+    text: "Dítě se naučí zadat AI jasné instrukce a převést nápad do funkčního projektu.",
+    example: "Např. „Navrhni pixelovou hru, kde hráč sbírá hvězdy.“",
     accent: "from-violet-400 to-fuchsia-400",
     border: "border-violet-500",
   },
   {
     emoji: "💬",
     title: "Prompt engineering",
-    text: "Naučíš se mluvit s AI tak, aby rozuměla přesně tobě.",
+    text: "Dítě si osvojí, jak s AI komunikovat přesně a bezpečně.",
     example: "Např. přidat pravidla stylu, délku odpovědi, bezpečnost.",
     accent: "from-sky-400 to-cyan-400",
     border: "border-sky-500",
@@ -33,7 +33,7 @@ const learnItems = [
   {
     emoji: "🕹️",
     title: "AI game design",
-    text: "Nápady na levely, postavy a mechaniky — s AI jako spoluhráčem.",
+    text: "Návrh levelů, postav a herních mechanik s AI jako tvůrčím pomocníkem.",
     example: "Např. generování nápadů na nepřátele a odměny.",
     accent: "from-amber-400 to-orange-400",
     border: "border-amber-500",
@@ -41,7 +41,7 @@ const learnItems = [
   {
     emoji: "🖼️",
     title: "Tvorba vizuálů",
-    text: "Grafika, postavy, pozadí — všechno pro tvůj vlastní projekt.",
+    text: "Grafika, postavy i pozadí pro vlastní projekt dítěte.",
     example: "Např. styl „komiksový vesmír“ pro celou hru.",
     accent: "from-emerald-400 to-teal-400",
     border: "border-emerald-500",
@@ -49,7 +49,7 @@ const learnItems = [
   {
     emoji: "🤖",
     title: "Vlastní AI asistent",
-    text: "Mini chatbot nebo pomocník na přesně to, co zrovna řešíš.",
+    text: "Mini chatbot nebo praktický AI pomocník pro konkrétní úkol.",
     example: "Např. asistent na učení slovíček nebo plánování úkolů.",
     accent: "from-rose-400 to-pink-400",
     border: "border-rose-500",
@@ -57,7 +57,7 @@ const learnItems = [
   {
     emoji: "🛡️",
     title: "Bezpečnost a etika",
-    text: "Co je v pohodě sdílet, co ne — a kdy AI věřit.",
+    text: "Co je bezpečné sdílet, co ne a jak ověřovat výstupy AI.",
     example: "Např. fakt vs. halucinace, soukromí, respekt k druhým.",
     accent: "from-indigo-400 to-violet-400",
     border: "border-indigo-500",
@@ -65,10 +65,10 @@ const learnItems = [
 ] as const;
 
 const outcomes = [
-  { t: "Vlastní appku, hru nebo web — bez psaní kódu řádek po řádku.", e: "🏆" },
-  { t: "Jistotu v ChatGPT, Claude a dalších nástrojích.", e: "🧠" },
-  { t: "Projekty, které ukážeš kamarádům, rodičům i učitelům.", e: "🌟" },
-  { t: "Víš, kdy AI pomůže a kdy je potřeba myslet vlastní hlavou.", e: "⚖️" },
+  { t: "Vlastní aplikaci, hru nebo web bez klasického programování řádek po řádku.", e: "🏆" },
+  { t: "Jistotu při práci s ChatGPT, Claude a dalšími AI nástroji.", e: "🧠" },
+  { t: "Konkrétní projekt, který dítě může prezentovat doma i ve škole.", e: "🌟" },
+  { t: "Zdravé návyky: kdy AI pomáhá a kdy je potřeba samostatné kritické myšlení.", e: "⚖️" },
 ] as const;
 
 export default function HomePage() {
@@ -93,7 +93,7 @@ export default function HomePage() {
           </div>
 
           <h1 className="font-display mt-5 max-w-4xl text-3xl font-extrabold leading-[1.12] tracking-tight sm:mt-6 sm:text-5xl lg:text-6xl">
-            <span className="text-gradient-magic">Postav si vlastní hru,</span>
+            <span className="text-gradient-magic">Vaše dítě vytvoří vlastní hru,</span>
             <br />
             <span className="text-[var(--magic-ink)]">appku nebo web</span>
             <br />
@@ -107,14 +107,14 @@ export default function HomePage() {
             <span className="rounded-lg bg-[var(--magic-sun)] px-2 py-0.5 font-display text-[var(--magic-ink)]">
               {site.audience.ageMin}–{site.audience.ageMax} let
             </span>
-            . Skupiny skládáme podle věku — tempo i témata ladíme na konkrétní
+            . Skupiny skládáme podle věku - tempo i témata ladíme na konkrétní
             segment, ne na jeden univerzální mix. Skupinka max.{" "}
             {p.groupMaxStudents} nebo kurz 1:1. Žádná suchá teorie — jen nápad,
             AI a{" "}
             <span className="underline decoration-wavy decoration-[var(--magic-pink)] decoration-2">
               hotová věc
             </span>
-            , kterou si můžeš osahat.
+            , který dítě skutečně vytvoří.
           </p>
           <p className="mt-4 max-w-2xl text-sm font-semibold leading-relaxed text-violet-900 sm:text-base">
             Hrajeme fér — právě otevíráme první termíny, takže tu zatím
@@ -135,19 +135,11 @@ export default function HomePage() {
 
         {/* Rodičovský pruh */}
         <div className="mt-14 rounded-3xl border-[3px] border-dashed border-violet-400 bg-white/80 p-5 shadow-[6px_6px_0_rgba(49,46,129,0.12)] backdrop-blur-sm sm:p-6">
-          <p className="font-display text-sm font-extrabold uppercase tracking-wide text-violet-700">
-            Psst, rodiče 👋
-          </p>
           <p className="mt-2 text-base leading-relaxed text-slate-800">
-            Tenhle web vypadá „dětsky“ schválně — stejně jako chceme, aby děti
-            vnímaly kurz: hra, tvoření, radost. Pod kapotou je pořád všechno
-            srozumitelně a bezpečně. Kroužky vedeme ve věkových blocích; přesné
-            rozmezí k danému termínu vám potvrdíme — jde nám o to, aby byl kurz
-            pro každého srozumitelný a zároveň dostatečně výživný. A ano —
-            přesně takhle se dá dnes stavět web: barvy, animace, typografie… o
-            tom na kroužku taky mluvíme. Kurzy teprve startujeme — až budeme mít
-            první hotové termíny, přidáme na web férové ohlasy a ukázky projektů od
-            dětí.
+            Kurz je postavený tak, aby děti bavil a zároveň rodičům dával jistotu
+            v organizaci, bezpečnosti i kvalitě výuky. Skupiny tvoříme podle věku
+            a úrovně, aby tempo odpovídalo každému dítěti. Přesné složení i termín
+            vždy potvrzujeme individuálně po registraci.
           </p>
         </div>
 
@@ -202,7 +194,7 @@ export default function HomePage() {
         <div className="mt-16 grid gap-12 lg:grid-cols-3 lg:gap-10">
           <Section
             title="Co se děti naučí"
-            intro="Každý bod je jako level v hře — na konci máš skill, který použiješ na vlastním projektu."
+            intro="Každý modul vede ke konkrétnímu výsledku, který dítě využije ve vlastním projektu."
             className="lg:col-span-2"
           >
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -290,7 +282,7 @@ export default function HomePage() {
                   přístupem na internet
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-lg">⌨️</span> Umíš psát a klikat v prohlížeči
+                  <span className="text-lg">⌨️</span> Základní práce s klávesnicí a prohlížečem
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="text-lg">🚫</span> Žádný Python, žádný strach
@@ -302,7 +294,7 @@ export default function HomePage() {
 
         <Section
           title="Co si odneseš domů"
-          intro="Cíl kurzu — něco, co půjde ukázat. Konkrétní projekt doladíme podle věku a tempa skupiny."
+          intro="Cílem je konkrétní výstup. Projekt vždy doladíme podle věku, tempa a zájmu dítěte."
           className="mt-20"
         >
           <ul className="grid gap-4 sm:grid-cols-2">
@@ -328,8 +320,8 @@ export default function HomePage() {
               Pro děti {site.audience.ageMin} až {site.audience.ageMax} let,
               které milují technologie a chtějí <strong>tvořit</strong>, ne jen
               scrollovat. Skupiny dělíme podle věku, aby úroveň seděla všem v
-              kurzu — žádný univerzální mix, kde by se starší nudili a mladší
-              nestíhali. Není to klasický kurz programování — tady stavíš věci s
+              kurzu - žádný univerzální mix, kde by se starší nudili a mladší
+              nestíhali. Není to klasický kurz programování - tady děti staví věci s
               AI. A rodiče mohou být v klidu: všechno dětem vysvětlíme
               srozumitelně, lidsky a s důrazem na kyberbezpečnost.
             </p>
@@ -355,8 +347,8 @@ export default function HomePage() {
               ))}
             </div>
             <p className="mt-4 font-medium leading-relaxed text-slate-800">
-              S dětmi pracujeme nejradši — nemají zábrany a jdou do toho po
-              hlavě. Přesně jak má být. 🎯
+              Dětem předáváme moderní digitální dovednosti prakticky a srozumitelně
+              - tak, aby je uměly bezpečně využít ve škole i mimo ni. 🎯
             </p>
           </div>
         </Section>
@@ -365,13 +357,13 @@ export default function HomePage() {
         <section className="mt-20 rounded-[2rem] border-[3px] border-[var(--magic-ink)] bg-[var(--magic-ink)] p-1 shadow-[8px_8px_0_rgba(0,0,0,0.2)]">
           <div className="rounded-[1.65rem] bg-gradient-to-br from-white via-violet-50 to-amber-50 px-6 py-8 sm:px-10 sm:py-10">
             <h2 className="font-display text-2xl font-extrabold text-[var(--magic-ink)] sm:text-3xl">
-              Kouzlo tohohle webu? 🪄
+              Jaké digitální dovednosti si děti osvojí
             </h2>
             <p className="mt-4 text-base font-medium leading-relaxed text-slate-800 sm:text-lg">
               Animované pozadí, barevné karty, vlastní fonty, klikací hvězdičky —
-              to všechno jsou stavební kameny moderního webu. Na kurzu ukážeme, jak
-              podobné věci vznikají (a jak si podobné „kouzlo“ můžeš postavit ty
-              s pomocí AI).
+              to všechno jsou stavební kameny moderního webu. Na kurzu dětem
+              ukážeme, jak podobné věci vznikají a jak je bezpečně vytvářet s
+              pomocí AI.
             </p>
             <ul className="mt-6 flex flex-wrap gap-2">
               {["Animace", "Barvy & gradienty", "Typografie", "Layout", "Interakce"].map(
@@ -395,11 +387,10 @@ export default function HomePage() {
           <div className="rainbow-strip absolute inset-0 opacity-90" aria-hidden />
           <div className="relative m-[3px] rounded-[1.85rem] bg-[var(--magic-ink)] px-6 py-12 sm:px-10 sm:py-14">
             <h2 className="font-display text-2xl font-extrabold text-white sm:text-4xl">
-              Přidej se k prvním termínům
+              Přihlaste dítě do prvních termínů
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-base font-medium text-violet-200">
-              Vyplň přihlášku — ozveme se a domluvíme termín i formát. Jednoduchý
-              quest. 🗺️
+              Vyplňte přihlášku - ozveme se a společně doladíme termín i formát.
             </p>
             <Link
               href="/registrace"

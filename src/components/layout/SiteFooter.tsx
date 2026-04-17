@@ -34,13 +34,13 @@ export function SiteFooter() {
             </p>
             <BrandSubtitle className="mt-1.5 text-sm sm:text-base" />
             <p className="mt-2 text-base font-semibold text-violet-900/80">
-              Online kroužek • vibecoding bez nudy
+              Online kroužek AI pro děti
             </p>
             <p className="mt-3 text-sm leading-relaxed text-slate-700">
               Pro děti {site.audience.ageMin}–{site.audience.ageMax} let;
               skupiny skládáme podle věku, aby tempo sedělo všem. Rodiče vidí
-              přehledně, co dítě získá — a proč to celé vypadá jako z jiný
-              planety. Schválně. 🛸
+              přehledně, co dítě získá, jak výuka probíhá a jak zajišťujeme
+              bezpečné prostředí.
             </p>
             <a
               href={`mailto:${site.contactEmail}`}

@@ -7,9 +7,9 @@ import { BrandSubtitle } from "@/components/layout/BrandSubtitle";
 import { site } from "@/lib/site-config";
 
 const nav = [
-  { href: "/", label: "Kurz", emoji: "🎮" },
-  { href: "/jak-probiha", label: "Jak to běží", emoji: "⚡" },
-  { href: "/faq", label: "FAQ", emoji: "❓" },
+  { href: "/", label: "O kurzu", emoji: "🎓" },
+  { href: "/jak-probiha", label: "Jak probíhá výuka", emoji: "⚡" },
+  { href: "/faq", label: "Časté otázky", emoji: "❓" },
   { href: "/kontakt", label: "Kontakt", emoji: "✉️" },
   { href: "/registrace", label: "Registrace", emoji: "🚀" },
 ] as const;
