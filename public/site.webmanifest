@@ -1,7 +1,7 @@
 {
   "name": "Kroužek umělé inteligence",
   "short_name": "Kroužek AI",
-  "description": "Online kroužek AI pro děti 10-17 let.",
+  "description": "Online kroužek AI pro děti 10–17 let.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
