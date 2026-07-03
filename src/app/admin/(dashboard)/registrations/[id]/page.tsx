@@ -9,7 +9,9 @@ import {
   listRegistrationsMerged,
 } from "@/lib/registrations-store";
 import { AdminRegistrationDetailForm } from "@/components/admin/AdminRegistrationDetailForm";
+import { AdminRegistrationActivity } from "@/components/admin/AdminRegistrationActivity";
 import { RegistrationTechnicalId } from "@/components/admin/RegistrationTechnicalId";
+import { findParentAccountByEmail } from "@/lib/parent-accounts-store";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +34,8 @@ export default async function AdminRegistrationDetailPage({ params }: PageProps)
     );
   }
 
+  const parentAccount = await findParentAccountByEmail(record.parentEmail);
+
   return (
     <div>
       <Link
@@ -53,7 +57,14 @@ export default async function AdminRegistrationDetailPage({ params }: PageProps)
         writable={writable}
         courseRuns={courseRuns}
         occupancyByRunId={occupancyByRunId}
+        parentHasAccount={parentAccount != null}
       />
+      <div className="mt-8">
+        <AdminRegistrationActivity
+          adminHistory={record.adminHistory}
+          emailLog={record.emailLog}
+        />
+      </div>
     </div>
   );
 }

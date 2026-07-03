@@ -1,13 +1,14 @@
 import { z } from "zod";
 import { apiJson } from "@/lib/api-response";
-import { getAdminSecret, verifyAdminRequest } from "@/lib/admin-auth";
+import { getAdminActorFromRequest, getAdminSecret, verifyAdminRequest } from "@/lib/admin-auth";
 import { sendRegistrationStatusChangeNotice } from "@/lib/email";
 import {
+  appendRegistrationEmailLog,
   findRegistrationById,
   updateRegistration,
 } from "@/lib/registrations-store";
 import { rateLimitResponse } from "@/lib/rate-limit";
-import { registrationStatuses } from "@/types/registration";
+import { registrationStatuses, registrationStatusLabelsCs } from "@/types/registration";
 
 export const dynamic = "force-dynamic";
 
@@ -60,7 +61,8 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 
   try {
-    const updated = await updateRegistration(id, parsed.data);
+    const actor = getAdminActorFromRequest(request);
+    const updated = await updateRegistration(id, parsed.data, { actor });
     if (!updated) {
       return apiJson({ error: "Přihláška nenalezena." }, { status: 404 });
     }
@@ -69,10 +71,21 @@ export async function PATCH(request: Request, context: RouteContext) {
       existing.status !== updated.status
     ) {
       void sendRegistrationStatusChangeNotice(updated, existing.status).then(
-        (r) => {
+        async (r) => {
           if (!r.ok && "error" in r) {
             console.error("[email] změna stavu přihlášky", r.error);
           }
+          await appendRegistrationEmailLog(id, {
+            kind: "status_change",
+            to: updated.parentEmail,
+            ok: r.ok,
+            actor,
+            note: r.ok
+              ? registrationStatusLabelsCs[updated.status]
+              : "error" in r
+                ? r.error
+                : "chyba",
+          });
         },
       );
     }

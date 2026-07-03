@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CourseRun } from "@/data/course-runs";
 import { registrationsToCsv } from "@/lib/admin-registrations-csv";
+import { isAwaitingPayment } from "@/lib/admin-payment-stats";
 import { getPublicRegistrationCode } from "@/lib/registration-code";
+import { variableSymbolFromRegistrationId } from "@/lib/payment";
 import { registrationStatusPillClassName } from "@/lib/registration-status-ui";
 import type {
   RegistrationRecord,
@@ -29,6 +31,12 @@ type Props = {
   writable: boolean;
   courseRuns: CourseRun[];
   initialStatusFilter?: RegistrationStatus | "vse";
+  initialFormat?: "vse" | "skupina" | "individual";
+  initialRunFilter?: string;
+  initialDateFrom?: string;
+  initialDateTo?: string;
+  initialQuery?: string;
+  initialAwaitingPayment?: boolean;
 };
 
 export function AdminRegistrationsClient({
@@ -36,16 +44,28 @@ export function AdminRegistrationsClient({
   writable,
   courseRuns,
   initialStatusFilter = "vse",
+  initialFormat = "vse",
+  initialRunFilter = "vse",
+  initialDateFrom = "",
+  initialDateTo = "",
+  initialQuery = "",
+  initialAwaitingPayment = false,
 }: Props) {
   const router = useRouter();
-  const [q, setQ] = useState("");
+  const searchParams = useSearchParams();
+  const [q, setQ] = useState(initialQuery);
   const [status, setStatus] = useState<RegistrationStatus | "vse">(
     initialStatusFilter,
   );
-  const [format, setFormat] = useState<"vse" | "skupina" | "individual">("vse");
-  const [runFilter, setRunFilter] = useState<string>("vse");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
+  const [format, setFormat] = useState<"vse" | "skupina" | "individual">(
+    initialFormat,
+  );
+  const [runFilter, setRunFilter] = useState<string>(initialRunFilter);
+  const [dateFrom, setDateFrom] = useState(initialDateFrom);
+  const [dateTo, setDateTo] = useState(initialDateTo);
+  const [awaitingPayment, setAwaitingPayment] = useState(
+    initialAwaitingPayment,
+  );
   const searchRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
   const [bulkStatus, setBulkStatus] = useState<RegistrationStatus>(
@@ -53,6 +73,8 @@ export function AdminRegistrationsClient({
   );
   const [bulkSendEmails, setBulkSendEmails] = useState(false);
   const [bulkPending, setBulkPending] = useState(false);
+  const [bulkRunId, setBulkRunId] = useState<string>("");
+  const [bulkRunPending, setBulkRunPending] = useState(false);
   const [bulkMsg, setBulkMsg] = useState<string | null>(null);
   const [bulkErr, setBulkErr] = useState<string | null>(null);
 
@@ -68,7 +90,33 @@ export function AdminRegistrationsClient({
 
   useEffect(() => {
     setSelected(new Set());
-  }, [q, status, format, runFilter, dateFrom, dateTo]);
+  }, [q, status, format, runFilter, dateFrom, dateTo, awaitingPayment]);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (status !== "vse") params.set("status", status);
+    if (format !== "vse") params.set("format", format);
+    if (runFilter !== "vse") params.set("run", runFilter);
+    if (dateFrom) params.set("from", dateFrom);
+    if (dateTo) params.set("to", dateTo);
+    if (q.trim()) params.set("q", q.trim());
+    if (awaitingPayment) params.set("view", "ceka_platbu");
+    const next = params.toString();
+    const current = searchParams.toString();
+    if (next !== current) {
+      router.replace(next ? `/admin?${next}` : "/admin", { scroll: false });
+    }
+  }, [
+    status,
+    format,
+    runFilter,
+    dateFrom,
+    dateTo,
+    q,
+    awaitingPayment,
+    router,
+    searchParams,
+  ]);
 
   useEffect(() => {
     if (status !== "vse") setBulkStatus(status);
@@ -97,6 +145,7 @@ export function AdminRegistrationsClient({
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return initialItems.filter((r) => {
+      if (awaitingPayment && !isAwaitingPayment(r.status)) return false;
       if (status !== "vse" && r.status !== status) return false;
       if (format !== "vse" && r.format !== format) return false;
       if (runFilter === "__none__") {
@@ -128,7 +177,7 @@ export function AdminRegistrationsClient({
         .toLowerCase();
       return hay.includes(needle);
     });
-  }, [initialItems, q, status, format, runFilter, dateFrom, dateTo, courseRuns]);
+  }, [initialItems, q, status, format, runFilter, dateFrom, dateTo, awaitingPayment, courseRuns]);
 
   const filtersActive =
     q.trim().length > 0 ||
@@ -136,7 +185,8 @@ export function AdminRegistrationsClient({
     format !== "vse" ||
     runFilter !== "vse" ||
     dateFrom.length > 0 ||
-    dateTo.length > 0;
+    dateTo.length > 0 ||
+    awaitingPayment;
 
   function toggleRow(id: string) {
     setSelected((prev) => {
@@ -244,6 +294,73 @@ export function AdminRegistrationsClient({
       setBulkErr("Síťová chyba.");
     } finally {
       setBulkPending(false);
+    }
+  }
+
+  async function applyBulkRun() {
+    if (selected.size === 0) return;
+    const label =
+      bulkRunId === ""
+        ? "bez termínu"
+        : (courseRuns.find((r) => r.id === bulkRunId)?.label ?? bulkRunId);
+    if (
+      !window.confirm(
+        `Přiřadit termín „${label}“ u ${selected.size} přihlášek?`,
+      )
+    ) {
+      return;
+    }
+    setBulkMsg(null);
+    setBulkErr(null);
+    setBulkRunPending(true);
+    const lookups = Array.from(selected)
+      .map((id) => initialItems.find((r) => r.id === id))
+      .filter((r): r is RegistrationRecord => r != null)
+      .map((r) => getPublicRegistrationCode(r));
+    try {
+      const res = await fetch("/api/admin/registrations/bulk-run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lookups,
+          runId: bulkRunId === "" ? null : bulkRunId,
+        }),
+      });
+      const data: unknown = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const msg =
+          typeof data === "object" &&
+          data &&
+          "error" in data &&
+          typeof (data as { error?: string }).error === "string"
+            ? (data as { error: string }).error
+            : "Akce se nezdařila.";
+        setBulkErr(msg);
+        return;
+      }
+      const updated =
+        typeof data === "object" &&
+        data &&
+        "updated" in data &&
+        typeof (data as { updated?: unknown }).updated === "number"
+          ? (data as { updated: number }).updated
+          : 0;
+      const skipped =
+        typeof data === "object" &&
+        data &&
+        "skippedFormat" in data &&
+        typeof (data as { skippedFormat?: unknown }).skippedFormat === "number"
+          ? (data as { skippedFormat: number }).skippedFormat
+          : 0;
+      setBulkMsg(
+        `Termín přiřazen u ${updated} přihlášek.${skipped ? ` Přeskočeno (jiný formát): ${skipped}.` : ""}`,
+      );
+      setSelected(new Set());
+      router.refresh();
+    } catch {
+      setBulkErr("Síťová chyba.");
+    } finally {
+      setBulkRunPending(false);
     }
   }
 
@@ -401,6 +518,15 @@ export function AdminRegistrationsClient({
             className="input-portal mt-1.5 block min-w-[140px]"
           />
         </div>
+        <label className="flex cursor-pointer items-center gap-2 pb-2 text-sm text-slate-700">
+          <input
+            type="checkbox"
+            checked={awaitingPayment}
+            onChange={(e) => setAwaitingPayment(e.target.checked)}
+            className="h-4 w-4 rounded border-slate-300 text-violet-600"
+          />
+          Jen čeká na platbu
+        </label>
         <div className="flex flex-col gap-2 sm:ml-auto sm:items-end sm:self-center">
           <p className="text-xs text-slate-500">
             Zobrazeno {filtered.length} z {initialItems.length}
@@ -459,7 +585,37 @@ export function AdminRegistrationsClient({
               onClick={() => void applyBulkStatus()}
               className="btn-portal-primary max-w-xs"
             >
-              {bulkPending ? "Ukládám…" : "Použít na vybrané"}
+              {bulkPending ? "Ukládám…" : "Použít stav"}
+            </button>
+            <div>
+              <label
+                htmlFor="admin-bulk-run"
+                className="text-xs font-bold uppercase tracking-wide text-slate-500"
+              >
+                Termín
+              </label>
+              <select
+                id="admin-bulk-run"
+                value={bulkRunId}
+                onChange={(e) => setBulkRunId(e.target.value)}
+                className="input-portal mt-1.5 block min-w-[200px]"
+              >
+                <option value="">— bez termínu —</option>
+                {courseRuns.map((run) => (
+                  <option key={run.id} value={run.id}>
+                    {run.label}
+                    {run.active === false ? " (skrytý)" : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="button"
+              disabled={bulkRunPending}
+              onClick={() => void applyBulkRun()}
+              className="btn-portal-outline max-w-xs"
+            >
+              {bulkRunPending ? "Ukládám…" : "Přiřadit termín"}
             </button>
             <button
               type="button"
@@ -504,6 +660,7 @@ export function AdminRegistrationsClient({
               <th className="px-3 py-3">Rodič / kontakt</th>
               <th className="px-3 py-3">Formát</th>
               <th className="px-3 py-3">Stav</th>
+              <th className="px-3 py-3">VS</th>
               <th className="px-3 py-3">Termín</th>
               <th className="px-3 py-3">Kód</th>
               <th className="px-3 py-3 w-24" />
@@ -556,6 +713,9 @@ export function AdminRegistrationsClient({
                   >
                     {registrationStatusLabelsCs[r.status]}
                   </span>
+                </td>
+                <td className="whitespace-nowrap px-3 py-2 font-mono text-xs text-slate-600">
+                  {variableSymbolFromRegistrationId(r.id)}
                 </td>
                 <td className="max-w-[200px] px-3 py-2 text-xs text-slate-600">
                   {runLabel(r, courseRuns)}

@@ -1,7 +1,11 @@
 import { apiJson } from "@/lib/api-response";
-import { getAdminSecret, verifyAdminRequest } from "@/lib/admin-auth";
+import { getAdminActorFromRequest, getAdminSecret, verifyAdminRequest } from "@/lib/admin-auth";
 import { sendRegistrationConfirmation } from "@/lib/email";
-import { findRegistrationById } from "@/lib/registrations-store";
+import {
+  appendRegistrationAdminHistory,
+  appendRegistrationEmailLog,
+  findRegistrationById,
+} from "@/lib/registrations-store";
 import { rateLimitResponse } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -29,8 +33,16 @@ export async function POST(request: Request, context: RouteContext) {
     return apiJson({ error: "Přihláška nenalezena." }, { status: 404 });
   }
 
+  const actor = getAdminActorFromRequest(request);
   const result = await sendRegistrationConfirmation(record);
   if (!result.ok) {
+    await appendRegistrationEmailLog(id, {
+      kind: "resend_confirmation",
+      to: record.parentEmail,
+      ok: false,
+      actor,
+      note: "error" in result ? result.error : "chyba",
+    });
     return apiJson(
       { error: "error" in result ? result.error : "Odeslání se nezdařilo." },
       { status: 502 },
@@ -45,6 +57,19 @@ export async function POST(request: Request, context: RouteContext) {
       { status: 503 },
     );
   }
+
+  await appendRegistrationEmailLog(id, {
+    kind: "resend_confirmation",
+    to: record.parentEmail,
+    ok: true,
+    actor,
+  });
+
+  await appendRegistrationAdminHistory(id, {
+    actor,
+    action: "registration.resend_confirmation",
+    summary: "znovu odesláno potvrzení přihlášky",
+  });
 
   return apiJson({
     ok: true,

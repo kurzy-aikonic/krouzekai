@@ -1,4 +1,5 @@
 import { getPublicRegistrationCode } from "@/lib/registration-code";
+import { variableSymbolFromRegistrationId } from "@/lib/payment";
 import type { RegistrationRecord } from "@/types/registration";
 import { registrationStatusLabelsCs } from "@/types/registration";
 
@@ -20,6 +21,8 @@ const HEADER = [
   "telefon",
   "format",
   "stav",
+  "castka_czk",
+  "variabilni_symbol",
   "termin_id",
   "termin_popis",
   "interni_poznamka",
@@ -43,6 +46,8 @@ export function registrationsToCsv(
         csvCell(r.parentPhone),
         csvCell(r.format === "skupina" ? "skupina" : "individual"),
         csvCell(registrationStatusLabelsCs[r.status]),
+        csvCell(String(r.amountCzk)),
+        csvCell(variableSymbolFromRegistrationId(r.id)),
         csvCell(r.runId ?? ""),
         csvCell(resolveRunLabel(r)),
         csvCell(r.internalNotes ?? ""),

@@ -1,5 +1,10 @@
 import type { CourseRun } from "@/data/course-runs";
 import { spotsLeftEffective } from "@/data/course-runs";
+import { findDuplicateGroups, type DuplicateGroup } from "@/lib/admin-duplicates";
+import {
+  countAwaitingPayment,
+  sumAwaitingPaymentCzk,
+} from "@/lib/admin-payment-stats";
 import { countedOccupancyForRun } from "@/lib/course-run-registrations";
 import { getPublicRegistrationCode } from "@/lib/registration-code";
 import type { RegistrationRecord } from "@/types/registration";
@@ -9,6 +14,9 @@ export type AdminDashboardStats = {
   last7d: number;
   fullRuns: { id: string; label: string; format: string }[];
   orphanCount: number;
+  awaitingPaymentCount: number;
+  awaitingPaymentCzk: number;
+  duplicateGroups: DuplicateGroup[];
   recentNova: {
     code: string;
     childName: string;
@@ -56,6 +64,9 @@ export function computeAdminDashboardStats(
     last7d,
     fullRuns,
     orphanCount,
+    awaitingPaymentCount: countAwaitingPayment(items),
+    awaitingPaymentCzk: sumAwaitingPaymentCzk(items),
+    duplicateGroups: findDuplicateGroups(items),
     recentNova,
   };
 }

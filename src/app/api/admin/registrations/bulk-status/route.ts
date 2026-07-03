@@ -1,10 +1,14 @@
 import { z } from "zod";
 import { apiJson } from "@/lib/api-response";
-import { getAdminSecret, verifyAdminRequest } from "@/lib/admin-auth";
-import { bulkUpdateRegistrationStatus } from "@/lib/registrations-store";
+import { getAdminActorFromRequest, getAdminSecret, verifyAdminRequest } from "@/lib/admin-auth";
+import {
+  appendRegistrationEmailLog,
+  bulkUpdateRegistrationStatus,
+} from "@/lib/registrations-store";
+import { getPublicRegistrationCode } from "@/lib/registration-code";
 import { sendRegistrationStatusChangeNotice } from "@/lib/email";
 import { rateLimitResponse } from "@/lib/rate-limit";
-import { registrationStatuses } from "@/types/registration";
+import { registrationStatuses, registrationStatusLabelsCs } from "@/types/registration";
 
 export const dynamic = "force-dynamic";
 
@@ -43,9 +47,11 @@ export async function POST(request: Request) {
   }
 
   try {
+    const actor = getAdminActorFromRequest(request);
     const result = await bulkUpdateRegistrationStatus(
       parsed.data.lookups,
       parsed.data.status,
+      { actor },
     );
 
     let emailsSent = 0;
@@ -58,6 +64,17 @@ export async function POST(request: Request) {
         );
         if (mail.ok) emailsSent += 1;
         else emailsFailed += 1;
+        await appendRegistrationEmailLog(getPublicRegistrationCode(record), {
+          kind: "bulk_status_change",
+          to: record.parentEmail,
+          ok: mail.ok,
+          actor,
+          note: mail.ok
+            ? registrationStatusLabelsCs[record.status]
+            : "error" in mail
+              ? mail.error
+              : "chyba",
+        });
       }
     }
 

@@ -146,6 +146,26 @@ export async function getAdminSessionEmailFromCookies(): Promise<string | null> 
   }
 }
 
+/** E-mail admina z requestu (cookie), nebo `"legacy"` / `"api"`. */
+export function getAdminActorFromRequest(request: Request): string {
+  const raw = request.headers.get("cookie");
+  if (raw) {
+    const parts = raw.split(";").map((p) => p.trim());
+    for (const p of parts) {
+      if (p.startsWith(`${ADMIN_SESSION_COOKIE}=`)) {
+        const value = decodeURIComponent(
+          p.slice(ADMIN_SESSION_COOKIE.length + 1),
+        );
+        const email = getAdminSessionEmail(value);
+        if (email) return email;
+      }
+    }
+  }
+  const auth = request.headers.get("authorization");
+  if (auth?.startsWith("Bearer ")) return "api";
+  return "neznámý";
+}
+
 /** Ověření pro route handlery: Bearer token nebo session cookie. */
 export function verifyAdminRequest(request: Request): boolean {
   const secret = getAdminSecret();

@@ -31,6 +31,29 @@ export function parseRegistrationStatus(value: unknown): RegistrationStatus {
   return "nova";
 }
 
+/** Záznam změny v adminu (historie u přihlášky). */
+export type AdminHistoryEntry = {
+  at: string;
+  actor: string;
+  action: string;
+  summary: string;
+  changes?: Record<string, { from?: unknown; to?: unknown }>;
+};
+
+/** Odeslaný e-mail k přihlášce (log v adminu). */
+export type RegistrationEmailLogEntry = {
+  at: string;
+  kind:
+    | "confirmation"
+    | "status_change"
+    | "resend_confirmation"
+    | "bulk_status_change";
+  to: string;
+  ok: boolean;
+  actor?: string;
+  note?: string;
+};
+
 /** Záznam uložený po úspěšné přihlášce (soubor / webhook / později DB). */
 export type RegistrationRecord = {
   id: string;
@@ -54,4 +77,8 @@ export type RegistrationRecord = {
   internalNotes?: string;
   /** ISO čas poslední úpravy přes admin. */
   updatedAt?: string;
+  /** Historie admin akcí (nejnovější první). */
+  adminHistory?: AdminHistoryEntry[];
+  /** Log odeslaných e-mailů rodiči (nejnovější první). */
+  emailLog?: RegistrationEmailLogEntry[];
 };

@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { CourseRun } from "@/data/course-runs";
 import { spotsLeftEffective } from "@/data/course-runs";
 import { getPublicRegistrationCode } from "@/lib/registration-code";
+import { variableSymbolFromRegistrationId } from "@/lib/payment";
 import { registrationStatusPillClassName } from "@/lib/registration-status-ui";
 import type { RegistrationRecord } from "@/types/registration";
 import type { RegistrationStatus } from "@/types/registration";
@@ -18,6 +20,7 @@ type Props = {
   writable: boolean;
   courseRuns: CourseRun[];
   occupancyByRunId: Record<string, number>;
+  parentHasAccount: boolean;
 };
 
 export function AdminRegistrationDetailForm({
@@ -25,8 +28,12 @@ export function AdminRegistrationDetailForm({
   writable,
   courseRuns,
   occupancyByRunId,
+  parentHasAccount,
 }: Props) {
   const router = useRouter();
+  const publicCode = getPublicRegistrationCode(record);
+  const variableSymbol = variableSymbolFromRegistrationId(record.id);
+  const paymentHref = `/platba?registrace=${encodeURIComponent(publicCode)}`;
   const [status, setStatus] = useState<RegistrationStatus>(record.status);
   const [internalNotes, setInternalNotes] = useState(record.internalNotes ?? "");
   const [runId, setRunId] = useState<string>(record.runId ?? "");
@@ -118,10 +125,60 @@ export function AdminRegistrationDetailForm({
           ? (data as { message: string }).message
           : "Potvrzení odesláno.";
       setResendMsg(okMsg);
+      router.refresh();
     } catch {
       setError("Síťová chyba.");
     } finally {
       setResendPending(false);
+    }
+  }
+
+  async function markAsPaid() {
+    if (status === "zaplaceno") return;
+    if (
+      !window.confirm(
+        "Označit přihlášku jako zaplaceno a poslat rodiči e-mail o změně stavu?",
+      )
+    ) {
+      return;
+    }
+    setStatus("zaplaceno");
+    setPending(true);
+    setError(null);
+    setMessage(null);
+    try {
+      const res = await fetch(
+        `/api/admin/registrations/${encodeURIComponent(publicCode)}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            status: "zaplaceno",
+            internalNotes,
+            runId: runId === "" ? null : runId,
+          }),
+        },
+      );
+      const data: unknown = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setStatus(record.status);
+        const msg =
+          typeof data === "object" &&
+          data &&
+          "error" in data &&
+          typeof (data as { error?: string }).error === "string"
+            ? (data as { error: string }).error
+            : "Uložení se nezdařilo.";
+        setError(msg);
+        return;
+      }
+      setMessage("Označeno jako zaplaceno.");
+      router.refresh();
+    } catch {
+      setStatus(record.status);
+      setError("Síťová chyba.");
+    } finally {
+      setPending(false);
     }
   }
 
@@ -179,6 +236,44 @@ export function AdminRegistrationDetailForm({
             <dt className="text-xs font-bold uppercase text-slate-500">Částka</dt>
             <dd className="mt-0.5 font-semibold text-slate-900">
               {record.amountCzk} Kč · {record.paymentProduct}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs font-bold uppercase text-slate-500">
+              Variabilní symbol
+            </dt>
+            <dd className="mt-0.5 font-mono text-sm font-bold text-slate-900">
+              {variableSymbol}
+            </dd>
+          </div>
+          <div className="sm:col-span-2">
+            <dt className="text-xs font-bold uppercase text-slate-500">Platba</dt>
+            <dd className="mt-0.5 text-sm">
+              <Link
+                href={paymentHref}
+                className="font-semibold text-violet-700 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Orientační přehled platby ↗
+              </Link>
+            </dd>
+          </div>
+          <div className="sm:col-span-2">
+            <dt className="text-xs font-bold uppercase text-slate-500">
+              Rodičovský portál
+            </dt>
+            <dd className="mt-0.5 text-sm text-slate-700">
+              {parentHasAccount ? (
+                <>
+                  Účet existuje —{" "}
+                  <Link href="/rodic" className="font-semibold text-violet-700 underline">
+                    /rodic
+                  </Link>
+                </>
+              ) : (
+                <>Účet zatím ne — rodič se může registrovat na /rodic/prihlaseni</>
+              )}
             </dd>
           </div>
           <div>
@@ -342,6 +437,16 @@ export function AdminRegistrationDetailForm({
           >
             {resendPending ? "Odesílám…" : "Znovu poslat potvrzení"}
           </button>
+          {writable && status !== "zaplaceno" ? (
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => void markAsPaid()}
+              className="rounded-xl border-2 border-emerald-600 bg-emerald-50 px-5 py-2.5 text-sm font-bold text-emerald-900 hover:bg-emerald-100 disabled:opacity-50"
+            >
+              Označit jako zaplaceno
+            </button>
+          ) : null}
         </div>
       </section>
     </div>

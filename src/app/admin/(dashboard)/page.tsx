@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { AdminDashboardSummary } from "@/components/admin/AdminDashboardSummary";
 import { AdminRegistrationsClient } from "@/components/admin/AdminRegistrationsClient";
 import { computeAdminDashboardStats } from "@/lib/admin-dashboard-stats";
@@ -31,7 +32,15 @@ function parseInitialStatus(
 export default async function AdminDashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{
+    status?: string;
+    format?: string;
+    run?: string;
+    from?: string;
+    to?: string;
+    q?: string;
+    view?: string;
+  }>;
 }) {
   const q = await searchParams;
   const items = await listRegistrationsMerged();
@@ -40,6 +49,7 @@ export default async function AdminDashboardPage({
   const last7d = registrationsLast7DaysCount(items);
   const stats = computeAdminDashboardStats(items, courseRuns, last7d);
   const initialStatusFilter = parseInitialStatus(q.status);
+  const initialAwaitingPayment = q.view === "ceka_platbu";
 
   return (
     <div>
@@ -53,12 +63,20 @@ export default async function AdminDashboardPage({
       <div className="mt-6">
         <AdminDashboardSummary stats={stats} />
       </div>
-      <AdminRegistrationsClient
-        initialItems={items}
-        writable={writable}
-        courseRuns={courseRuns}
-        initialStatusFilter={initialStatusFilter}
-      />
+      <Suspense fallback={<p className="mt-8 text-sm text-slate-500">Načítám filtry…</p>}>
+        <AdminRegistrationsClient
+          initialItems={items}
+          writable={writable}
+          courseRuns={courseRuns}
+          initialStatusFilter={initialStatusFilter}
+          initialFormat={q.format === "skupina" || q.format === "individual" ? q.format : "vse"}
+          initialRunFilter={q.run ?? "vse"}
+          initialDateFrom={q.from ?? ""}
+          initialDateTo={q.to ?? ""}
+          initialQuery={q.q ?? ""}
+          initialAwaitingPayment={initialAwaitingPayment}
+        />
+      </Suspense>
     </div>
   );
 }

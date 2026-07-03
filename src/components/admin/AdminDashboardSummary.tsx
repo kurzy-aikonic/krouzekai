@@ -9,11 +9,13 @@ export function AdminDashboardSummary({ stats }: Props) {
   const hasAlerts =
     stats.novaCount > 0 ||
     stats.fullRuns.length > 0 ||
-    stats.orphanCount > 0;
+    stats.orphanCount > 0 ||
+    stats.awaitingPaymentCount > 0 ||
+    stats.duplicateGroups.length > 0;
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <Link
           href="/admin?status=nova"
           className="portal-card block p-4 transition hover:border-violet-300 hover:bg-violet-50/40"
@@ -55,6 +57,28 @@ export function AdminDashboardSummary({ stats }: Props) {
             {stats.orphanCount}
           </p>
         </Link>
+        <Link
+          href="/admin?view=ceka_platbu"
+          className="portal-card block p-4 transition hover:border-violet-300 hover:bg-violet-50/40"
+        >
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            Čeká na platbu
+          </p>
+          <p className="mt-1 font-display text-2xl font-extrabold text-sky-800">
+            {stats.awaitingPaymentCount}
+          </p>
+          <p className="mt-1 text-[11px] font-medium text-slate-500">
+            cca {stats.awaitingPaymentCzk.toLocaleString("cs-CZ")} Kč
+          </p>
+        </Link>
+        <div className="portal-card p-4">
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            Možné duplicity
+          </p>
+          <p className="mt-1 font-display text-2xl font-extrabold text-orange-800">
+            {stats.duplicateGroups.length}
+          </p>
+        </div>
       </div>
 
       {hasAlerts ? (
@@ -111,6 +135,33 @@ export function AdminDashboardSummary({ stats }: Props) {
                 Termínech
               </Link>
               .
+            </p>
+          ) : null}
+          {stats.duplicateGroups.length > 0 ? (
+            <div>
+              <p className="text-xs font-bold uppercase text-slate-500">
+                Stejný rodič + dítě (≥ 2×)
+              </p>
+              <ul className="mt-2 space-y-1.5 text-sm">
+                {stats.duplicateGroups.slice(0, 5).map((g) => (
+                  <li key={g.key} className="text-slate-700">
+                    <span className="font-medium">{g.childName}</span>
+                    <span className="text-slate-500"> · {g.parentEmail}</span>
+                    <span className="text-xs text-slate-500">
+                      {" "}
+                      — kódy {g.codes.join(", ")}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          {stats.awaitingPaymentCount > 0 ? (
+            <p className="text-sm text-sky-900">
+              <Link href="/admin?view=ceka_platbu" className="font-bold underline">
+                {stats.awaitingPaymentCount} přihlášek
+              </Link>{" "}
+              čeká na platbu (nová / kontaktováno).
             </p>
           ) : null}
         </div>

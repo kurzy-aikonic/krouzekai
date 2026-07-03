@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { AdminEmailToolsClient } from "@/components/admin/AdminEmailToolsClient";
+import { AdminEmailTemplatesPreview } from "@/components/admin/AdminEmailTemplatesPreview";
+import { AdminEnvStatus } from "@/components/admin/AdminEnvStatus";
+import { getAdminEnvChecks } from "@/lib/admin-env-status";
 
-export default function AdminNastrojePage() {
+export default async function AdminNastrojePage() {
+  const envChecks = await getAdminEnvChecks();
+
   return (
     <div>
       <Link
@@ -17,7 +22,9 @@ export default function AdminNastrojePage() {
         Pomůcky pro provoz — bez vlivu na data přihlášek (kromě záměrných akcí na
         stránce přihlášek).
       </p>
-      <div className="mt-8 max-w-2xl">
+      <div className="mt-8 max-w-2xl space-y-6">
+        <AdminEnvStatus checks={envChecks} />
+        <AdminEmailTemplatesPreview />
         <AdminEmailToolsClient />
       </div>
     </div>
