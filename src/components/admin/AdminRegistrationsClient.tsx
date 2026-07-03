@@ -28,24 +28,30 @@ type Props = {
   initialItems: RegistrationRecord[];
   writable: boolean;
   courseRuns: CourseRun[];
-  /** Počet přihlášek přijatých za posledních 7 dní (počítá server). */
-  registrationsLast7d: number;
+  initialStatusFilter?: RegistrationStatus | "vse";
 };
 
 export function AdminRegistrationsClient({
   initialItems,
   writable,
   courseRuns,
-  registrationsLast7d,
+  initialStatusFilter = "vse",
 }: Props) {
   const router = useRouter();
   const [q, setQ] = useState("");
-  const [status, setStatus] = useState<RegistrationStatus | "vse">("vse");
+  const [status, setStatus] = useState<RegistrationStatus | "vse">(
+    initialStatusFilter,
+  );
   const [format, setFormat] = useState<"vse" | "skupina" | "individual">("vse");
+  const [runFilter, setRunFilter] = useState<string>("vse");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
-  const [bulkStatus, setBulkStatus] =
-    useState<RegistrationStatus>("kontaktovano");
+  const [bulkStatus, setBulkStatus] = useState<RegistrationStatus>(
+    initialStatusFilter !== "vse" ? initialStatusFilter : "kontaktovano",
+  );
+  const [bulkSendEmails, setBulkSendEmails] = useState(false);
   const [bulkPending, setBulkPending] = useState(false);
   const [bulkMsg, setBulkMsg] = useState<string | null>(null);
   const [bulkErr, setBulkErr] = useState<string | null>(null);
@@ -62,7 +68,11 @@ export function AdminRegistrationsClient({
 
   useEffect(() => {
     setSelected(new Set());
-  }, [q, status, format]);
+  }, [q, status, format, runFilter, dateFrom, dateTo]);
+
+  useEffect(() => {
+    if (status !== "vse") setBulkStatus(status);
+  }, [status]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -89,6 +99,19 @@ export function AdminRegistrationsClient({
     return initialItems.filter((r) => {
       if (status !== "vse" && r.status !== status) return false;
       if (format !== "vse" && r.format !== format) return false;
+      if (runFilter === "__none__") {
+        if (r.runId?.trim()) return false;
+      } else if (runFilter !== "vse" && r.runId !== runFilter) {
+        return false;
+      }
+      if (dateFrom) {
+        const day = r.receivedAt?.slice(0, 10);
+        if (!day || day < dateFrom) return false;
+      }
+      if (dateTo) {
+        const day = r.receivedAt?.slice(0, 10);
+        if (!day || day > dateTo) return false;
+      }
       if (!needle) return true;
       const hay = [
         r.id,
@@ -105,10 +128,15 @@ export function AdminRegistrationsClient({
         .toLowerCase();
       return hay.includes(needle);
     });
-  }, [initialItems, q, status, format, courseRuns]);
+  }, [initialItems, q, status, format, runFilter, dateFrom, dateTo, courseRuns]);
 
   const filtersActive =
-    q.trim().length > 0 || status !== "vse" || format !== "vse";
+    q.trim().length > 0 ||
+    status !== "vse" ||
+    format !== "vse" ||
+    runFilter !== "vse" ||
+    dateFrom.length > 0 ||
+    dateTo.length > 0;
 
   function toggleRow(id: string) {
     setSelected((prev) => {
@@ -139,9 +167,12 @@ export function AdminRegistrationsClient({
   async function applyBulkStatus() {
     if (selected.size === 0) return;
     const label = registrationStatusLabelsCs[bulkStatus];
+    const emailNote = bulkSendEmails
+      ? "\n\nRodičům u změněných přihlášek se pošle e-mail o novém stavu."
+      : "\n\nE-maily rodičům se neposílají (zaškrtněte volbu níže pro odeslání).";
     if (
       !window.confirm(
-        `Změnit stav u ${selected.size} přihlášek na „${label}“?\n\nHromadná změna neposílá e-maily rodičům (ty jdou jen při úpravě v detailu jedné přihlášky).`,
+        `Změnit stav u ${selected.size} přihlášek na „${label}“?${emailNote}`,
       )
     ) {
       return;
@@ -157,7 +188,11 @@ export function AdminRegistrationsClient({
       const res = await fetch("/api/admin/registrations/bulk-status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lookups, status: bulkStatus }),
+        body: JSON.stringify({
+          lookups,
+          status: bulkStatus,
+          sendEmails: bulkSendEmails,
+        }),
       });
       const data: unknown = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -193,8 +228,15 @@ export function AdminRegistrationsClient({
         Array.isArray((data as { notFound?: unknown }).notFound)
           ? (data as { notFound: string[] }).notFound
           : [];
+      const emailsSent =
+        typeof data === "object" &&
+        data &&
+        "emailsSent" in data &&
+        typeof (data as { emailsSent?: unknown }).emailsSent === "number"
+          ? (data as { emailsSent: number }).emailsSent
+          : undefined;
       setBulkMsg(
-        `Změněno záznamů: ${updated}. Už měly tento stav: ${already}.${nf.length ? ` Nenalezeno: ${nf.join(", ")}.` : ""}`,
+        `Změněno záznamů: ${updated}. Už měly tento stav: ${already}.${nf.length ? ` Nenalezeno: ${nf.join(", ")}.` : ""}${emailsSent != null ? ` E-mailů odesláno: ${emailsSent}.` : ""}`,
       );
       setSelected(new Set());
       router.refresh();
@@ -218,38 +260,20 @@ export function AdminRegistrationsClient({
 
   return (
     <div className="mt-8 space-y-6">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="portal-card p-4">
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-            Celkem
-          </p>
-          <p className="mt-1 font-display text-2xl font-extrabold text-slate-900">
-            {kpi.total}
-          </p>
-        </div>
-        <div className="portal-card p-4">
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-            Nové za 7 dní
-          </p>
-          <p className="mt-1 font-display text-2xl font-extrabold text-violet-800">
-            {registrationsLast7d}
-          </p>
-        </div>
-        <div className="portal-card p-4 sm:col-span-2">
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-            Podle stavu
-          </p>
-          <ul className="mt-2 flex flex-wrap gap-2 text-xs font-semibold text-slate-700">
-            {registrationStatuses.map((s) => (
-              <li
-                key={s}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] ${registrationStatusPillClassName(s)}`}
-              >
-                {registrationStatusLabelsCs[s]}: {kpi.byStatus[s]}
-              </li>
-            ))}
-          </ul>
-        </div>
+      <div className="portal-card p-4">
+        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+          Celkem {kpi.total} · podle stavu
+        </p>
+        <ul className="mt-2 flex flex-wrap gap-2 text-xs font-semibold text-slate-700">
+          {registrationStatuses.map((s) => (
+            <li
+              key={s}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] ${registrationStatusPillClassName(s)}`}
+            >
+              {registrationStatusLabelsCs[s]}: {kpi.byStatus[s]}
+            </li>
+          ))}
+        </ul>
       </div>
 
       {!writable ? (
@@ -324,6 +348,59 @@ export function AdminRegistrationsClient({
             <option value="individual">Individuál</option>
           </select>
         </div>
+        <div>
+          <label
+            htmlFor="admin-reg-filter-run"
+            className="text-xs font-bold uppercase tracking-wide text-slate-500"
+          >
+            Termín
+          </label>
+          <select
+            id="admin-reg-filter-run"
+            value={runFilter}
+            onChange={(e) => setRunFilter(e.target.value)}
+            className="input-portal mt-1.5 block min-w-[180px] max-w-xs"
+          >
+            <option value="vse">Všechny</option>
+            <option value="__none__">Bez termínu</option>
+            {courseRuns.map((run) => (
+              <option key={run.id} value={run.id}>
+                {run.label}
+                {run.active === false ? " (skrytý)" : ""}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label
+            htmlFor="admin-reg-filter-from"
+            className="text-xs font-bold uppercase tracking-wide text-slate-500"
+          >
+            Přijato od
+          </label>
+          <input
+            id="admin-reg-filter-from"
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="input-portal mt-1.5 block min-w-[140px]"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="admin-reg-filter-to"
+            className="text-xs font-bold uppercase tracking-wide text-slate-500"
+          >
+            Přijato do
+          </label>
+          <input
+            id="admin-reg-filter-to"
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="input-portal mt-1.5 block min-w-[140px]"
+          />
+        </div>
         <div className="flex flex-col gap-2 sm:ml-auto sm:items-end sm:self-center">
           <p className="text-xs text-slate-500">
             Zobrazeno {filtered.length} z {initialItems.length}
@@ -342,9 +419,7 @@ export function AdminRegistrationsClient({
       {writable && selected.size > 0 ? (
         <div className="portal-card space-y-3 border-violet-200 p-4 sm:p-5">
           <p className="text-sm font-medium text-slate-800">
-            Vybráno <strong>{selected.size}</strong> přihlášek — hromadná změna{" "}
-            <strong>neposílá</strong> e-maily (rodič je dostane jen při úpravě
-            stavu v <strong>detailu</strong> jedné přihlášky).
+            Vybráno <strong>{selected.size}</strong> přihlášek.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
             <div>
@@ -369,6 +444,15 @@ export function AdminRegistrationsClient({
                 ))}
               </select>
             </div>
+            <label className="flex cursor-pointer items-center gap-2 pb-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                checked={bulkSendEmails}
+                onChange={(e) => setBulkSendEmails(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 text-violet-600"
+              />
+              Poslat e-mail rodičům (u změněných)
+            </label>
             <button
               type="button"
               disabled={bulkPending}
@@ -428,9 +512,17 @@ export function AdminRegistrationsClient({
           <tbody className="divide-y divide-slate-100">
             {filtered.map((r) => {
               const pub = getPublicRegistrationCode(r);
+              const detailHref = `/admin/registrations/${encodeURIComponent(pub)}`;
               return (
-              <tr key={r.id} className="hover:bg-violet-50/40">
-                <td className="px-2 py-2 align-middle">
+              <tr
+                key={r.id}
+                className="cursor-pointer hover:bg-violet-50/40"
+                onClick={() => router.push(detailHref)}
+              >
+                <td
+                  className="px-2 py-2 align-middle"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   {writable ? (
                     <input
                       type="checkbox"
@@ -473,9 +565,12 @@ export function AdminRegistrationsClient({
                     {pub}
                   </span>
                 </td>
-                <td className="px-3 py-2">
+                <td
+                  className="px-3 py-2"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <Link
-                    href={`/admin/registrations/${encodeURIComponent(pub)}`}
+                    href={detailHref}
                     className="font-bold text-violet-700 underline decoration-violet-200 underline-offset-2 hover:text-violet-900"
                   >
                     Detail

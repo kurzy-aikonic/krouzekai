@@ -324,6 +324,11 @@ export type BulkStatusResult = {
   alreadyHadStatus: number;
   /** Identifikátory (kód / UUID), které v datech nebyly. */
   notFound: string[];
+  /** Záznamy se změněným stavem (pro volitelné e-maily). */
+  changed: {
+    record: RegistrationRecord;
+    previousStatus: RegistrationStatus;
+  }[];
 };
 
 /**
@@ -355,6 +360,7 @@ export async function bulkUpdateRegistrationStatus(
   const now = new Date().toISOString();
   let updated = 0;
   let alreadyHadStatus = 0;
+  const changed: BulkStatusResult["changed"] = [];
 
   const nextList = all.map((r) => {
     if (!targetIds.has(r.id)) return r;
@@ -363,7 +369,9 @@ export async function bulkUpdateRegistrationStatus(
       return r;
     }
     updated += 1;
-    return { ...r, status: newStatus, updatedAt: now };
+    const next = { ...r, status: newStatus, updatedAt: now };
+    changed.push({ record: next, previousStatus: r.status });
+    return next;
   });
 
   if (updated > 0) {
@@ -388,5 +396,5 @@ export async function bulkUpdateRegistrationStatus(
     }
   }
 
-  return { updated, alreadyHadStatus, notFound };
+  return { updated, alreadyHadStatus, notFound, changed };
 }

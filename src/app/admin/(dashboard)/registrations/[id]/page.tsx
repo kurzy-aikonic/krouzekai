@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { countedOccupancyForRun } from "@/lib/course-run-registrations";
 import { getPublicRegistrationCode } from "@/lib/registration-code";
 import { listCourseRuns } from "@/lib/course-runs-store";
 import {
   findRegistrationById,
   isRegistrationsJsonlWritable,
+  listRegistrationsMerged,
 } from "@/lib/registrations-store";
 import { AdminRegistrationDetailForm } from "@/components/admin/AdminRegistrationDetailForm";
 import { RegistrationTechnicalId } from "@/components/admin/RegistrationTechnicalId";
@@ -20,6 +22,15 @@ export default async function AdminRegistrationDetailPage({ params }: PageProps)
 
   const writable = isRegistrationsJsonlWritable();
   const courseRuns = await listCourseRuns();
+  const allItems = await listRegistrationsMerged();
+  const occupancyByRunId: Record<string, number> = {};
+  for (const run of courseRuns) {
+    occupancyByRunId[run.id] = countedOccupancyForRun(
+      run.id,
+      run.format,
+      allItems,
+    );
+  }
 
   return (
     <div>
@@ -41,6 +52,7 @@ export default async function AdminRegistrationDetailPage({ params }: PageProps)
         record={record}
         writable={writable}
         courseRuns={courseRuns}
+        occupancyByRunId={occupancyByRunId}
       />
     </div>
   );

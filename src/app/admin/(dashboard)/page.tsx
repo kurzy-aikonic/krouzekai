@@ -1,10 +1,13 @@
+import { AdminDashboardSummary } from "@/components/admin/AdminDashboardSummary";
+import { AdminRegistrationsClient } from "@/components/admin/AdminRegistrationsClient";
+import { computeAdminDashboardStats } from "@/lib/admin-dashboard-stats";
 import { listCourseRuns } from "@/lib/course-runs-store";
 import {
   isRegistrationsJsonlWritable,
   listRegistrationsMerged,
 } from "@/lib/registrations-store";
-import { AdminRegistrationsClient } from "@/components/admin/AdminRegistrationsClient";
-import type { RegistrationRecord } from "@/types/registration";
+import type { RegistrationRecord, RegistrationStatus } from "@/types/registration";
+import { registrationStatuses } from "@/types/registration";
 
 export const dynamic = "force-dynamic";
 
@@ -16,11 +19,27 @@ function registrationsLast7DaysCount(items: RegistrationRecord[]): number {
   }).length;
 }
 
-export default async function AdminDashboardPage() {
+function parseInitialStatus(
+  raw: string | undefined,
+): RegistrationStatus | "vse" {
+  if (!raw) return "vse";
+  return registrationStatuses.includes(raw as RegistrationStatus)
+    ? (raw as RegistrationStatus)
+    : "vse";
+}
+
+export default async function AdminDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const q = await searchParams;
   const items = await listRegistrationsMerged();
   const courseRuns = await listCourseRuns();
   const writable = isRegistrationsJsonlWritable();
   const last7d = registrationsLast7DaysCount(items);
+  const stats = computeAdminDashboardStats(items, courseRuns, last7d);
+  const initialStatusFilter = parseInitialStatus(q.status);
 
   return (
     <div>
@@ -31,11 +50,14 @@ export default async function AdminDashboardPage() {
         Přehled kontaktů, stavů plateb, poznámek a přiřazení ke skupinovému
         termínu.
       </p>
+      <div className="mt-6">
+        <AdminDashboardSummary stats={stats} />
+      </div>
       <AdminRegistrationsClient
         initialItems={items}
         writable={writable}
         courseRuns={courseRuns}
-        registrationsLast7d={last7d}
+        initialStatusFilter={initialStatusFilter}
       />
     </div>
   );

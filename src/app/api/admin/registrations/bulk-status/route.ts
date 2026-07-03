@@ -2,6 +2,7 @@ import { z } from "zod";
 import { apiJson } from "@/lib/api-response";
 import { getAdminSecret, verifyAdminRequest } from "@/lib/admin-auth";
 import { bulkUpdateRegistrationStatus } from "@/lib/registrations-store";
+import { sendRegistrationStatusChangeNotice } from "@/lib/email";
 import { rateLimitResponse } from "@/lib/rate-limit";
 import { registrationStatuses } from "@/types/registration";
 
@@ -11,6 +12,8 @@ const bodySchema = z.object({
   /** Veřejné kódy přihlášek a/nebo technická UUID. */
   lookups: z.array(z.string().min(1).max(120)).min(1).max(150),
   status: z.enum(registrationStatuses),
+  /** Volitelně poslat rodičům e-mail o změně stavu (u každé změněné přihlášky). */
+  sendEmails: z.boolean().optional().default(false),
 });
 
 export async function POST(request: Request) {
@@ -44,11 +47,25 @@ export async function POST(request: Request) {
       parsed.data.lookups,
       parsed.data.status,
     );
+
+    let emailsSent = 0;
+    let emailsFailed = 0;
+    if (parsed.data.sendEmails && result.changed.length > 0) {
+      for (const { record, previousStatus } of result.changed) {
+        const mail = await sendRegistrationStatusChangeNotice(
+          record,
+          previousStatus,
+        );
+        if (mail.ok) emailsSent += 1;
+        else emailsFailed += 1;
+      }
+    }
+
     return apiJson({
       ok: true,
       ...result,
-      /** Hromadná změna neposílá e-maily rodičům (jinak než úprava jednoho záznamu). */
-      emailsSkipped: true,
+      emailsSent: parsed.data.sendEmails ? emailsSent : undefined,
+      emailsFailed: parsed.data.sendEmails ? emailsFailed : undefined,
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Chyba úložiště.";

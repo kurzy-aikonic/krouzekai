@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { CourseRun } from "@/data/course-runs";
+import { spotsLeftEffective } from "@/data/course-runs";
 import { getPublicRegistrationCode } from "@/lib/registration-code";
 import { registrationStatusPillClassName } from "@/lib/registration-status-ui";
 import type { RegistrationRecord } from "@/types/registration";
@@ -16,12 +17,14 @@ type Props = {
   record: RegistrationRecord;
   writable: boolean;
   courseRuns: CourseRun[];
+  occupancyByRunId: Record<string, number>;
 };
 
 export function AdminRegistrationDetailForm({
   record,
   writable,
   courseRuns,
+  occupancyByRunId,
 }: Props) {
   const router = useRouter();
   const [status, setStatus] = useState<RegistrationStatus>(record.status);
@@ -30,6 +33,8 @@ export function AdminRegistrationDetailForm({
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [resendPending, setResendPending] = useState(false);
+  const [resendMsg, setResendMsg] = useState<string | null>(null);
 
   async function save() {
     setMessage(null);
@@ -75,6 +80,57 @@ export function AdminRegistrationDetailForm({
     } finally {
       setPending(false);
     }
+  }
+
+  async function resendConfirmation() {
+    setResendMsg(null);
+    setError(null);
+    if (
+      !window.confirm(
+        `Znovu poslat potvrzení přihlášky na ${record.parentEmail}?`,
+      )
+    ) {
+      return;
+    }
+    setResendPending(true);
+    try {
+      const res = await fetch(
+        `/api/admin/registrations/${encodeURIComponent(getPublicRegistrationCode(record))}/resend-confirmation`,
+        { method: "POST", credentials: "same-origin" },
+      );
+      const data: unknown = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const msg =
+          typeof data === "object" &&
+          data &&
+          "error" in data &&
+          typeof (data as { error?: string }).error === "string"
+            ? (data as { error: string }).error
+            : "Odeslání se nezdařilo.";
+        setError(msg);
+        return;
+      }
+      const okMsg =
+        typeof data === "object" &&
+        data &&
+        "message" in data &&
+        typeof (data as { message?: string }).message === "string"
+          ? (data as { message: string }).message
+          : "Potvrzení odesláno.";
+      setResendMsg(okMsg);
+    } catch {
+      setError("Síťová chyba.");
+    } finally {
+      setResendPending(false);
+    }
+  }
+
+  function runOptionLabel(run: CourseRun): string {
+    const counted = occupancyByRunId[run.id] ?? 0;
+    const free = spotsLeftEffective(run, counted);
+    const suffix =
+      run.active === false ? " — zrušený" : "";
+    return `${run.label}${suffix} · volno cca ${free}/${run.capacity}`;
   }
 
   return (
@@ -207,16 +263,13 @@ export function AdminRegistrationDetailForm({
                   .filter((run) => run.format === "skupina")
                   .map((run) => (
                     <option key={run.id} value={run.id}>
-                      {run.label}
-                      {run.active === false ? " — zrušený" : ""} (ručně{" "}
-                      {run.filled}/{run.capacity})
+                      {runOptionLabel(run)}
                     </option>
                   ))}
               </select>
               <p className="mt-1 text-xs text-slate-500">
-                Přehled skutečných přihlášek podle termínů je v adminu na stránce{" "}
-                <strong>Termíny</strong>. Zrušený termín lze přiřadit kvůli historii,
-                na webu se nově nenabízí.
+                Přehled termínů a obsazenosti je v adminu na stránce{" "}
+                <strong>Termíny</strong>.
               </p>
             </div>
           ) : (
@@ -235,15 +288,12 @@ export function AdminRegistrationDetailForm({
                   .filter((run) => run.format === "individual")
                   .map((run) => (
                     <option key={run.id} value={run.id}>
-                      {run.label}
-                      {run.active === false ? " — zrušený" : ""} (ručně{" "}
-                      {run.filled}/{run.capacity})
+                      {runOptionLabel(run)}
                     </option>
                   ))}
               </select>
               <p className="mt-1 text-xs text-slate-500">
-                Vypsané 1:1 sloty spravujete v <strong>Termíny</strong>. Pokud v
-                nabídce žádný není, přiřazení řešíte poznámkou níže.
+                Vypsané 1:1 sloty spravujete v <strong>Termíny</strong>.
               </p>
             </div>
           )}
@@ -271,15 +321,28 @@ export function AdminRegistrationDetailForm({
         {message ? (
           <p className="mt-4 text-sm font-medium text-emerald-700">{message}</p>
         ) : null}
+        {resendMsg ? (
+          <p className="mt-4 text-sm font-medium text-emerald-700">{resendMsg}</p>
+        ) : null}
 
-        <button
-          type="button"
-          disabled={!writable || pending}
-          onClick={() => void save()}
-          className="mt-6 rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-bold text-white shadow hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {pending ? "Ukládám…" : "Uložit změny"}
-        </button>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <button
+            type="button"
+            disabled={!writable || pending}
+            onClick={() => void save()}
+            className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-bold text-white shadow hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {pending ? "Ukládám…" : "Uložit změny"}
+          </button>
+          <button
+            type="button"
+            disabled={resendPending}
+            onClick={() => void resendConfirmation()}
+            className="btn-portal-outline text-sm"
+          >
+            {resendPending ? "Odesílám…" : "Znovu poslat potvrzení"}
+          </button>
+        </div>
       </section>
     </div>
   );

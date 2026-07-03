@@ -56,11 +56,25 @@ export default async function AktualniBehyPage() {
             {runs.map((run) => {
               const occ = countedOccupancyForRun(run.id, "skupina", merged);
               const free = spotsLeftEffective(run, occ);
+              const full = free <= 0;
               return (
                 <li
                   key={run.id}
-                  className="card-playful border-2 border-violet-100 p-5 sm:p-6"
+                  className={`card-playful border-2 p-5 sm:p-6 ${
+                    full
+                      ? "border-slate-200 bg-slate-50/90"
+                      : "border-violet-100"
+                  }`}
                 >
+                  {!full ? (
+                    <span className="mb-3 inline-flex rounded-full border-2 border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-emerald-900">
+                      Volná místa
+                    </span>
+                  ) : (
+                    <span className="mb-3 inline-flex rounded-full border-2 border-slate-300 bg-slate-100 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-slate-700">
+                      Plně obsazeno
+                    </span>
+                  )}
                   <h2 className="font-display text-lg font-extrabold text-[var(--magic-ink)]">
                     {run.label}
                   </h2>
@@ -73,6 +87,21 @@ export default async function AktualniBehyPage() {
                     Kapacita {run.capacity} · odhad volných míst:{" "}
                     <strong>{free}</strong>
                   </p>
+                  <Link
+                    href={
+                      full
+                        ? "/registrace"
+                        : `/registrace?run=${encodeURIComponent(run.id)}`
+                    }
+                    className={`mt-5 inline-flex w-full justify-center rounded-xl border-2 px-4 py-2.5 text-sm font-extrabold transition sm:w-auto ${
+                      full
+                        ? "border-slate-200 bg-slate-100 text-slate-500"
+                        : "border-[var(--magic-ink)] bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-[3px_3px_0_#312e81] hover:-translate-y-0.5"
+                    }`}
+                    aria-disabled={full}
+                  >
+                    {full ? "Termín je plný — obecná přihláška" : "Přihlásit na tento termín →"}
+                  </Link>
                 </li>
               );
             })}
