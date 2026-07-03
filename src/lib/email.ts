@@ -333,3 +333,44 @@ export async function sendParentPortalMagicLink(
   if (!sent.ok) return sent;
   return { ok: true, provider: "resend" };
 }
+
+/** Jednorázový odkaz do interní administrace (platí cca 15 minut). */
+export async function sendAdminMagicLink(
+  toEmail: string,
+  magicUrl: string,
+): Promise<SendRegistrationResult> {
+  const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.RESEND_FROM_EMAIL;
+
+  if (!apiKey || !from) {
+    console.info(
+      "[email] Admin přihlašovací odkaz (bez Resend) — zkopírujte v dev:",
+      magicUrl,
+    );
+    return { ok: true, provider: "skipped", reason: "no_api_key" };
+  }
+
+  const safeUrl = escapeHtml(magicUrl);
+  const html = `
+<!DOCTYPE html>
+<html lang="cs">
+<body style="font-family: system-ui, sans-serif; line-height: 1.5; color: #334155;">
+  <p>Dobrý den,</p>
+  <p>požádali jste o přístup do <strong>interní administrace</strong> webu <strong>${escapeHtml(site.name)}</strong>.</p>
+  <p><a href="${safeUrl}" style="display:inline-block;margin:12px 0;padding:12px 20px;background:#7c3aed;color:#fff;text-decoration:none;border-radius:12px;font-weight:bold;">Přihlásit do adminu</a></p>
+  <p style="font-size:14px;color:#64748b;">Odkaz je jednorázový a brzy vyprší. Pokud jste o nic nežádali, e-mail ignorujte.</p>
+  <p style="font-size:13px;word-break:break-all;color:#475569;">${safeUrl}</p>
+  <p>S pozdravem,<br/>${escapeHtml(site.shortName)}</p>
+</body>
+</html>`.trim();
+
+  const sent = await sendResendEmail({
+    apiKey,
+    from,
+    to: [toEmail],
+    subject: `Přihlášení do administrace (${site.shortName})`,
+    html,
+  });
+  if (!sent.ok) return sent;
+  return { ok: true, provider: "resend" };
+}

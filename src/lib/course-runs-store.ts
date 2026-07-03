@@ -19,6 +19,12 @@ const courseRunSchema = z.object({
   capacity: z.coerce.number().int().min(1).max(500),
   filled: z.coerce.number().int().min(0).max(5000),
   startsOn: z.string().min(4).max(40),
+  weekday: z.coerce.number().int().min(1).max(7).optional(),
+  lessonTime: z
+    .string()
+    .regex(/^\d{2}:\d{2}$/, "Čas musí být ve formátu HH:mm")
+    .optional(),
+  recurrence: z.enum(["weekly", "biweekly", "none"]).optional(),
   active: z.boolean().optional().default(true),
 });
 

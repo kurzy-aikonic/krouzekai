@@ -25,6 +25,10 @@ const scopes = {
   adminApi: { limit: 200, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
   /** Přihlášení do adminu (sdílené tajemství) — proti brute force. */
   adminLogin: { limit: 12, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
+  /** Admin magic odkaz e-mailem. */
+  adminMagic: { limit: 5, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
+  /** GET dokončení admin magic odkazu. */
+  adminMagicConsume: { limit: 25, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
 } as const;
 
 export type RateLimitScope = keyof typeof scopes;

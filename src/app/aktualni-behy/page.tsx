@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { spotsLeftEffective } from "@/data/course-runs";
+import { formatScheduleSummary } from "@/lib/course-run-schedule";
 import { countedOccupancyForRun } from "@/lib/course-run-registrations";
 import { listOfferedCourseRuns } from "@/lib/course-runs-store";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
@@ -67,17 +68,7 @@ export default async function AktualniBehyPage() {
                     {run.description}
                   </p>
                   <p className="mt-3 text-xs font-medium text-slate-600">
-                    Start:{" "}
-                    <strong>
-                      {new Date(run.startsOn + "T12:00:00").toLocaleDateString(
-                        "cs-CZ",
-                        {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        },
-                      )}
-                    </strong>
+                    {formatScheduleSummary(run)}
                     {" · "}
                     Kapacita {run.capacity} · odhad volných míst:{" "}
                     <strong>{free}</strong>

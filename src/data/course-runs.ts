@@ -1,5 +1,8 @@
 export type CourseFormat = "skupina" | "individual";
 
+/** Opakování lekcí v rámci termínu */
+export type CourseRecurrence = "weekly" | "biweekly" | "none";
+
 export type CourseRun = {
   id: string;
   label: string;
@@ -11,6 +14,12 @@ export type CourseRun = {
   filled: number;
   /** ISO datum začátku (informativně) */
   startsOn: string;
+  /** Den v týdnu první / pravidelné lekce: 1 = pondělí … 7 = neděle */
+  weekday?: number;
+  /** Čas lekce HH:mm */
+  lessonTime?: string;
+  /** Jak často se lekce opakuje */
+  recurrence?: CourseRecurrence;
   /**
    * false = termín zrušený v nabídce (registrace ho neuvidí; stávající přihlášky zůstávají).
    * U záznamů bez pole se bere true.
@@ -31,6 +40,9 @@ export const defaultCourseRuns: CourseRun[] = [
     capacity: 6,
     filled: 0,
     startsOn: "2026-04-07",
+    weekday: 2,
+    lessonTime: "16:00",
+    recurrence: "biweekly",
   },
   {
     id: "run-2026-04-ct",
@@ -40,6 +52,9 @@ export const defaultCourseRuns: CourseRun[] = [
     capacity: 6,
     filled: 0,
     startsOn: "2026-04-09",
+    weekday: 4,
+    lessonTime: "16:00",
+    recurrence: "biweekly",
   },
 ];
 

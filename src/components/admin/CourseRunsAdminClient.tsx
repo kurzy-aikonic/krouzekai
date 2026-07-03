@@ -11,6 +11,13 @@ import {
 } from "@/lib/course-run-registrations";
 import { registrationStatusPillClassName } from "@/lib/registration-status-ui";
 import { registrationStatusLabelsCs } from "@/types/registration";
+import { CourseRunScheduleEditor } from "@/components/admin/CourseRunScheduleEditor";
+import {
+  buildAutoCopyFromSchedule,
+  labelMatchesAuto,
+  suggestStartsOn,
+  withScheduleDefaults,
+} from "@/lib/course-run-schedule";
 import type { CourseRunsPersistence } from "@/lib/course-runs-store";
 
 type Props = {
@@ -21,34 +28,59 @@ type Props = {
 };
 
 function emptyGroupRun(): CourseRun {
-  return {
+  const weekday = 2 as const;
+  const startsOn = suggestStartsOn(weekday);
+  const base: CourseRun = {
     id: `run-${crypto.randomUUID().slice(0, 10)}`,
     label: "",
     description: "",
     format: "skupina",
     capacity: 6,
     filled: 0,
-    startsOn: new Date().toISOString().slice(0, 10),
+    startsOn,
+    weekday,
+    lessonTime: "16:00",
+    recurrence: "biweekly",
     active: true,
   };
+  return { ...base, ...buildAutoCopyFromSchedule(base) };
 }
 
 function emptyIndividualRun(): CourseRun {
-  return {
+  const weekday = 2 as const;
+  const startsOn = suggestStartsOn(weekday);
+  const base: CourseRun = {
     id: `run-${crypto.randomUUID().slice(0, 10)}`,
     label: "",
     description: "",
     format: "individual",
     capacity: 1,
     filled: 0,
-    startsOn: new Date().toISOString().slice(0, 10),
+    startsOn,
+    weekday,
+    lessonTime: "16:00",
+    recurrence: "biweekly",
     active: true,
   };
+  return { ...base, ...buildAutoCopyFromSchedule(base) };
 }
 
 function countedTowardCapacity(rows: RunRegistrationRow[]): number {
   return rows.filter((r) => registrationCountsTowardRunCapacity(r.status))
     .length;
+}
+
+function newClientKey(): string {
+  return crypto.randomUUID();
+}
+
+function createInitialEditorState(runs: CourseRun[]) {
+  const clientKeys = runs.map(() => newClientKey());
+  const manualCopyByKey: Record<string, boolean> = {};
+  runs.forEach((run, i) => {
+    manualCopyByKey[clientKeys[i]] = !labelMatchesAuto(run);
+  });
+  return { clientKeys, manualCopyByKey };
 }
 
 export function CourseRunsAdminClient({
@@ -58,6 +90,14 @@ export function CourseRunsAdminClient({
 }: Props) {
   const router = useRouter();
   const [runs, setRuns] = useState<CourseRun[]>(initialRuns);
+  const [editorState, setEditorState] = useState(() =>
+    createInitialEditorState(initialRuns),
+  );
+  const clientKeys = editorState.clientKeys;
+  const manualCopyByKey = editorState.manualCopyByKey;
+  const [advancedOpenByKey, setAdvancedOpenByKey] = useState<
+    Record<string, boolean>
+  >({});
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -96,7 +136,9 @@ export function CourseRunsAdminClient({
         "runs" in data &&
         Array.isArray((data as { runs: unknown }).runs)
       ) {
-        setRuns((data as { runs: CourseRun[] }).runs);
+        const savedRuns = (data as { runs: CourseRun[] }).runs;
+        setRuns(savedRuns);
+        setEditorState(createInitialEditorState(savedRuns));
       }
       router.refresh();
     } catch {
@@ -113,7 +155,23 @@ export function CourseRunsAdminClient({
   }
 
   function removeAt(index: number) {
+    const key = clientKeys[index];
     setRuns((prev) => prev.filter((_, i) => i !== index));
+    setEditorState((prev) => ({
+      clientKeys: prev.clientKeys.filter((_, i) => i !== index),
+      manualCopyByKey: Object.fromEntries(
+        Object.entries(prev.manualCopyByKey).filter(([k]) => k !== key),
+      ),
+    }));
+  }
+
+  function addRun(run: CourseRun) {
+    const key = newClientKey();
+    setRuns((prev) => [...prev, run]);
+    setEditorState((prev) => ({
+      clientKeys: [...prev.clientKeys, key],
+      manualCopyByKey: { ...prev.manualCopyByKey, [key]: false },
+    }));
   }
 
   const orphanEntries = Object.entries(occupancyByRunId).filter(
@@ -173,22 +231,24 @@ export function CourseRunsAdminClient({
           <strong>počtu přihlášek</strong> (u 1:1 typicky kapacita 1).
         </p>
         <p className="mt-2 text-xs text-slate-500">
-          <strong>Zrušit termín</strong> odebere ho z nabídky na přihlášce; stávající
-          přihlášky zůstanou — můžete je v detailu přehodit na jiný termín.
+          <strong>Rozvrh</strong> — den, čas a opakování; nadpis a popis pro web se
+          doplní samy. <strong>Zrušit termín</strong> odebere ho z nabídky na
+          přihlášce; stávající přihlášky zůstanou — můžete je v detailu přehodit
+          na jiný termín.
         </p>
       </div>
 
       <div className="flex flex-wrap gap-3">
         <button
           type="button"
-          onClick={() => setRuns((p) => [...p, emptyGroupRun()])}
+          onClick={() => addRun(emptyGroupRun())}
           className="btn-portal-outline max-w-xs"
         >
           + Skupinový termín
         </button>
         <button
           type="button"
-          onClick={() => setRuns((p) => [...p, emptyIndividualRun()])}
+          onClick={() => addRun(emptyIndividualRun())}
           className="btn-portal-outline max-w-xs"
         >
           + Individuální slot
@@ -268,6 +328,9 @@ export function CourseRunsAdminClient({
           </p>
         ) : (
           runs.map((run, index) => {
+            const rowKey = clientKeys[index];
+            const manualCopy = manualCopyByKey[rowKey] ?? false;
+            const advancedOpen = advancedOpenByKey[rowKey] ?? false;
             const rows = (occupancyByRunId[run.id] ?? []).filter(
               (row) => row.format === run.format,
             );
@@ -277,7 +340,7 @@ export function CourseRunsAdminClient({
 
             return (
               <div
-                key={`${run.id}-${index}`}
+                key={rowKey}
                 className="portal-card space-y-4 p-4 sm:p-5"
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
@@ -405,8 +468,8 @@ export function CourseRunsAdminClient({
                   </p>
                 )}
 
-                <div className="grid gap-4 border-t border-slate-100 pt-4 sm:grid-cols-2">
-                  <div className="sm:col-span-2">
+                <div className="space-y-4 border-t border-slate-100 pt-4">
+                  <div>
                     <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
                       Formát nabídky
                     </label>
@@ -420,7 +483,12 @@ export function CourseRunsAdminClient({
                         } else if (run.format === "individual" && run.capacity <= 1) {
                           patch.capacity = 6;
                         }
-                        updateAt(index, patch);
+                        const next = withScheduleDefaults({ ...run, ...patch });
+                        if (manualCopy) {
+                          updateAt(index, patch);
+                        } else {
+                          updateAt(index, buildAutoCopyFromSchedule(next));
+                        }
                       }}
                       className="input-portal mt-1.5 block max-w-md"
                     >
@@ -428,86 +496,126 @@ export function CourseRunsAdminClient({
                       <option value="individual">Individuální 1:1</option>
                     </select>
                   </div>
-                  <div className="sm:col-span-2">
-                    <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                      Technické id (bez mezer)
-                    </label>
-                    <input
-                      value={run.id}
-                      onChange={(e) => updateAt(index, { id: e.target.value })}
-                      className="input-portal mt-1.5 font-mono text-sm"
-                      autoComplete="off"
-                    />
+
+                  <CourseRunScheduleEditor
+                    scheduleKey={rowKey}
+                    run={run}
+                    manualCopy={manualCopy}
+                    onManualCopyChange={(manual) =>
+                      setEditorState((prev) => ({
+                        ...prev,
+                        manualCopyByKey: {
+                          ...prev.manualCopyByKey,
+                          [rowKey]: manual,
+                        },
+                      }))
+                    }
+                    onChange={(patch) => updateAt(index, patch)}
+                  />
+
+                  {manualCopy ? (
+                    <>
+                      <div>
+                        <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                          Krátký nadpis (pro rodiče)
+                        </label>
+                        <input
+                          value={run.label}
+                          onChange={(e) =>
+                            updateAt(index, { label: e.target.value })
+                          }
+                          className="input-portal mt-1.5"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                          Popis
+                        </label>
+                        <textarea
+                          value={run.description}
+                          onChange={(e) =>
+                            updateAt(index, { description: e.target.value })
+                          }
+                          rows={2}
+                          className="input-portal mt-1.5 min-h-[4.5rem] resize-y"
+                        />
+                      </div>
+                    </>
+                  ) : null}
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                        Kapacita
+                      </label>
+                      <input
+                        type="number"
+                        min={1}
+                        max={500}
+                        value={run.capacity}
+                        onChange={(e) =>
+                          updateAt(index, {
+                            capacity: Number(e.target.value) || 1,
+                          })
+                        }
+                        className="input-portal mt-1.5"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                        Obsazeno (ruční doplněk)
+                      </label>
+                      <input
+                        type="number"
+                        min={0}
+                        max={5000}
+                        value={run.filled}
+                        onChange={(e) =>
+                          updateAt(index, {
+                            filled: Number(e.target.value) || 0,
+                          })
+                        }
+                        className="input-portal mt-1.5"
+                      />
+                      <p className="mt-1 text-[11px] text-slate-500">
+                        Volná místa počítáme z přihlášek; ruční číslo jen když
+                        potřebujete override.
+                      </p>
+                    </div>
                   </div>
-                  <div className="sm:col-span-2">
-                    <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                      Krátký nadpis (pro rodiče)
-                    </label>
-                    <input
-                      value={run.label}
-                      onChange={(e) => updateAt(index, { label: e.target.value })}
-                      className="input-portal mt-1.5"
-                    />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                      Popis
-                    </label>
-                    <textarea
-                      value={run.description}
-                      onChange={(e) =>
-                        updateAt(index, { description: e.target.value })
-                      }
-                      rows={2}
-                      className="input-portal mt-1.5 min-h-[4.5rem] resize-y"
-                    />
-                  </div>
+
                   <div>
-                    <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                      Start (datum)
-                    </label>
-                    <input
-                      type="date"
-                      value={run.startsOn}
-                      onChange={(e) =>
-                        updateAt(index, { startsOn: e.target.value })
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setAdvancedOpenByKey((prev) => ({
+                          ...prev,
+                          [rowKey]: !advancedOpen,
+                        }))
                       }
-                      className="input-portal mt-1.5"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                      Kapacita
-                    </label>
-                    <input
-                      type="number"
-                      min={1}
-                      max={500}
-                      value={run.capacity}
-                      onChange={(e) =>
-                        updateAt(index, {
-                          capacity: Number(e.target.value) || 1,
-                        })
-                      }
-                      className="input-portal mt-1.5"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                      Obsazeno (ruční doplněk)
-                    </label>
-                    <input
-                      type="number"
-                      min={0}
-                      max={5000}
-                      value={run.filled}
-                      onChange={(e) =>
-                        updateAt(index, {
-                          filled: Number(e.target.value) || 0,
-                        })
-                      }
-                      className="input-portal mt-1.5"
-                    />
+                      className="text-xs font-bold text-slate-600 underline decoration-slate-300 underline-offset-2 hover:text-slate-900"
+                    >
+                      {advancedOpen ? "Skrýt pokročilé" : "Pokročilé — technické id"}
+                    </button>
+                    {advancedOpen ? (
+                      <div className="mt-3">
+                        <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                          Technické id (bez mezer)
+                        </label>
+                        <input
+                          value={run.id}
+                          onChange={(e) =>
+                            updateAt(index, { id: e.target.value })
+                          }
+                          className="input-portal mt-1.5 font-mono text-sm"
+                          autoComplete="off"
+                        />
+                        <p className="mt-1 text-[11px] text-slate-500">
+                          Propojuje přihlášky s termínem. Neměňte po spuštění
+                          přihlašování, pokud už na termín někdo je.
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>

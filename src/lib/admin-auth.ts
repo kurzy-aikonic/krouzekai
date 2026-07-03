@@ -1,7 +1,20 @@
 import { createHmac, timingSafeEqual } from "crypto";
+import { cookies } from "next/headers";
 
 /** HttpOnly cookie — podepsaná session (viz `signAdminSession`), ne otevřený ADMIN_SECRET. */
 export const ADMIN_SESSION_COOKIE = "krouzek_admin_session";
+
+const MAGIC_MS = 15 * 60 * 1000;
+const SESSION_MS = 7 * 24 * 60 * 60 * 1000;
+
+type AdminSignedPayload =
+  | { t: "admin"; iat: number }
+  | { t: "admin_s"; e: string; exp: number }
+  | { t: "admin_m"; e: string; exp: number };
+
+export function normalizeAdminEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
 
 export function adminSecretConfigured(): boolean {
   const s = process.env.ADMIN_SECRET?.trim();
@@ -12,6 +25,25 @@ export function getAdminSecret(): string | null {
   const s = process.env.ADMIN_SECRET?.trim();
   if (!s || s.length < 16) return null;
   return s;
+}
+
+/** Seznam e-mailů administrátorů z ADMIN_EMAILS (oddělené čárkou). */
+export function getAdminEmails(): string[] {
+  const raw = process.env.ADMIN_EMAILS?.trim();
+  if (!raw) return [];
+  return raw
+    .split(",")
+    .map((e) => normalizeAdminEmail(e))
+    .filter((e) => e.length > 0 && e.includes("@"));
+}
+
+export function adminEmailsConfigured(): boolean {
+  return getAdminEmails().length > 0;
+}
+
+export function isAdminEmail(email: string): boolean {
+  const normalized = normalizeAdminEmail(email);
+  return getAdminEmails().includes(normalized);
 }
 
 /** Porovnání tajemství bez časových úniků (stejná délka řetězců). */
@@ -26,28 +58,92 @@ export function constantTimeEqual(a: string, b: string): boolean {
   }
 }
 
-export function verifyAdminCookie(token: string | undefined): boolean {
-  const secret = getAdminSecret();
-  if (!secret || token == null || token === "") return false;
-  const i = token.lastIndexOf(".");
-  if (i <= 0) return false;
-  const body = token.slice(0, i);
-  const sig = token.slice(i + 1);
-  if (!body || !sig) return false;
-  const expected = createHmac("sha256", secret).update(body).digest("base64url");
-  return constantTimeEqual(sig, expected);
-}
-
-/** Podepsaná hodnota session cookie (nikdy neukládá ADMIN_SECRET v otevřeném tvaru). */
-export function signAdminSession(): string | null {
+function signPayload(payload: AdminSignedPayload): string | null {
   const secret = getAdminSecret();
   if (!secret) return null;
-  const body = Buffer.from(
-    JSON.stringify({ t: "admin", iat: Date.now() }),
-    "utf8",
-  ).toString("base64url");
+  const body = Buffer.from(JSON.stringify(payload), "utf8").toString("base64url");
   const sig = createHmac("sha256", secret).update(body).digest("base64url");
   return `${body}.${sig}`;
+}
+
+function verifySigned(token: string): AdminSignedPayload | null {
+  const secret = getAdminSecret();
+  if (!secret) return null;
+  const i = token.lastIndexOf(".");
+  if (i <= 0) return null;
+  const body = token.slice(0, i);
+  const sig = token.slice(i + 1);
+  if (!body || !sig) return null;
+  const expected = createHmac("sha256", secret).update(body).digest("base64url");
+  if (!constantTimeEqual(sig, expected)) return null;
+  try {
+    const parsed: unknown = JSON.parse(Buffer.from(body, "base64url").toString("utf8"));
+    if (!parsed || typeof parsed !== "object") return null;
+    const o = parsed as Record<string, unknown>;
+    if (o.t === "admin" && typeof o.iat === "number") {
+      return { t: "admin", iat: o.iat };
+    }
+    if (o.t === "admin_s" && typeof o.e === "string" && typeof o.exp === "number") {
+      return { t: "admin_s", e: o.e, exp: o.exp };
+    }
+    if (o.t === "admin_m" && typeof o.e === "string" && typeof o.exp === "number") {
+      return { t: "admin_m", e: o.e, exp: o.exp };
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function signAdminMagicToken(email: string): string | null {
+  const e = normalizeAdminEmail(email);
+  return signPayload({ t: "admin_m", e, exp: Date.now() + MAGIC_MS });
+}
+
+export function verifyAdminMagicToken(token: string): string | null {
+  const p = verifySigned(token);
+  if (!p || p.t !== "admin_m") return null;
+  if (Date.now() > p.exp) return null;
+  if (!isAdminEmail(p.e)) return null;
+  return p.e;
+}
+
+/** Podepsaná hodnota session cookie (legacy bez e-mailu nebo s e-mailem admina). */
+export function signAdminSession(email?: string): string | null {
+  if (email) {
+    const e = normalizeAdminEmail(email);
+    if (!isAdminEmail(e)) return null;
+    return signPayload({ t: "admin_s", e, exp: Date.now() + SESSION_MS });
+  }
+  return signPayload({ t: "admin", iat: Date.now() });
+}
+
+export function verifyAdminCookie(token: string | undefined): boolean {
+  return getAdminSessionEmail(token) !== null;
+}
+
+/** E-mail přihlášeného admina, nebo `"legacy"` u starého klíče bez e-mailu. */
+export function getAdminSessionEmail(token: string | undefined): string | null {
+  if (token == null || token === "") return null;
+  const p = verifySigned(token);
+  if (!p) return null;
+  if (p.t === "admin") return "legacy";
+  if (p.t === "admin_s") {
+    if (Date.now() > p.exp) return null;
+    if (!isAdminEmail(p.e)) return null;
+    return p.e;
+  }
+  return null;
+}
+
+export async function getAdminSessionEmailFromCookies(): Promise<string | null> {
+  if (!adminSecretConfigured()) return null;
+  try {
+    const jar = await cookies();
+    return getAdminSessionEmail(jar.get(ADMIN_SESSION_COOKIE)?.value);
+  } catch {
+    return null;
+  }
 }
 
 /** Ověření pro route handlery: Bearer token nebo session cookie. */
