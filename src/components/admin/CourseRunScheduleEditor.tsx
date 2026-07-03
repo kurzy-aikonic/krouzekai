@@ -2,6 +2,7 @@
 
 import type { CourseRun } from "@/data/course-runs";
 import {
+  applySchedulePatch,
   buildAutoCopyFromSchedule,
   formatScheduleDescription,
   formatScheduleLabel,
@@ -17,6 +18,8 @@ import {
 type Props = {
   scheduleKey: string;
   run: CourseRun;
+  /** Termín už má přihlášky — neměnit technické id automaticky. */
+  lockId?: boolean;
   onChange: (patch: Partial<CourseRun>) => void;
   manualCopy: boolean;
   onManualCopyChange: (manual: boolean) => void;
@@ -25,44 +28,52 @@ type Props = {
 export function CourseRunScheduleEditor({
   scheduleKey,
   run,
+  lockId = false,
   onChange,
   manualCopy,
   onManualCopyChange,
 }: Props) {
   const schedule = withScheduleDefaults(run);
 
-  function applySchedule(patch: Partial<CourseRun>) {
-    const next = withScheduleDefaults({ ...run, ...patch });
+  function commitSchedule(patch: Partial<CourseRun>) {
+    const next = applySchedulePatch(run, patch);
     if (manualCopy) {
-      onChange(patch);
+      onChange({
+        startsOn: next.startsOn,
+        weekday: next.weekday,
+        lessonTime: next.lessonTime,
+        recurrence: next.recurrence,
+      });
       return;
     }
-    onChange(buildAutoCopyFromSchedule(next));
+    onChange(buildAutoCopyFromSchedule(next, { lockId }));
   }
 
   function setWeekday(weekday: WeekdayIso) {
-    applySchedule({ weekday });
+    commitSchedule({ weekday });
   }
 
   function setLessonTime(lessonTime: string) {
-    applySchedule({ lessonTime });
+    commitSchedule({ lessonTime });
   }
 
   function setRecurrence(recurrence: CourseRecurrence) {
-    applySchedule({ recurrence });
+    commitSchedule({ recurrence });
   }
 
   function setStartsOn(startsOn: string) {
-    applySchedule({ startsOn });
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(startsOn)) return;
+    commitSchedule({ startsOn });
   }
 
   function alignStartToWeekday() {
-    const nextDate = suggestStartsOn(schedule.weekday as WeekdayIso);
-    applySchedule({ startsOn: nextDate });
+    commitSchedule({
+      startsOn: suggestStartsOn(schedule.weekday as WeekdayIso),
+    });
   }
 
   function regenerateCopy() {
-    onChange(buildAutoCopyFromSchedule(schedule));
+    onChange(buildAutoCopyFromSchedule(schedule, { lockId }));
   }
 
   return (
@@ -73,6 +84,7 @@ export function CourseRunScheduleEditor({
         </p>
         <p className="mt-1 text-xs leading-relaxed text-slate-600">
           Vyberte den, čas a opakování — texty pro rodiče se doplní automaticky.
+          Datum a den v týdnu se navzájem synchronizují.
         </p>
 
         <div className="mt-4">
@@ -103,10 +115,14 @@ export function CourseRunScheduleEditor({
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            <label
+              htmlFor={`lesson-time-${scheduleKey}`}
+              className="text-xs font-bold uppercase tracking-wide text-slate-500"
+            >
               Čas lekce
             </label>
             <input
+              id={`lesson-time-${scheduleKey}`}
               type="time"
               value={schedule.lessonTime}
               onChange={(e) => setLessonTime(e.target.value)}
@@ -114,13 +130,17 @@ export function CourseRunScheduleEditor({
             />
           </div>
           <div>
-            <label className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            <label
+              htmlFor={`starts-on-${scheduleKey}`}
+              className="text-xs font-bold uppercase tracking-wide text-slate-500"
+            >
               Datum první lekce
             </label>
             <div className="mt-1.5 flex flex-wrap gap-2">
               <input
+                id={`starts-on-${scheduleKey}`}
                 type="date"
-                value={run.startsOn}
+                value={schedule.startsOn}
                 onChange={(e) => setStartsOn(e.target.value)}
                 className="input-portal min-w-0 flex-1"
               />

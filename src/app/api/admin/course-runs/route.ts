@@ -78,7 +78,7 @@ export async function PUT(request: Request) {
       {
         error: "Nepodařilo se uložit termíny.",
         hint: readOnly
-          ? "Na Vercelu nejde zapisovat do souboru. Máte-li Supabase: spusťte SQL z web/supabase-course-runs.sql a používejte SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY. Bez Supabase lze použít Upstash (UPSTASH_REDIS_*)."
+          ? "Uložení termínů není na tomto serveru dostupné. Kontaktujte správce webu."
           : undefined,
       },
       { status: 500 },

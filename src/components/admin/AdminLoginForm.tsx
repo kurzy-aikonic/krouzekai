@@ -117,8 +117,7 @@ export function AdminLoginForm({ magicEnabled, linkError }: Props) {
               placeholder="vas@email.cz"
             />
             <p className="mt-2 text-xs leading-relaxed text-slate-500">
-              Pošleme jednorázový přihlašovací odkaz. Přístup mají jen e-maily
-              uvedené v <code className="rounded bg-slate-100 px-1">ADMIN_EMAILS</code>.
+              Pošleme jednorázový přihlašovací odkaz na váš e-mail.
             </p>
           </div>
           {magicErr ? (
@@ -164,7 +163,7 @@ export function AdminLoginForm({ magicEnabled, linkError }: Props) {
               value={secret}
               onChange={(e) => setSecret(e.target.value)}
               className="input-portal mt-1.5"
-              placeholder="ADMIN_SECRET z .env"
+              placeholder="Tajný klíč"
             />
           </div>
           {secretErr ? (

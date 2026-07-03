@@ -49,15 +49,11 @@ export function AdminEmailToolsClient() {
   return (
     <div className="portal-card space-y-4 p-5 sm:p-6">
       <h2 className="font-display text-sm font-extrabold uppercase tracking-wide text-violet-800">
-        Test e-mailu (Resend)
+        Test e-mailu
       </h2>
       <p className="text-sm leading-relaxed text-slate-600">
-        Ověříte, že jsou na serveru nastavené{" "}
-        <code className="rounded bg-slate-100 px-1 text-xs">RESEND_API_KEY</code> a{" "}
-        <code className="rounded bg-slate-100 px-1 text-xs">RESEND_FROM_EMAIL</code>.
-        Bez vyplnění adresy se použije první z{" "}
-        <code className="rounded bg-slate-100 px-1 text-xs">RESEND_INTERNAL_TO</code>{" "}
-        nebo kontaktní e-mail webu.
+        Odešle testovací zprávu pro ověření doručení. Adresa je volitelná — bez
+        vyplnění se použije kontaktní e-mail webu.
       </p>
       <div>
         <label

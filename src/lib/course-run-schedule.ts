@@ -185,14 +185,48 @@ export function idMatchesAuto(run: CourseRun): boolean {
   return run.id.trim() === auto || run.id.startsWith("run-");
 }
 
-export function buildAutoCopyFromSchedule(run: CourseRun): Partial<CourseRun> {
+/** Sloučí patch rozvrhu a synchronizuje datum ↔ den v týdnu. */
+export function applySchedulePatch(
+  run: CourseRun,
+  patch: Partial<CourseRun>,
+): CourseRun {
+  const merged: CourseRun = { ...run, ...patch };
+
+  if (
+    typeof patch.startsOn === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(patch.startsOn)
+  ) {
+    const fromDate = weekdayFromIsoDate(patch.startsOn);
+    if (fromDate) merged.weekday = fromDate;
+  } else if (
+    typeof patch.weekday === "number" &&
+    patch.weekday >= 1 &&
+    patch.weekday <= 7 &&
+    patch.startsOn === undefined
+  ) {
+    merged.startsOn = suggestStartsOn(patch.weekday as WeekdayIso);
+  }
+
+  return withScheduleDefaults(merged);
+}
+
+export function buildAutoCopyFromSchedule(
+  run: CourseRun,
+  options?: { lockId?: boolean },
+): Partial<CourseRun> {
   const normalized = withScheduleDefaults(run);
-  return {
+  const copy: Partial<CourseRun> = {
+    format: normalized.format,
+    capacity: normalized.capacity,
+    startsOn: normalized.startsOn,
     weekday: normalized.weekday,
     lessonTime: normalized.lessonTime,
     recurrence: normalized.recurrence,
     label: formatScheduleLabel(normalized),
     description: formatScheduleDescription(normalized),
-    id: slugFromSchedule(normalized),
   };
+  if (!options?.lockId && (run.id.startsWith("run-") || idMatchesAuto(run))) {
+    copy.id = slugFromSchedule(normalized);
+  }
+  return copy;
 }

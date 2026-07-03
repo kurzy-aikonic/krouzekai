@@ -20,14 +20,12 @@ export default async function AdminDashboardLayout({
         <div className="portal-card mx-auto max-w-lg border-amber-200 bg-amber-50/95 p-6 text-sm leading-relaxed">
           <p className="font-bold text-amber-900">Admin není aktivní</p>
           <p className="mt-2">
-            Do souboru <code className="rounded bg-white px-1">web/.env</code>{" "}
-            doplň proměnnou{" "}
-            <code className="rounded bg-white px-1">ADMIN_SECRET</code> (min.
-            16 znaků), restartuj dev server a otevři znovu{" "}
+            Přístup administrace není nakonfigurovaný. Obraťte se na správce
+            webu, nebo otevřete{" "}
             <Link className="font-bold text-violet-700 underline" href="/admin/login">
               přihlášení
-            </Link>
-            .
+            </Link>{" "}
+            po dokončení nastavení.
           </p>
         </div>
       </div>

@@ -22,11 +22,9 @@ export default async function AdminLoginPage({ searchParams }: PageProps) {
     return (
       <div className="portal-shell mx-auto flex min-h-screen max-w-lg flex-col justify-center px-4 py-12">
         <div className="portal-card border-amber-200 bg-amber-50/95 p-6 text-sm text-amber-950">
-          <p className="font-bold">Chybí ADMIN_SECRET</p>
+          <p className="font-bold">Přihlášení není dostupné</p>
           <p className="mt-2 leading-relaxed">
-            V souboru <code className="rounded bg-white px-1">web/.env</code>{" "}
-            nastav <code className="rounded bg-white px-1">ADMIN_SECRET</code>{" "}
-            (min. 16 znaků) a restartuj server.
+            Administrace zatím není nastavená. Obraťte se na správce webu.
           </p>
         </div>
         <Link
@@ -53,8 +51,8 @@ export default async function AdminLoginPage({ searchParams }: PageProps) {
       </h1>
       <p className="mt-3 text-center text-sm leading-relaxed text-slate-600">
         {magicEnabled
-          ? "Přihlaste se e-mailem administrátora — pošleme vám bezpečný odkaz. Záložně lze použít tajný klíč z .env."
-          : "Zadejte sdílené tajemství z prostředí serveru. Pro přihlášení e-mailem doplňte ADMIN_EMAILS v .env."}
+          ? "Přihlaste se e-mailem administrátora — pošleme vám bezpečný odkaz. Záložně lze použít tajný klíč."
+          : "Zadejte tajný klíč pro přístup do administrace."}
       </p>
       <div className="portal-card mt-8 p-6 sm:p-8">
         <AdminLoginForm

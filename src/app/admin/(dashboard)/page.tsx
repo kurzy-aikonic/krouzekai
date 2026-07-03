@@ -29,9 +29,7 @@ export default async function AdminDashboardPage() {
       </h1>
       <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
         Přehled kontaktů, stavů plateb, poznámek a přiřazení ke skupinovému
-        termínu. Úpravy se ukládají do lokálního souboru{" "}
-        <code className="rounded bg-slate-200/80 px-1 text-xs">data/registrations.jsonl</code>
-        .
+        termínu.
       </p>
       <AdminRegistrationsClient
         initialItems={items}

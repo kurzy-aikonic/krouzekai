@@ -13,18 +13,16 @@ import { registrationStatusPillClassName } from "@/lib/registration-status-ui";
 import { registrationStatusLabelsCs } from "@/types/registration";
 import { CourseRunScheduleEditor } from "@/components/admin/CourseRunScheduleEditor";
 import {
+  applySchedulePatch,
   buildAutoCopyFromSchedule,
   labelMatchesAuto,
   suggestStartsOn,
-  withScheduleDefaults,
 } from "@/lib/course-run-schedule";
-import type { CourseRunsPersistence } from "@/lib/course-runs-store";
 
 type Props = {
   initialRuns: CourseRun[];
   /** Všechny přihlášky s vyplněným runId (i u smazaných id termínů). */
   occupancyByRunId: Record<string, RunRegistrationRow[]>;
-  persistence: CourseRunsPersistence;
 };
 
 function emptyGroupRun(): CourseRun {
@@ -86,7 +84,6 @@ function createInitialEditorState(runs: CourseRun[]) {
 export function CourseRunsAdminClient({
   initialRuns,
   occupancyByRunId,
-  persistence,
 }: Props) {
   const router = useRouter();
   const [runs, setRuns] = useState<CourseRun[]>(initialRuns);
@@ -118,18 +115,10 @@ export function CourseRunsAdminClient({
         const o = data as { error?: string; hint?: string };
         const base =
           typeof o.error === "string" ? o.error : "Uložení se nezdařilo.";
-        const hint = typeof o.hint === "string" ? o.hint : "";
-        setError(hint ? `${base} ${hint}` : base);
+        setError(base);
         return;
       }
-      const storage = (data as { storage?: string }).storage;
-      setMessage(
-        storage === "supabase"
-          ? "Termíny uloženy v Supabase."
-          : storage === "redis"
-            ? "Termíny uloženy v Redis (Upstash)."
-            : "Termíny uloženy do data/course-runs.json.",
-      );
+      setMessage("Termíny uloženy.");
       if (
         typeof data === "object" &&
         data &&
@@ -152,6 +141,28 @@ export function CourseRunsAdminClient({
     setRuns((prev) =>
       prev.map((r, i) => (i === index ? { ...r, ...patch } : r)),
     );
+  }
+
+  function updateFormatAt(index: number, format: CourseFormat) {
+    const run = runs[index];
+    if (!run) return;
+    const rowKey = clientKeys[index];
+    const manual = manualCopyByKey[rowKey] ?? false;
+    const hasRegs =
+      (occupancyByRunId[run.id]?.some((r) => r.format === run.format) ??
+        false);
+    const patch: Partial<CourseRun> = { format };
+    if (format === "individual") {
+      patch.capacity = Math.min(run.capacity, 1) || 1;
+    } else if (run.format === "individual" && run.capacity <= 1) {
+      patch.capacity = 6;
+    }
+    const next = applySchedulePatch(run, patch);
+    if (manual) {
+      updateAt(index, { format: next.format, capacity: next.capacity });
+      return;
+    }
+    updateAt(index, buildAutoCopyFromSchedule(next, { lockId: hasRegs }));
   }
 
   function removeAt(index: number) {
@@ -182,53 +193,11 @@ export function CourseRunsAdminClient({
     <div className="mt-8 space-y-6">
       <div className="portal-card border-violet-100 p-4 text-sm leading-relaxed text-slate-700 sm:p-5">
         <p>
-          {persistence === "supabase" ? (
-            <>
-              Údaje se ukládají do <strong>Supabase</strong> (tabulka{" "}
-              <code className="rounded bg-slate-100 px-1 text-xs">
-                public.web_course_runs
-              </code>
-              ) přes service role — vhodné na Vercelu. Jednorázově spusťte SQL z{" "}
-              <code className="rounded bg-slate-100 px-1 text-xs">
-                web/supabase-course-runs.sql
-              </code>{" "}
-              a mějte v prostředí{" "}
-              <code className="rounded bg-slate-100 px-1 text-xs">
-                SUPABASE_URL
-              </code>{" "}
-              a{" "}
-              <code className="rounded bg-slate-100 px-1 text-xs">
-                SUPABASE_SERVICE_ROLE_KEY
-              </code>
-              .
-            </>
-          ) : persistence === "redis" ? (
-            <>
-              Údaje se ukládají do{" "}
-              <strong>Upstash Redis</strong> (klíč serveru), protože na Vercelu nelze zapisovat do
-              souboru v repozitáři a Supabase pro termíny není nakonfigurovaný. Nastavte{" "}
-              <code className="rounded bg-slate-100 px-1 text-xs">
-                UPSTASH_REDIS_REST_URL
-              </code>{" "}
-              a{" "}
-              <code className="rounded bg-slate-100 px-1 text-xs">
-                UPSTASH_REDIS_REST_TOKEN
-              </code>
-              .
-            </>
-          ) : (
-            <>
-              Údaje se ukládají do{" "}
-              <code className="rounded bg-slate-100 px-1 text-xs">
-                data/course-runs.json
-              </code>{" "}
-              (lokální server nebo vlastní hosting se zápisem na disk).
-            </>
-          )}{" "}
-          Skupinové řádky se nabízejí u přihlášky „Skupina“, individuální u „1:1“. Tabulka níže
-          bere přihlášky z aktuálních dat (včetně stavu — zrušené se nepočítají do kapacity).
-          Volná místa = kapacita minus větší z <strong>ručního obsazeno</strong> a{" "}
-          <strong>počtu přihlášek</strong> (u 1:1 typicky kapacita 1).
+          Skupinové termíny se nabízejí u přihlášky ve formátu „Skupina“,
+          individuální u „1:1“. Výběr na webu je volitelný — rodič může nechat
+          domluvu na později. Tabulka níže ukazuje přihlášky k termínu; zrušené
+          se nepočítají do kapacity. Volná místa = kapacita minus větší z{" "}
+          <strong>ručního obsazeno</strong> a <strong>počtu přihlášek</strong>.
         </p>
         <p className="mt-2 text-xs text-slate-500">
           <strong>Rozvrh</strong> — den, čas a opakování; nadpis a popis pro web se
@@ -397,7 +366,7 @@ export function CourseRunsAdminClient({
                       onClick={() => removeAt(index)}
                       className="text-xs font-bold text-red-700 underline decoration-red-300 underline-offset-2 hover:text-red-900"
                     >
-                      Odstranit z JSON
+                      Odstranit termín
                     </button>
                   </div>
                 </div>
@@ -475,21 +444,9 @@ export function CourseRunsAdminClient({
                     </label>
                     <select
                       value={run.format}
-                      onChange={(e) => {
-                        const f = e.target.value as CourseFormat;
-                        const patch: Partial<CourseRun> = { format: f };
-                        if (f === "individual") {
-                          patch.capacity = Math.min(run.capacity, 1) || 1;
-                        } else if (run.format === "individual" && run.capacity <= 1) {
-                          patch.capacity = 6;
-                        }
-                        const next = withScheduleDefaults({ ...run, ...patch });
-                        if (manualCopy) {
-                          updateAt(index, patch);
-                        } else {
-                          updateAt(index, buildAutoCopyFromSchedule(next));
-                        }
-                      }}
+                      onChange={(e) =>
+                        updateFormatAt(index, e.target.value as CourseFormat)
+                      }
                       className="input-portal mt-1.5 block max-w-md"
                     >
                       <option value="skupina">Skupinový běh</option>
@@ -500,6 +457,7 @@ export function CourseRunsAdminClient({
                   <CourseRunScheduleEditor
                     scheduleKey={rowKey}
                     run={run}
+                    lockId={rows.length > 0}
                     manualCopy={manualCopy}
                     onManualCopyChange={(manual) =>
                       setEditorState((prev) => ({
@@ -551,7 +509,7 @@ export function CourseRunsAdminClient({
                       <input
                         type="number"
                         min={1}
-                        max={500}
+                        max={run.format === "individual" ? 1 : 500}
                         value={run.capacity}
                         onChange={(e) =>
                           updateAt(index, {

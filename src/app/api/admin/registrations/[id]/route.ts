@@ -83,7 +83,7 @@ export async function PATCH(request: Request, context: RouteContext) {
       return apiJson(
         {
           error:
-            "Úpravy nejsou k dispozici: přihlášky jdou jen na webhook (bez lokálního JSONL).",
+            "Úpravy nejsou v tomto režimu dostupné.",
         },
         { status: 409 },
       );

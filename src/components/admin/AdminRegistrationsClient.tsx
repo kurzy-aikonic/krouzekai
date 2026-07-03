@@ -251,11 +251,8 @@ export function AdminRegistrationsClient({
 
       {!writable ? (
         <div className="portal-card border-l-4 border-amber-400 bg-amber-50/80 px-4 py-3 text-sm text-amber-950">
-          <strong>Jen čtení.</strong> Máte zapnutý{" "}
-          <code className="rounded bg-white/80 px-1">REGISTRATIONS_WEBHOOK_URL</code>{" "}
-          — přihlášky se neukládají do JSONL na tomto serveru, úpravy přes admin
-          proto nejdou. Pro správu stavů použijte cíl webhooku nebo vypněte webhook
-          a držte data v souboru.
+          <strong>Jen pro čtení.</strong> Přihlášky můžete prohlížet, ale stav,
+          poznámky a termín upravovat v tomto režimu nelze.
         </div>
       ) : null}
 

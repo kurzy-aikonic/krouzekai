@@ -160,7 +160,7 @@ export function AdminRegistrationDetailForm({
 
         {!writable ? (
           <p className="mt-3 text-sm text-amber-800">
-            Úpravy nejsou dostupné (webhook režim bez JSONL na serveru).
+            Úpravy stavu, poznámek a termínu nejsou v tomto režimu dostupné.
           </p>
         ) : null}
 

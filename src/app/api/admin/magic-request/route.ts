@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     return apiJson(
       {
         error:
-          "Přihlášení e-mailem není aktivní. Doplňte ADMIN_EMAILS v .env nebo použijte tajný klíč.",
+          "Přihlášení e-mailem není aktivní. Použijte tajný klíč nebo kontaktujte správce.",
       },
       { status: 503 },
     );

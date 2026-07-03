@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       {
         ok: false,
         error:
-          "Resend není nastaven (RESEND_API_KEY, RESEND_FROM_EMAIL). Test nelze odeslat.",
+          "Odesílání e-mailů není nakonfigurované. Kontaktujte správce webu.",
       },
       { status: 503 },
     );

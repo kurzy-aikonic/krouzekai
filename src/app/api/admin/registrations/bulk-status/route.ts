@@ -56,7 +56,7 @@ export async function POST(request: Request) {
       return apiJson(
         {
           error:
-            "Hromadná úprava není k dispozici: přihlášky jdou jen na webhook (bez lokálního JSONL).",
+            "Hromadná úprava není v tomto režimu dostupná.",
         },
         { status: 409 },
       );
