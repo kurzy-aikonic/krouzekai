@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { HomeCourseRunsSection } from "@/components/home/HomeCourseRunsSection";
 import { HomeInteractiveDemos } from "@/components/playful/HomeInteractiveDemos";
 import { HomeJsonLd } from "@/components/seo/HomeJsonLd";
 import { Section } from "@/components/ui/Section";
+import { countedOccupancyForRun } from "@/lib/course-run-registrations";
+import { spotsLeftEffective } from "@/data/course-runs";
+import { listOfferedCourseRuns } from "@/lib/course-runs-store";
+import { listRegistrationsMerged } from "@/lib/registrations-store";
 import { pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 
@@ -12,6 +17,8 @@ export const metadata: Metadata = pageMetadata({
     "Moderní online kroužek pro děti 10–17 let. Učíme tvořit aplikace, weby a hry pomocí AI bez nutnosti programování. Přihlaste se nezávazně!",
   path: "/",
 });
+
+export const dynamic = "force-dynamic";
 
 const learnItems = [
   {
@@ -71,8 +78,19 @@ const outcomes = [
   { t: "Zdravé návyky: kdy AI pomáhá a kdy je potřeba samostatné kritické myšlení.", e: "⚖️" },
 ] as const;
 
-export default function HomePage() {
+export default async function HomePage() {
   const p = site.pricing;
+  const offeredGroup = (await listOfferedCourseRuns()).filter(
+    (r) => r.format === "skupina",
+  );
+  const merged = await listRegistrationsMerged();
+  const freeByRunId: Record<string, number> = {};
+  for (const run of offeredGroup) {
+    const occ = countedOccupancyForRun(run.id, run.format, merged);
+    freeByRunId[run.id] = spotsLeftEffective(run, occ);
+  }
+  const hasPublicRuns = offeredGroup.length > 0;
+
   return (
     <>
       <HomeJsonLd />
@@ -117,21 +135,40 @@ export default function HomePage() {
             , který dítě skutečně vytvoří.
           </p>
           <p className="mt-4 max-w-2xl text-sm font-semibold leading-relaxed text-violet-900 sm:text-base">
-            Hrajeme fér — právě otevíráme první termíny, takže tu zatím
-            nenajdete žádné ohlasy. Ty vaše budou první! Po přihlášce s vámi
-            domluvíme termín a věkový blok
-            individuálně.
+            {hasPublicRuns ? (
+              <>
+                Máme otevřené konkrétní termíny — vyberte si níže nebo pošlete
+                nezávaznou přihlášku. Skupiny skládáme podle věku, aby tempo
+                sedělo každému dítěti.
+              </>
+            ) : (
+              <>
+                Právě otevíráme první termíny — po přihlášce s vámi domluvíme
+                termín a věkový blok individuálně.
+              </>
+            )}
           </p>
 
           <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
             <Link href="/registrace" className="btn-magic w-full text-center sm:w-auto">
               Nezávazně přihlásit dítě 🚀
             </Link>
-            <Link href="/jak-probiha" className="btn-magic-outline w-full text-center sm:w-auto">
-              Jak to u nás funguje
-            </Link>
+            {hasPublicRuns ? (
+              <Link
+                href="#aktualni-terminy"
+                className="btn-magic-outline w-full text-center sm:w-auto"
+              >
+                Aktuální termíny
+              </Link>
+            ) : (
+              <Link href="/jak-probiha" className="btn-magic-outline w-full text-center sm:w-auto">
+                Jak to u nás funguje
+              </Link>
+            )}
           </div>
         </header>
+
+        <HomeCourseRunsSection runs={offeredGroup} freeByRunId={freeByRunId} />
 
         {/* Rodičovský pruh */}
         <div className="mt-14 rounded-3xl border-[3px] border-dashed border-violet-400 bg-white/80 p-5 shadow-[6px_6px_0_rgba(49,46,129,0.12)] backdrop-blur-sm sm:p-6">
@@ -161,8 +198,9 @@ export default function HomePage() {
                 vteřin.
               </p>
               <p className="mt-1 text-xs italic font-medium leading-relaxed text-slate-500">
-                Přihláška je nezávazná. Po potvrzení otevřených termínů vám
-                pošleme dostupné varianty.
+                {hasPublicRuns
+                  ? "Přihláška je nezávazná. Termín můžete vybrat hned ve formuláři."
+                  : "Přihláška je nezávazná. Po potvrzení otevřených termínů vám pošleme dostupné varianty."}
               </p>
             </div>
             <div className="card-playful h-full bg-white">
@@ -387,10 +425,14 @@ export default function HomePage() {
           <div className="rainbow-strip absolute inset-0 opacity-90" aria-hidden />
           <div className="relative m-[3px] rounded-[1.85rem] bg-[var(--magic-ink)] px-6 py-12 sm:px-10 sm:py-14">
             <h2 className="font-display text-2xl font-extrabold text-white sm:text-4xl">
-              Přihlaste dítě do prvních termínů
+              {hasPublicRuns
+                ? "Vyberte termín a přihlaste dítě"
+                : "Přihlaste dítě do prvních termínů"}
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-base font-medium text-violet-200">
-              Vyplňte přihlášku - ozveme se a společně doladíme termín i formát.
+              {hasPublicRuns
+                ? "Konkrétní termíny najdete výše — nebo pošlete obecnou nezávaznou přihlášku."
+                : "Vyplňte přihlášku — ozveme se a společně doladíme termín i formát."}
             </p>
             <Link
               href="/registrace"

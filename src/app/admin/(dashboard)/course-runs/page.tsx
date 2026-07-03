@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { CourseRunsAdminClient } from "@/components/admin/CourseRunsAdminClient";
 import { buildRunOccupancyMap } from "@/lib/course-run-registrations";
-import { listCourseRuns } from "@/lib/course-runs-store";
+import { getCourseRunsDataSource, listCourseRuns } from "@/lib/course-runs-store";
 import { listRegistrationsMerged } from "@/lib/registrations-store";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminCourseRunsPage() {
   const runs = await listCourseRuns();
+  const dataSource = await getCourseRunsDataSource();
   const merged = await listRegistrationsMerged();
   const occupancyByRunId = buildRunOccupancyMap(merged);
 
@@ -30,6 +31,7 @@ export default async function AdminCourseRunsPage() {
       <CourseRunsAdminClient
         initialRuns={runs}
         occupancyByRunId={occupancyByRunId}
+        usingDefaultRuns={dataSource === "defaults"}
       />
     </div>
   );

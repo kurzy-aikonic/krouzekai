@@ -8,6 +8,7 @@ import {
   verifyAdminCookie,
 } from "@/lib/admin-auth";
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
+import { AdminNav } from "@/components/admin/AdminNav";
 
 export default async function AdminDashboardLayout({
   children,
@@ -50,29 +51,7 @@ export default async function AdminDashboardLayout({
             >
               Kroužek — admin
             </Link>
-            <nav
-              className="flex flex-wrap gap-1 text-xs font-medium text-slate-600 sm:text-sm"
-              aria-label="Admin navigace"
-            >
-              <Link
-                href="/admin"
-                className="rounded-lg px-2 py-1.5 hover:bg-violet-50 hover:text-violet-800"
-              >
-                Přihlášky
-              </Link>
-              <Link
-                href="/admin/course-runs"
-                className="rounded-lg px-2 py-1.5 hover:bg-violet-50 hover:text-violet-800"
-              >
-                Termíny
-              </Link>
-              <Link
-                href="/admin/nastroje"
-                className="rounded-lg px-2 py-1.5 hover:bg-violet-50 hover:text-violet-800"
-              >
-                Nástroje
-              </Link>
-            </nav>
+            <AdminNav />
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-3">
             {sessionEmail && sessionEmail !== "legacy" ? (

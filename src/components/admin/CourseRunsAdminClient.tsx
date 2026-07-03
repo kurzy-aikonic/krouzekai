@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CourseFormat, CourseRun } from "@/data/course-runs";
 import { spotsLeftEffective } from "@/data/course-runs";
 import {
@@ -12,6 +12,11 @@ import {
 import { registrationStatusPillClassName } from "@/lib/registration-status-ui";
 import { registrationStatusLabelsCs } from "@/types/registration";
 import { CourseRunScheduleEditor } from "@/components/admin/CourseRunScheduleEditor";
+import { CourseRunsOverview } from "@/components/admin/CourseRunsOverview";
+import {
+  prepareRunsForSave,
+  validateRunsForSave,
+} from "@/lib/course-runs-admin-utils";
 import {
   applySchedulePatch,
   buildAutoCopyFromSchedule,
@@ -23,7 +28,13 @@ type Props = {
   initialRuns: CourseRun[];
   /** Všechny přihlášky s vyplněným runId (i u smazaných id termínů). */
   occupancyByRunId: Record<string, RunRegistrationRow[]>;
+  /** Web ještě běží na výchozích demo termínech z kódu. */
+  usingDefaultRuns?: boolean;
 };
+
+function runsFingerprint(runs: CourseRun[]): string {
+  return JSON.stringify(prepareRunsForSave(runs));
+}
 
 function emptyGroupRun(): CourseRun {
   const weekday = 2 as const;
@@ -84,9 +95,13 @@ function createInitialEditorState(runs: CourseRun[]) {
 export function CourseRunsAdminClient({
   initialRuns,
   occupancyByRunId,
+  usingDefaultRuns = false,
 }: Props) {
   const router = useRouter();
   const [runs, setRuns] = useState<CourseRun[]>(initialRuns);
+  const [savedFingerprint, setSavedFingerprint] = useState(() =>
+    runsFingerprint(initialRuns),
+  );
   const [editorState, setEditorState] = useState(() =>
     createInitialEditorState(initialRuns),
   );
@@ -95,40 +110,103 @@ export function CourseRunsAdminClient({
   const [advancedOpenByKey, setAdvancedOpenByKey] = useState<
     Record<string, boolean>
   >({});
+  const [expandedKey, setExpandedKey] = useState<string | null>(
+    () => editorState.clientKeys[0] ?? null,
+  );
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
+  const dirty = useMemo(
+    () => runsFingerprint(runs) !== savedFingerprint,
+    [runs, savedFingerprint],
+  );
+
+  useEffect(() => {
+    setRuns(initialRuns);
+    setSavedFingerprint(runsFingerprint(initialRuns));
+    const nextEditor = createInitialEditorState(initialRuns);
+    setEditorState(nextEditor);
+    setExpandedKey((prev) =>
+      prev && nextEditor.clientKeys.includes(prev)
+        ? prev
+        : (nextEditor.clientKeys[0] ?? null),
+    );
+  }, [initialRuns]);
+
+  useEffect(() => {
+    if (!dirty) return;
+    function onBeforeUnload(e: BeforeUnloadEvent) {
+      e.preventDefault();
+    }
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [dirty]);
+
+  const freeByRunId = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const run of runs) {
+      const rows = (occupancyByRunId[run.id] ?? []).filter(
+        (row) => row.format === run.format,
+      );
+      map[run.id] = spotsLeftEffective(run, countedTowardCapacity(rows));
+    }
+    return map;
+  }, [runs, occupancyByRunId]);
+
+  async function reloadFromServer() {
+    const res = await fetch("/api/admin/course-runs", {
+      credentials: "same-origin",
+    });
+    const data: unknown = await res.json().catch(() => ({}));
+    if (
+      res.ok &&
+      typeof data === "object" &&
+      data &&
+      "runs" in data &&
+      Array.isArray((data as { runs: unknown }).runs)
+    ) {
+      const savedRuns = (data as { runs: CourseRun[] }).runs;
+      setRuns(savedRuns);
+      const nextEditor = createInitialEditorState(savedRuns);
+      setEditorState(nextEditor);
+      setExpandedKey((prev) =>
+        prev && nextEditor.clientKeys.includes(prev)
+          ? prev
+          : (nextEditor.clientKeys[0] ?? null),
+      );
+    }
+  }
+
   async function save() {
     setMessage(null);
     setError(null);
+    const prepared = prepareRunsForSave(runs);
+    const validationError = validateRunsForSave(prepared);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     setPending(true);
     try {
       const res = await fetch("/api/admin/course-runs", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "same-origin",
-        body: JSON.stringify({ runs }),
+        body: JSON.stringify({ runs: prepared }),
       });
       const data: unknown = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const o = data as { error?: string; hint?: string };
+        const o = data as { error?: string; details?: { fieldErrors?: unknown } };
         const base =
           typeof o.error === "string" ? o.error : "Uložení se nezdařilo.";
         setError(base);
         return;
       }
-      setMessage("Termíny uloženy.");
-      if (
-        typeof data === "object" &&
-        data &&
-        "runs" in data &&
-        Array.isArray((data as { runs: unknown }).runs)
-      ) {
-        const savedRuns = (data as { runs: CourseRun[] }).runs;
-        setRuns(savedRuns);
-        setEditorState(createInitialEditorState(savedRuns));
-      }
+      setRuns(prepared);
+      setSavedFingerprint(runsFingerprint(prepared));
+      setMessage(`Uloženo ${prepared.length} termínů. Zobrazují se na webu i zde v seznamu.`);
+      await reloadFromServer();
       router.refresh();
     } catch {
       setError("Síťová chyba.");
@@ -166,7 +244,18 @@ export function CourseRunsAdminClient({
   }
 
   function removeAt(index: number) {
+    const run = runs[index];
+    if (!run) return;
     const key = clientKeys[index];
+    const regRows = occupancyByRunId[run.id] ?? [];
+    const label = run.label.trim() || `Termín ${index + 1}`;
+    const confirmed = window.confirm(
+      regRows.length > 0
+        ? `Termín „${label}“ má ${regRows.length} přihlášek. Po uložení zmizí ze seznamu — přihlášky zůstanou, ale ztratí propojení s tímto termínem. Pokračovat?`
+        : `Odebrat „${label}" ze seznamu? Změna se projeví až po kliknutí na Uložit vše.`,
+    );
+    if (!confirmed) return;
+
     setRuns((prev) => prev.filter((_, i) => i !== index));
     setEditorState((prev) => ({
       clientKeys: prev.clientKeys.filter((_, i) => i !== index),
@@ -174,6 +263,10 @@ export function CourseRunsAdminClient({
         Object.entries(prev.manualCopyByKey).filter(([k]) => k !== key),
       ),
     }));
+    if (expandedKey === key) {
+      const nextKeys = clientKeys.filter((_, i) => i !== index);
+      setExpandedKey(nextKeys[0] ?? null);
+    }
   }
 
   function addRun(run: CourseRun) {
@@ -183,6 +276,23 @@ export function CourseRunsAdminClient({
       clientKeys: [...prev.clientKeys, key],
       manualCopyByKey: { ...prev.manualCopyByKey, [key]: false },
     }));
+    setExpandedKey(key);
+    requestAnimationFrame(() => {
+      document.getElementById(`run-editor-${key}`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }
+
+  function focusRun(key: string) {
+    setExpandedKey(key);
+    requestAnimationFrame(() => {
+      document.getElementById(`run-editor-${key}`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
   }
 
   const orphanEntries = Object.entries(occupancyByRunId).filter(
@@ -191,6 +301,28 @@ export function CourseRunsAdminClient({
 
   return (
     <div className="mt-8 space-y-6">
+      {usingDefaultRuns ? (
+        <div className="portal-card border-l-4 border-amber-400 bg-amber-50/90 px-4 py-3 text-sm text-amber-950 sm:px-5">
+          <p className="font-bold">Web zobrazuje výchozí ukázkové termíny</p>
+          <p className="mt-1 leading-relaxed">
+            Na homepage a v registraci jsou zatím demo termíny. Upravte seznam
+            níže a klikněte <strong>Uložit vše</strong> — pak se zobrazí vaše
+            vlastní termíny.
+          </p>
+        </div>
+      ) : null}
+
+      {dirty ? (
+        <div className="portal-card border-l-4 border-violet-500 bg-violet-50/90 px-4 py-3 text-sm text-violet-950 sm:px-5">
+          <p className="font-bold">Máte neuložené změny</p>
+          <p className="mt-1 leading-relaxed">
+            Úpravy termínů se projeví na webu až po kliknutí na{" "}
+            <strong>Uložit vše</strong>. Při odchodu ze stránky bez uložení
+            změny zmizí.
+          </p>
+        </div>
+      ) : null}
+
       <div className="portal-card border-violet-100 p-4 text-sm leading-relaxed text-slate-700 sm:p-5">
         <p>
           Skupinové termíny se nabízejí u přihlášky ve formátu „Skupina“,
@@ -225,10 +357,10 @@ export function CourseRunsAdminClient({
         <button
           type="button"
           onClick={() => void save()}
-          disabled={pending}
-          className="btn-portal-primary max-w-xs"
+          disabled={pending || !dirty}
+          className={`btn-portal-primary max-w-xs ${dirty ? "ring-2 ring-violet-400 ring-offset-2" : ""}`}
         >
-          {pending ? "Ukládám…" : "Uložit vše"}
+          {pending ? "Ukládám…" : dirty ? "Uložit vše *" : "Uloženo"}
         </button>
       </div>
 
@@ -238,6 +370,14 @@ export function CourseRunsAdminClient({
         </p>
       ) : null}
       {message ? <p className="alert-success">{message}</p> : null}
+
+      <CourseRunsOverview
+        runs={runs}
+        clientKeys={clientKeys}
+        occupancyFreeByRunId={freeByRunId}
+        expandedKey={expandedKey}
+        onSelect={focusRun}
+      />
 
       {orphanEntries.length > 0 ? (
         <div className="portal-card border-l-4 border-amber-400 bg-amber-50/80 p-4 text-sm text-amber-950">
@@ -290,6 +430,9 @@ export function CourseRunsAdminClient({
       ) : null}
 
       <div className="space-y-4">
+        <h2 className="font-display text-sm font-extrabold uppercase tracking-wide text-slate-700">
+          Úprava termínů
+        </h2>
         {runs.length === 0 ? (
           <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50/80 px-4 py-8 text-center text-sm text-slate-600">
             Zatím žádné termíny. Přidejte skupinový běh nebo 1:1 slot, případně uložte prázdný
@@ -306,16 +449,21 @@ export function CourseRunsAdminClient({
             const counted = countedTowardCapacity(rows);
             const free = spotsLeftEffective(run, counted);
             const active = run.active !== false;
+            const expanded = expandedKey === rowKey;
 
             return (
               <div
+                id={`run-editor-${rowKey}`}
                 key={rowKey}
-                className="portal-card space-y-4 p-4 sm:p-5"
+                className="portal-card scroll-mt-24 space-y-4 p-4 sm:p-5"
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-800">
-                      Termín {index + 1}
+                      {run.label || `Termín ${index + 1}`}
+                    </p>
+                    <p className="mt-1 truncate text-sm font-medium text-slate-600">
+                      {run.description}
                     </p>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
                       <span className="inline-flex rounded-full border border-violet-200 bg-violet-50 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-violet-900">
@@ -344,6 +492,15 @@ export function CourseRunsAdminClient({
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedKey(expanded ? null : rowKey)
+                      }
+                      className="btn-portal-ghost text-xs"
+                    >
+                      {expanded ? "Sbalit editor" : "Rozbalit editor"}
+                    </button>
                     {active ? (
                       <button
                         type="button"
@@ -371,6 +528,8 @@ export function CourseRunsAdminClient({
                   </div>
                 </div>
 
+                {expanded ? (
+                  <>
                 {rows.length > 0 ? (
                   <div className="overflow-x-auto rounded-xl border border-slate-200">
                     <table className="min-w-full text-left text-xs sm:text-sm">
@@ -576,6 +735,13 @@ export function CourseRunsAdminClient({
                     ) : null}
                   </div>
                 </div>
+                </>
+                ) : (
+                  <p className="text-xs text-slate-500">
+                    Klikněte na <strong>Rozbalit editor</strong> nebo{" "}
+                    <strong>Upravit</strong> v tabulce výše.
+                  </p>
+                )}
               </div>
             );
           })

@@ -107,6 +107,9 @@ export function AdminRegistrationsClient({
     });
   }, [initialItems, q, status, format, courseRuns]);
 
+  const filtersActive =
+    q.trim().length > 0 || status !== "vse" || format !== "vse";
+
   function toggleRow(id: string) {
     setSelected((prev) => {
       const n = new Set(prev);
@@ -485,7 +488,11 @@ export function AdminRegistrationsClient({
         </table>
         {filtered.length === 0 ? (
           <p className="px-4 py-8 text-center text-sm text-slate-500">
-            Žádné záznamy neodpovídají filtru.
+            {initialItems.length === 0
+              ? "Zatím žádné přihlášky. Po první registraci na webu se zobrazí zde."
+              : filtersActive
+                ? "Filtru neodpovídá žádná přihláška. Zkuste upravit hledání nebo filtry."
+                : "Žádné záznamy k zobrazení."}
           </p>
         ) : null}
       </div>

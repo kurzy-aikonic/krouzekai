@@ -15,7 +15,12 @@ export const metadata: Metadata = pageMetadata({
 
 export const dynamic = "force-dynamic";
 
-export default async function RegistracePage() {
+export default async function RegistracePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ run?: string }>;
+}) {
+  const q = await searchParams;
   const offered = await listOfferedCourseRuns();
   const groupRuns = offered.filter((r) => r.format === "skupina");
   const individualRuns = offered.filter((r) => r.format === "individual");
@@ -41,17 +46,28 @@ export default async function RegistracePage() {
         <h1 className="page-h1">Registrace 📝</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
           Vyplňte údaje o dítěti ({site.audience.ageMin}–{site.audience.ageMax}{" "}
-          let) a zákonném zástupci. První termíny právě otevíráme — díky věku na
-          přihlášce vás zařadíme do správného tempa a konkrétní termín s vámi
-          domluvíme individuálně podle zájmu. Po odeslání vás kontaktujeme,
-          domluvíme podmínky a pak zašleme fakturu — platbu řešíme až po této
-          domluvě (faktury zatím neposíláme automaticky z webu).
+          let) a zákonném zástupci.
+          {offered.length > 0 ? (
+            <>
+              {" "}
+              Níže můžete vybrat konkrétní termín — nebo nechat domluvu na
+              později.
+            </>
+          ) : (
+            <>
+              {" "}
+              První termíny právě otevíráme — konkrétní termín s vámi domluvíme
+              po registraci.
+            </>
+          )}{" "}
+          Po odeslání vás kontaktujeme, domluvíme podmínky a pak zašleme fakturu.
         </p>
         <div className="mt-10">
           <RegistrationForm
             groupRuns={groupRuns}
             individualRuns={individualRuns}
             occupancyByRunId={occupancyByRunId}
+            preferredRunId={q.run}
           />
         </div>
       </div>

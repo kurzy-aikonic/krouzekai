@@ -7,6 +7,7 @@ import {
   isRegistrationsJsonlWritable,
 } from "@/lib/registrations-store";
 import { AdminRegistrationDetailForm } from "@/components/admin/AdminRegistrationDetailForm";
+import { RegistrationTechnicalId } from "@/components/admin/RegistrationTechnicalId";
 
 export const dynamic = "force-dynamic";
 
@@ -34,9 +35,7 @@ export default async function AdminRegistrationDetailPage({ params }: PageProps)
       <p className="mt-1 font-mono text-2xl font-bold tracking-wider text-slate-900">
         {getPublicRegistrationCode(record)}
       </p>
-      <p className="mt-1 font-mono text-xs text-slate-500">
-        Technické ID: {record.id}
-      </p>
+      <RegistrationTechnicalId recordId={record.id} />
       <AdminRegistrationDetailForm
         key={`${getPublicRegistrationCode(record)}-${record.updatedAt ?? ""}-${record.status}-${record.runId ?? ""}`}
         record={record}

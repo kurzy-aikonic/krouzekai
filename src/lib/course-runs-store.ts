@@ -3,6 +3,7 @@ import path from "path";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import { defaultCourseRuns, type CourseRun } from "@/data/course-runs";
+import { prepareRunsForSave } from "@/lib/course-runs-admin-utils";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
 const REDIS_KEY = "krouzek:course-runs:v1";
@@ -20,10 +21,11 @@ const courseRunSchema = z.object({
   filled: z.coerce.number().int().min(0).max(5000),
   startsOn: z.string().min(4).max(40),
   weekday: z.coerce.number().int().min(1).max(7).optional(),
-  lessonTime: z
-    .string()
-    .regex(/^\d{2}:\d{2}$/, "Čas musí být ve formátu HH:mm")
-    .optional(),
+  lessonTime: z.preprocess(
+    (v) =>
+      typeof v === "string" && /^\d{2}:\d{2}$/.test(v) ? v : undefined,
+    z.string().regex(/^\d{2}:\d{2}$/).optional(),
+  ),
   recurrence: z.enum(["weekly", "biweekly", "none"]).optional(),
   active: z.boolean().optional().default(true),
 });
@@ -66,12 +68,60 @@ function normalizeRun(r: CourseRun): CourseRun {
   return { ...r, filled, active };
 }
 
+function sanitizeRunRaw(item: unknown): unknown {
+  if (!item || typeof item !== "object") return item;
+  const o = { ...(item as Record<string, unknown>) };
+  if (typeof o.lessonTime === "string" && !/^\d{2}:\d{2}$/.test(o.lessonTime)) {
+    delete o.lessonTime;
+  }
+  if (typeof o.weekday === "number" && (o.weekday < 1 || o.weekday > 7)) {
+    delete o.weekday;
+  }
+  if (
+    o.recurrence !== "weekly" &&
+    o.recurrence !== "biweekly" &&
+    o.recurrence !== "none"
+  ) {
+    delete o.recurrence;
+  }
+  return o;
+}
+
 function parseRunsArray(runs: unknown): CourseRun[] {
   if (!Array.isArray(runs)) return [];
   const out: CourseRun[] = [];
   for (const item of runs) {
-    const p = courseRunSchema.safeParse(item);
-    if (p.success) out.push(normalizeRun(p.data));
+    const p = courseRunSchema.safeParse(sanitizeRunRaw(item));
+    if (p.success) {
+      out.push(normalizeRun(p.data));
+      continue;
+    }
+    const raw = sanitizeRunRaw(item);
+    if (!raw || typeof raw !== "object") continue;
+    const o = raw as Record<string, unknown>;
+    const fallback = courseRunSchema.safeParse({
+      id: typeof o.id === "string" ? o.id : `run-${out.length + 1}`,
+      label:
+        typeof o.label === "string" && o.label.trim()
+          ? o.label
+          : "Termín kroužku",
+      description:
+        typeof o.description === "string" && o.description.trim()
+          ? o.description
+          : "Online kroužek umělé inteligence.",
+      format: o.format === "individual" ? "individual" : "skupina",
+      capacity: o.capacity ?? 6,
+      filled: o.filled ?? 0,
+      startsOn:
+        typeof o.startsOn === "string" && o.startsOn.length >= 8
+          ? o.startsOn.slice(0, 10)
+          : new Date().toISOString().slice(0, 10),
+      weekday: o.weekday,
+      lessonTime: o.lessonTime,
+      recurrence: o.recurrence,
+      active: o.active !== false,
+    });
+    if (fallback.success) out.push(normalizeRun(fallback.data));
   }
   return out;
 }
@@ -133,6 +183,24 @@ async function loadFromFile(): Promise<CourseRun[] | null> {
  * Pořadí: Supabase → Redis → soubor → výchozí z kódu.
  * Prázdné pole = žádné termíny na přihlášce.
  */
+export type CourseRunsDataSource = "supabase" | "redis" | "file" | "defaults";
+
+export async function getCourseRunsDataSource(): Promise<CourseRunsDataSource> {
+  const fromDb = await loadFromSupabase();
+  if (fromDb !== null) return "supabase";
+
+  const redis = getRedis();
+  if (redis) {
+    const fromRedis = await loadFromRedis(redis);
+    if (fromRedis !== null) return "redis";
+  }
+
+  const fromFile = await loadFromFile();
+  if (fromFile !== null) return "file";
+
+  return "defaults";
+}
+
 export async function listCourseRuns(): Promise<CourseRun[]> {
   const fromDb = await loadFromSupabase();
   if (fromDb !== null) return fromDb;
@@ -162,7 +230,8 @@ export async function listOfferedCourseRuns(): Promise<CourseRun[]> {
 }
 
 export async function replaceCourseRuns(runs: CourseRun[]): Promise<void> {
-  const parsed = courseRunsPutSchema.parse({ runs });
+  const prepared = prepareRunsForSave(runs);
+  const parsed = courseRunsPutSchema.parse({ runs: prepared });
   const normalized = parsed.runs.map(normalizeRun);
   const payload = JSON.stringify({ runs: normalized }, null, 2);
 

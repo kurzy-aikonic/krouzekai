@@ -24,17 +24,51 @@ type Props = {
   individualRuns: CourseRun[];
   /** Počty přihlášek počítané do kapacity (bez zrušených / reklamací), podle `run.id`. */
   occupancyByRunId: Record<string, number>;
+  /** Předvybraný termín z URL (?run=id). */
+  preferredRunId?: string;
 };
+
+function resolveInitialSelection(
+  preferredRunId: string | undefined,
+  groupRuns: CourseRun[],
+  individualRuns: CourseRun[],
+): {
+  format: "skupina" | "individual";
+  groupRunId: string;
+  individualRunId: string;
+} {
+  const id = preferredRunId?.trim();
+  if (!id) {
+    return { format: "skupina", groupRunId: "", individualRunId: "" };
+  }
+  if (groupRuns.some((r) => r.id === id)) {
+    return { format: "skupina", groupRunId: id, individualRunId: "" };
+  }
+  if (individualRuns.some((r) => r.id === id)) {
+    return { format: "individual", groupRunId: "", individualRunId: id };
+  }
+  return { format: "skupina", groupRunId: "", individualRunId: "" };
+}
 
 export function RegistrationForm({
   groupRuns,
   individualRuns,
   occupancyByRunId,
+  preferredRunId,
 }: Props) {
-  const [format, setFormat] = useState<"skupina" | "individual">("skupina");
+  const initial = resolveInitialSelection(
+    preferredRunId,
+    groupRuns,
+    individualRuns,
+  );
+  const [format, setFormat] = useState<"skupina" | "individual">(
+    initial.format,
+  );
   /** Prázdný řetězec = bez výběru konkrétního termínu. */
-  const [groupRunId, setGroupRunId] = useState("");
-  const [individualRunId, setIndividualRunId] = useState("");
+  const [groupRunId, setGroupRunId] = useState(initial.groupRunId);
+  const [individualRunId, setIndividualRunId] = useState(
+    initial.individualRunId,
+  );
   const [childName, setChildName] = useState("");
   const [childAge, setChildAge] = useState("12");
   const [parentName, setParentName] = useState("");
