@@ -1,14 +1,21 @@
 import Link from "next/link";
 import { CourseRunsAdminClient } from "@/components/admin/CourseRunsAdminClient";
 import { buildRunOccupancyMap } from "@/lib/course-run-registrations";
-import { getCourseRunsDataSource, listCourseRuns } from "@/lib/course-runs-store";
+import {
+  courseRunsPersistenceMode,
+  getCourseRunsDataSource,
+  listCourseRuns,
+  listOfferedCourseRuns,
+} from "@/lib/course-runs-store";
 import { listRegistrationsMerged } from "@/lib/registrations-store";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminCourseRunsPage() {
   const runs = await listCourseRuns();
+  const offered = await listOfferedCourseRuns();
   const dataSource = await getCourseRunsDataSource();
+  const persistence = courseRunsPersistenceMode();
   const merged = await listRegistrationsMerged();
   const occupancyByRunId = buildRunOccupancyMap(merged);
 
@@ -27,6 +34,13 @@ export default async function AdminCourseRunsPage() {
         Skupinové běhy se nabízejí u přihlášky ve formátu skupina; individuální
         sloty u formátu 1:1. Výběr na webu je vždy volitelný — rodič může nechat
         domluvu na později.
+      </p>
+      <p className="mt-2 text-xs font-medium text-slate-500">
+        Uloženo v: <strong>{persistence}</strong> · na webu aktivních termínů:{" "}
+        <strong>{offered.length}</strong>
+        {dataSource !== persistence && dataSource !== "defaults" ? (
+          <> · načteno ze zdroje: {dataSource}</>
+        ) : null}
       </p>
       <CourseRunsAdminClient
         initialRuns={runs}

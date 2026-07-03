@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const ClickSparklesClient = dynamic(
@@ -9,10 +10,12 @@ const ClickSparklesClient = dynamic(
 );
 
 export function LazyClickSparkles() {
+  const pathname = usePathname();
+  const disabled = pathname.startsWith("/admin");
   const [active, setActive] = useState(false);
 
   useEffect(() => {
-    if (active) return;
+    if (disabled || active) return;
 
     let timeoutId: number | null = null;
 
@@ -31,7 +34,9 @@ export function LazyClickSparkles() {
       window.removeEventListener("pointerdown", onFirstPointerDown);
       if (timeoutId != null) window.clearTimeout(timeoutId);
     };
-  }, [active]);
+  }, [active, disabled]);
+
+  if (disabled) return null;
 
   return active ? <ClickSparklesClient /> : null;
 }

@@ -67,6 +67,9 @@ export function HomeCourseRunsSection({ runs, freeByRunId }: Props) {
               <h3 className="font-display pr-24 text-lg font-extrabold leading-snug text-[var(--magic-ink)]">
                 {run.label}
               </h3>
+              <p className="mt-1 text-[10px] font-extrabold uppercase tracking-wide text-violet-700">
+                {run.format === "skupina" ? "Skupinový kurz" : "Individuální 1:1"}
+              </p>
               <p className="mt-2 text-sm leading-relaxed text-slate-700">
                 {run.description}
               </p>
@@ -78,7 +81,11 @@ export function HomeCourseRunsSection({ runs, freeByRunId }: Props) {
                 <strong>{free}</strong>
               </p>
               <Link
-                href={`/registrace?run=${encodeURIComponent(run.id)}`}
+                href={
+                  full
+                    ? "/registrace"
+                    : `/registrace?run=${encodeURIComponent(run.id)}`
+                }
                 className={`mt-5 inline-flex w-full justify-center rounded-xl border-2 px-4 py-2.5 text-sm font-extrabold transition ${
                   full
                     ? "pointer-events-none border-slate-200 bg-slate-100 text-slate-500"

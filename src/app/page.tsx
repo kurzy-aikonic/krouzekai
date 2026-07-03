@@ -80,16 +80,14 @@ const outcomes = [
 
 export default async function HomePage() {
   const p = site.pricing;
-  const offeredGroup = (await listOfferedCourseRuns()).filter(
-    (r) => r.format === "skupina",
-  );
+  const offered = await listOfferedCourseRuns();
   const merged = await listRegistrationsMerged();
   const freeByRunId: Record<string, number> = {};
-  for (const run of offeredGroup) {
+  for (const run of offered) {
     const occ = countedOccupancyForRun(run.id, run.format, merged);
     freeByRunId[run.id] = spotsLeftEffective(run, occ);
   }
-  const hasPublicRuns = offeredGroup.length > 0;
+  const hasPublicRuns = offered.length > 0;
 
   return (
     <>
@@ -168,7 +166,7 @@ export default async function HomePage() {
           </div>
         </header>
 
-        <HomeCourseRunsSection runs={offeredGroup} freeByRunId={freeByRunId} />
+        <HomeCourseRunsSection runs={offered} freeByRunId={freeByRunId} />
 
         {/* Rodičovský pruh */}
         <div className="mt-14 rounded-3xl border-[3px] border-dashed border-violet-400 bg-white/80 p-5 shadow-[6px_6px_0_rgba(49,46,129,0.12)] backdrop-blur-sm sm:p-6">

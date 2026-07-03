@@ -205,7 +205,16 @@ export function CourseRunsAdminClient({
       }
       setRuns(prepared);
       setSavedFingerprint(runsFingerprint(prepared));
-      setMessage(`Uloženo ${prepared.length} termínů. Zobrazují se na webu i zde v seznamu.`);
+      const storage =
+        typeof data === "object" &&
+        data &&
+        "storage" in data &&
+        typeof (data as { storage?: string }).storage === "string"
+          ? (data as { storage: string }).storage
+          : null;
+      setMessage(
+        `Uloženo ${prepared.length} termínů${storage ? ` (${storage})` : ""}. Zobrazí se na homepage, registraci a stránce Aktuální běhy.`,
+      );
       await reloadFromServer();
       router.refresh();
     } catch {

@@ -185,36 +185,55 @@ async function loadFromFile(): Promise<CourseRun[] | null> {
  */
 export type CourseRunsDataSource = "supabase" | "redis" | "file" | "defaults";
 
-export async function getCourseRunsDataSource(): Promise<CourseRunsDataSource> {
+type ResolvedCourseRuns = {
+  runs: CourseRun[];
+  source: CourseRunsDataSource;
+};
+
+/**
+ * Sloučí zdroje termínů. Prázdné Supabase/Redis neblokuje fallback na soubor —
+ * typický problém na Vercelu, kde tabulka existuje s `runs: []`, ale admin ukládá
+ * jinde nebo data ještě nejsou v DB.
+ */
+async function resolveCourseRuns(): Promise<ResolvedCourseRuns> {
   const fromDb = await loadFromSupabase();
-  if (fromDb !== null) return "supabase";
+  if (fromDb !== null && fromDb.length > 0) {
+    return { runs: fromDb, source: "supabase" };
+  }
 
   const redis = getRedis();
+  let fromRedis: CourseRun[] | null = null;
   if (redis) {
-    const fromRedis = await loadFromRedis(redis);
-    if (fromRedis !== null) return "redis";
+    fromRedis = await loadFromRedis(redis);
+    if (fromRedis !== null && fromRedis.length > 0) {
+      return { runs: fromRedis, source: "redis" };
+    }
   }
 
   const fromFile = await loadFromFile();
-  if (fromFile !== null) return "file";
+  if (fromFile !== null && fromFile.length > 0) {
+    return { runs: fromFile, source: "file" };
+  }
 
-  return "defaults";
+  if (fromDb !== null) {
+    return { runs: fromDb, source: "supabase" };
+  }
+  if (fromRedis !== null) {
+    return { runs: fromRedis, source: "redis" };
+  }
+  if (fromFile !== null) {
+    return { runs: fromFile, source: "file" };
+  }
+
+  return { runs: defaultCourseRuns, source: "defaults" };
+}
+
+export async function getCourseRunsDataSource(): Promise<CourseRunsDataSource> {
+  return (await resolveCourseRuns()).source;
 }
 
 export async function listCourseRuns(): Promise<CourseRun[]> {
-  const fromDb = await loadFromSupabase();
-  if (fromDb !== null) return fromDb;
-
-  const redis = getRedis();
-  if (redis) {
-    const fromRedis = await loadFromRedis(redis);
-    if (fromRedis !== null) return fromRedis;
-  }
-
-  const fromFile = await loadFromFile();
-  if (fromFile !== null) return fromFile;
-
-  return defaultCourseRuns;
+  return (await resolveCourseRuns()).runs;
 }
 
 export async function getCourseRunById(id: string): Promise<CourseRun | undefined> {

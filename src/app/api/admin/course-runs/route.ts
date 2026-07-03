@@ -7,6 +7,7 @@ import {
   replaceCourseRuns,
 } from "@/lib/course-runs-store";
 import { rateLimitResponse } from "@/lib/rate-limit";
+import { revalidatePath } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
@@ -60,9 +61,13 @@ export async function PUT(request: Request) {
 
   try {
     await replaceCourseRuns(parsed.data.runs);
+    revalidatePath("/");
+    revalidatePath("/registrace");
+    revalidatePath("/aktualni-behy");
+    const saved = await listCourseRuns();
     return apiJson({
       ok: true,
-      runs: parsed.data.runs,
+      runs: saved,
       storage: courseRunsPersistenceMode(),
     });
   } catch (e) {
