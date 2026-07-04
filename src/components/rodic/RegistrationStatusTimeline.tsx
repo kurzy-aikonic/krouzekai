@@ -56,6 +56,7 @@ export function RegistrationStatusTimeline({ status }: Props) {
 
   const activeIndex = (FLOW as readonly RegistrationStatus[]).indexOf(status);
   const safeIndex = activeIndex === -1 ? 0 : activeIndex;
+  const allStepsComplete = safeIndex === FLOW.length - 1;
 
   return (
     <div className="mt-5 border-t border-slate-100 pt-5">
@@ -64,8 +65,8 @@ export function RegistrationStatusTimeline({ status }: Props) {
       </p>
       <ol className="mt-4 space-y-0">
         {FLOW.map((key, i) => {
-          const done = i < safeIndex;
-          const current = i === safeIndex;
+          const done = i <= safeIndex;
+          const current = !allStepsComplete && i === safeIndex + 1;
           const meta = STEP_META[key];
           const last = i === FLOW.length - 1;
           return (
@@ -85,7 +86,7 @@ export function RegistrationStatusTimeline({ status }: Props) {
                 {!last ? (
                   <div
                     className={`my-1 w-0.5 flex-1 min-h-[12px] ${
-                      done ? "bg-emerald-300" : "bg-slate-200"
+                      done && i < safeIndex ? "bg-emerald-300" : "bg-slate-200"
                     }`}
                     aria-hidden
                   />
@@ -94,7 +95,7 @@ export function RegistrationStatusTimeline({ status }: Props) {
               <div className={`min-w-0 pb-6 ${last ? "pb-0" : ""}`}>
                 <p
                   className={`text-sm font-extrabold ${
-                    current ? "text-violet-900" : "text-slate-800"
+                    current ? "text-violet-900" : done ? "text-emerald-900" : "text-slate-800"
                   }`}
                 >
                   {meta.title}
