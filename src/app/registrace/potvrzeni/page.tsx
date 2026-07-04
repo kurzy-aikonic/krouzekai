@@ -19,15 +19,40 @@ export const dynamic = "force-dynamic";
 export default async function RegistracePotvrzeniPage({
   searchParams,
 }: {
-  searchParams: Promise<{ code?: string }>;
+  searchParams: Promise<{
+    code?: string;
+    format?: string;
+    amountCzk?: string;
+    runId?: string;
+    runLabel?: string;
+    emailStatus?: string;
+  }>;
 }) {
   const q = await searchParams;
   const code = q.code?.trim() ?? "";
   const record = code ? await findRegistrationById(code) : null;
-  const run = record?.runId ? await getCourseRunById(record.runId) : null;
+  const fallbackRunId = q.runId?.trim() ?? "";
+  const runId = record?.runId ?? (fallbackRunId || null);
+  const run = runId ? await getCourseRunById(runId) : null;
+  const fallbackAmount =
+    typeof q.amountCzk === "string" && q.amountCzk.trim()
+      ? Number(q.amountCzk)
+      : null;
+  const amount =
+    typeof record?.amountCzk === "number"
+      ? record.amountCzk
+      : typeof fallbackAmount === "number" && Number.isFinite(fallbackAmount)
+        ? fallbackAmount
+        : null;
+  const fallbackFormat = q.format === "individual" ? "individual" : "skupina";
+  const format = record?.format ?? fallbackFormat;
+  const fallbackRunLabel = q.runLabel?.trim() ?? "";
+  const emailStatus =
+    q.emailStatus === "sent" || q.emailStatus === "failed" || q.emailStatus === "skipped"
+      ? q.emailStatus
+      : null;
 
-  const formatLabel =
-    record?.format === "individual" ? "Individuální 1:1" : "Skupinový kurz";
+  const formatLabel = format === "individual" ? "Individuální 1:1" : "Skupinový kurz";
 
   return (
     <>
@@ -51,6 +76,17 @@ export default async function RegistracePotvrzeniPage({
             společně doladíme finální zařazení, termín i organizační detaily.
           </p>
         </div>
+        {emailStatus === "failed" ? (
+          <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-medium text-amber-950">
+            Potvrzovací e-mail se teď nepodařilo odeslat, ale přihláška je uložená.
+            Ozveme se vám ručně.
+          </div>
+        ) : null}
+        {emailStatus === "skipped" ? (
+          <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium text-slate-700">
+            Přihláška je uložená. Potvrzení e-mailem je dočasně mimo provoz.
+          </div>
+        ) : null}
 
         <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
           <h2 className="font-display text-xl font-extrabold text-slate-900">
@@ -70,7 +106,7 @@ export default async function RegistracePotvrzeniPage({
                 Formát
               </dt>
               <dd className="mt-1 font-semibold text-slate-800">
-                {record ? formatLabel : "—"}
+                {formatLabel}
               </dd>
             </div>
             <div>
@@ -78,7 +114,7 @@ export default async function RegistracePotvrzeniPage({
                 Zvolený termín
               </dt>
               <dd className="mt-1 font-semibold text-slate-800">
-                {run?.label ?? (record?.runId ? "Vybraný termín" : "Bude domluven")}
+                {(run?.label ?? fallbackRunLabel) || (runId ? "Vybraný termín" : "Bude domluven")}
               </dd>
             </div>
             <div>
@@ -86,9 +122,7 @@ export default async function RegistracePotvrzeniPage({
                 Cena
               </dt>
               <dd className="mt-1 font-semibold text-slate-800">
-                {record?.amountCzk
-                  ? `${record.amountCzk.toLocaleString("cs-CZ")} Kč`
-                  : "Upřesníme po domluvě"}
+                {amount ? `${amount.toLocaleString("cs-CZ")} Kč` : "Upřesníme po domluvě"}
               </dd>
             </div>
           </dl>

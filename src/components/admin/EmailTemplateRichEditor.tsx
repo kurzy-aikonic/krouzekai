@@ -81,8 +81,10 @@ export const EmailTemplateRichEditor = forwardRef<
   EmailTemplateRichEditorHandle,
   Props
 >(function EmailTemplateRichEditor({ htmlBody, onChange }, ref) {
-  const wrapperRef = useRef<EmailHtmlParts>(splitEmailHtmlDocument(htmlBody));
+  const initialParts = splitEmailHtmlDocument(htmlBody);
+  const wrapperRef = useRef<EmailHtmlParts>(initialParts);
   const syncingRef = useRef(false);
+  const initialInnerHtml = innerHtmlForRichEditor(initialParts.inner);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -105,7 +107,7 @@ export const EmailTemplateRichEditor = forwardRef<
         placeholder: "Začněte psát text e-mailu…",
       }),
     ],
-    content: innerHtmlForRichEditor(wrapperRef.current.inner),
+    content: initialInnerHtml,
     editorProps: {
       attributes: {
         class:

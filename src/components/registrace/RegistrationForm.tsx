@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 import type { CourseRun } from "@/data/course-runs";
 import { CourseRunCapacityStatus } from "@/components/course-run/CourseRunCapacityStatus";
@@ -24,8 +24,6 @@ const TurnstileClient = dynamic(
     import("@marsidev/react-turnstile").then((m) => m.Turnstile),
   { ssr: false },
 );
-const AI_TEST_RESULT_STORAGE_KEY = "krouzekai.aiSkillTestResult";
-
 type Props = {
   groupRuns: CourseRun[];
   individualRuns: CourseRun[];
@@ -112,21 +110,6 @@ export function RegistrationForm({
   const [turnstileToken, setTurnstileToken] = useState("");
   const turnstileRef = useRef<TurnstileInstance | null>(null);
 
-  useEffect(() => {
-    if (initialAiSkillLevel || aiSkillLevel) return;
-    try {
-      const raw = localStorage.getItem(AI_TEST_RESULT_STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as { level?: unknown };
-      const level = parseAiSkillLevel(parsed.level);
-      if (!level) return;
-      setAiSkillLevel(level);
-      setAiSkillLevelSource("self-test");
-    } catch {
-      // Bezpečně ignorujeme (private mode / poškozený localStorage).
-    }
-  }, [aiSkillLevel, initialAiSkillLevel]);
-
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (turnstileEnabled && !turnstileToken.trim()) {
@@ -170,6 +153,11 @@ export function RegistrationForm({
       paymentUrl?: string;
       registrationId?: string;
       registrationCode?: string;
+      emailStatus?: "sent" | "skipped" | "failed";
+      format?: "skupina" | "individual";
+      runId?: string | null;
+      runLabel?: string | null;
+      amountCzk?: number;
     };
 
     if (!res.ok) {
@@ -191,13 +179,17 @@ export function RegistrationForm({
 
     setStatus("success");
     setMessage(data.message ?? "Odesláno.");
-    if (data.registrationCode) {
-      router.push(
-        `/registrace/potvrzeni?code=${encodeURIComponent(data.registrationCode)}`,
-      );
-      return;
+    const params = new URLSearchParams();
+    if (data.registrationCode) params.set("code", data.registrationCode);
+    if (data.format) params.set("format", data.format);
+    if (typeof data.amountCzk === "number") {
+      params.set("amountCzk", String(data.amountCzk));
     }
-    router.push("/registrace/potvrzeni");
+    if (data.runId) params.set("runId", data.runId);
+    if (data.runLabel) params.set("runLabel", data.runLabel);
+    if (data.emailStatus) params.set("emailStatus", data.emailStatus);
+    const qs = params.toString();
+    router.push(`/registrace/potvrzeni${qs ? `?${qs}` : ""}`);
   }
 
   return (

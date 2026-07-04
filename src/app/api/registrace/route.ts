@@ -154,11 +154,22 @@ export async function POST(request: Request) {
     );
   }
 
-  sendRegistrationConfirmation(record).then((r) => {
-    if (!r.ok) console.error("[email]", r.error);
-  });
+  let emailStatus: "sent" | "skipped" | "failed" = "failed";
+  const sent = await sendRegistrationConfirmation(record);
+  if (sent.ok) {
+    emailStatus = sent.provider === "resend" ? "sent" : "skipped";
+  } else {
+    console.error("[email]", sent.error);
+    emailStatus = "failed";
+  }
 
   const paymentPath = `/platba?registrace=${encodeURIComponent(registrationCode)}`;
+  const msgEmail =
+    emailStatus === "failed"
+      ? "Potvrzovací e-mail se teď nepodařilo odeslat, ale přihláška je uložená. Ozveme se vám ručně."
+      : emailStatus === "skipped"
+        ? "Přihláška je uložená. Potvrzení e-mailem je dočasně mimo provoz."
+        : "Děkujeme za přihlášku. Ozveme se vám, domluvíme detaily a pak zašleme fakturu. V e-mailu najdete i odkaz na orientační přehled k platbě.";
 
   return apiJson(
     {
@@ -166,9 +177,12 @@ export async function POST(request: Request) {
       registrationId: id,
       registrationCode,
       paymentUrl: paymentPath,
+      emailStatus,
+      format: data.format,
+      runId: data.runId ?? null,
+      runLabel: selectedRun?.label ?? null,
       amountCzk,
-      message:
-        "Děkujeme za přihlášku. Ozveme se vám, domluvíme detaily a pak zašleme fakturu. V e-mailu najdete i odkaz na orientační přehled k platbě.",
+      message: msgEmail,
     },
     { status: 201 },
   );

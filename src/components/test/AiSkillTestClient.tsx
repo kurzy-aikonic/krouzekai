@@ -25,29 +25,29 @@ function shuffleArray<T>(arr: readonly T[]): T[] {
   return out;
 }
 
+function shuffleQuestions(
+  questions: readonly {
+    id: string;
+    prompt: string;
+    answers: readonly { id: string; text: string; points: number }[];
+  }[],
+) {
+  return questions.map((q) => ({
+    ...q,
+    answers: shuffleArray(q.answers),
+  }));
+}
+
 export function AiSkillTestClient() {
-  const [testVersion, setTestVersion] = useState(0);
+  const [baseQuestions, setBaseQuestions] = useState(() =>
+    shuffleQuestions(AI_SKILL_TEST_QUESTIONS),
+  );
+  const [proQuestions, setProQuestions] = useState(() =>
+    shuffleQuestions(AI_SKILL_PRO_CONFIRMATION_QUESTIONS),
+  );
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [proAnswers, setProAnswers] = useState<Record<string, number>>({});
   const [showProConfirmation, setShowProConfirmation] = useState(false);
-
-  const baseQuestions = useMemo(
-    () =>
-      AI_SKILL_TEST_QUESTIONS.map((q) => ({
-        ...q,
-        answers: shuffleArray(q.answers),
-      })),
-    [testVersion],
-  );
-
-  const proQuestions = useMemo(
-    () =>
-      AI_SKILL_PRO_CONFIRMATION_QUESTIONS.map((q) => ({
-        ...q,
-        answers: shuffleArray(q.answers),
-      })),
-    [testVersion],
-  );
 
   const answeredCount = Object.keys(answers).length;
   const completed = answeredCount === baseQuestions.length;
@@ -103,7 +103,8 @@ export function AiSkillTestClient() {
     setAnswers({});
     setProAnswers({});
     setShowProConfirmation(false);
-    setTestVersion((x) => x + 1);
+    setBaseQuestions(shuffleQuestions(AI_SKILL_TEST_QUESTIONS));
+    setProQuestions(shuffleQuestions(AI_SKILL_PRO_CONFIRMATION_QUESTIONS));
   }
 
   useEffect(() => {
