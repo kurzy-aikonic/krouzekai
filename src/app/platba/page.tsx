@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CheckoutButton } from "@/components/platba/CheckoutButton";
+import { getPublicCoursePricing } from "@/lib/course-pricing-store";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 import { variableSymbolFromRegistrationId } from "@/lib/payment";
@@ -17,6 +18,8 @@ export const metadata: Metadata = pageMetadata({
   path: "/platba",
   noIndex: true,
 });
+
+export const dynamic = "force-dynamic";
 
 type PageProps = {
   searchParams: Promise<{ registrace?: string }>;
@@ -66,6 +69,7 @@ export default async function PlatbaPage({ searchParams }: PageProps) {
   }
 
   const record = await findRegistrationById(rawId);
+  const prices = await getPublicCoursePricing();
   const vs = variableSymbolFromRegistrationId(
     record?.id ?? (isRegistrationUuidLookup(rawId) ? rawId : ""),
   );
@@ -125,7 +129,7 @@ export default async function PlatbaPage({ searchParams }: PageProps) {
             ) : (
               <li className="text-slate-600">
                 Částku doplníme podle typu kurzu ze smlouvy / e-mailu. Skupina{" "}
-                {site.pricing.skupinaCourse} Kč, 1:1 {site.pricing.individualCourse}{" "}
+                {prices.skupinaCourseCzk} Kč, 1:1 {prices.individualCourseCzk}{" "}
                 Kč za {site.pricing.lessons} lekcí.
               </li>
             )}

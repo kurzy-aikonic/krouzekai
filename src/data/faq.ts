@@ -1,6 +1,12 @@
 import { site } from "@/lib/site-config";
+import type { CoursePricing } from "@/lib/course-pricing-store";
+import { perLessonCzk } from "@/lib/course-pricing-utils";
 
-export const faqItems: { q: string; a: string }[] = [
+export function buildFaqItems(pricing: CoursePricing): { q: string; a: string }[] {
+  const skupinaPerLesson = perLessonCzk(pricing.skupinaCourseCzk);
+  const individualPerLesson = perLessonCzk(pricing.individualCourseCzk);
+
+  return [
   {
     q: "Musí dítě umět programovat?",
     a: "Vůbec ne. Používáme vibecoding, kde kód píše AI podle instrukcí dítěte.",
@@ -31,7 +37,7 @@ export const faqItems: { q: string; a: string }[] = [
   },
   {
     q: "Kolik to stojí?",
-    a: `Skupina ${site.pricing.skupinaCourse.toLocaleString("cs-CZ")} Kč za ${site.pricing.lessons} lekcí (${site.pricing.skupinaPerLesson.toLocaleString("cs-CZ")} Kč / lekce), 1:1 je ${site.pricing.individualCourse.toLocaleString("cs-CZ")} Kč za kurz (${site.pricing.individualPerLesson.toLocaleString("cs-CZ")} Kč / lekce). ${site.pricing.vatNote}`,
+    a: `Skupina ${pricing.skupinaCourseCzk.toLocaleString("cs-CZ")} Kč za ${site.pricing.lessons} lekcí (${skupinaPerLesson.toLocaleString("cs-CZ")} Kč / lekce), 1:1 je ${pricing.individualCourseCzk.toLocaleString("cs-CZ")} Kč za kurz (${individualPerLesson.toLocaleString("cs-CZ")} Kč / lekce). ${site.pricing.vatNote}`,
   },
   {
     q: "Kdy se skupinový kurz skutečně rozběhne?",
@@ -53,4 +59,11 @@ export const faqItems: { q: string; a: string }[] = [
     q: "Jak zjistím stav přihlášky a platby?",
     a: `Po přihlášce vás budeme kontaktovat e-mailem. Stav i platební přehled najdete v přehledu pro rodiče na adrese /rodic/prihlaseni (přihlášení stejným e-mailem jako u přihlášky).`,
   },
-];
+  ];
+}
+
+/** Výchozí FAQ (statické stránky / build bez async). */
+export const faqItems = buildFaqItems({
+  skupinaCourseCzk: site.pricing.skupinaCourse,
+  individualCourseCzk: site.pricing.individualCourse,
+});

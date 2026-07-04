@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { RegistrationForm } from "@/components/registrace/RegistrationForm";
 import { countedOccupancyForRun } from "@/lib/course-run-registrations";
+import { getPublicCoursePricing } from "@/lib/course-pricing-store";
 import { listOfferedCourseRuns } from "@/lib/course-runs-store";
 import { listRegistrationsMerged } from "@/lib/registrations-store";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
@@ -21,6 +22,7 @@ export default async function RegistracePage({
   searchParams: Promise<{ run?: string }>;
 }) {
   const q = await searchParams;
+  const pricing = await getPublicCoursePricing();
   const offered = await listOfferedCourseRuns();
   const groupRuns = offered.filter((r) => r.format === "skupina");
   const individualRuns = offered.filter((r) => r.format === "individual");
@@ -68,6 +70,7 @@ export default async function RegistracePage({
             individualRuns={individualRuns}
             occupancyByRunId={occupancyByRunId}
             preferredRunId={q.run}
+            pricing={pricing}
           />
         </div>
       </div>

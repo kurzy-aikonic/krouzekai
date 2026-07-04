@@ -7,7 +7,8 @@ import { countedOccupancyForRun } from "@/lib/course-run-registrations";
 import { getCourseRunById } from "@/lib/course-runs-store";
 import { sendRegistrationConfirmation } from "@/lib/email";
 import { rejectOversizedJsonBody } from "@/lib/json-body-limit";
-import { coursePriceCzk, productFromFormat } from "@/lib/payment";
+import { coursePriceCzk } from "@/lib/course-pricing-store";
+import { productFromFormat } from "@/lib/payment";
 import { persistRegistration } from "@/lib/persist-registration";
 import { pickUniqueRegistrationCode } from "@/lib/registration-code";
 import { listRegistrationsMerged } from "@/lib/registrations-store";
@@ -111,7 +112,7 @@ export async function POST(request: Request) {
   const id = randomUUID();
   const registrationCode = pickUniqueRegistrationCode(merged);
   const paymentProduct = productFromFormat(data.format);
-  const amountCzk = coursePriceCzk(paymentProduct);
+  const amountCzk = await coursePriceCzk(paymentProduct);
 
   const record: RegistrationRecord = {
     id,

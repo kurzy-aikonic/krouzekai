@@ -27,6 +27,13 @@ type Props = {
   occupancyByRunId: Record<string, number>;
   /** Předvybraný termín z URL (?run=id). */
   preferredRunId?: string;
+  /** Aktuální ceny z adminu. */
+  pricing: {
+    skupinaCourseCzk: number;
+    individualCourseCzk: number;
+    skupinaPerLessonCzk: number;
+    individualPerLessonCzk: number;
+  };
 };
 
 function resolveInitialSelection(
@@ -56,6 +63,7 @@ export function RegistrationForm({
   individualRuns,
   occupancyByRunId,
   preferredRunId,
+  pricing,
 }: Props) {
   const initial = resolveInitialSelection(
     preferredRunId,
@@ -177,7 +185,7 @@ export function RegistrationForm({
             className="h-4 w-4 border-2 border-[var(--magic-ink)] text-violet-600"
           />
           Skupina (max. {site.pricing.groupMaxStudents}) —{" "}
-          {site.pricing.skupinaCourse.toLocaleString("cs-CZ")} Kč /{" "}
+          {pricing.skupinaCourseCzk.toLocaleString("cs-CZ")} Kč /{" "}
           {site.pricing.lessons} lekcí
         </label>
         <label className="flex cursor-pointer items-center gap-2 rounded-xl border-2 border-violet-200 bg-violet-50/50 px-3 py-2 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] has-[:checked]:bg-white sm:text-sm">
@@ -193,13 +201,13 @@ export function RegistrationForm({
             className="h-4 w-4 border-2 border-[var(--magic-ink)] text-violet-600"
           />
           Individuální 1:1 —{" "}
-          {site.pricing.individualCourse.toLocaleString("cs-CZ")} Kč /{" "}
+          {pricing.individualCourseCzk.toLocaleString("cs-CZ")} Kč /{" "}
           {site.pricing.lessons} lekcí
         </label>
         <p className="text-xs font-medium leading-relaxed text-slate-600">
           Skupinový kurz spouštíme až po naplnění kapacity termínu (100 % míst).
           Do té doby je přihláška nezávazná. Individuál:{" "}
-          {site.pricing.individualPerLesson} Kč / lekce.
+          {pricing.individualPerLessonCzk} Kč / lekce.
         </p>
       </fieldset>
 

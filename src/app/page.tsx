@@ -7,6 +7,7 @@ import { Section } from "@/components/ui/Section";
 import { countedOccupancyForRun } from "@/lib/course-run-registrations";
 import { listOfferedCourseRuns } from "@/lib/course-runs-store";
 import { listRegistrationsMerged } from "@/lib/registrations-store";
+import { getPublicCoursePricing } from "@/lib/course-pricing-store";
 import { pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 
@@ -79,6 +80,7 @@ const outcomes = [
 
 export default async function HomePage() {
   const p = site.pricing;
+  const prices = await getPublicCoursePricing();
   const offered = await listOfferedCourseRuns();
   const merged = await listRegistrationsMerged();
   const occupancyByRunId: Record<string, number> = {};
@@ -282,9 +284,9 @@ export default async function HomePage() {
               </p>
               <p className="mt-3 text-sm font-semibold text-slate-800">
                 <span className="rounded-md bg-white/80 px-1">Skupina</span>{" "}
-                {p.skupinaPerLesson} Kč / lekce →{" "}
+                {prices.skupinaPerLessonCzk} Kč / lekce →{" "}
                 <span className="font-display text-lg font-extrabold text-violet-700">
-                  {p.skupinaCourse.toLocaleString("cs-CZ")} Kč
+                  {prices.skupinaCourseCzk.toLocaleString("cs-CZ")} Kč
                 </span>{" "}
                 kurz
                 <span className="ml-2 rounded-full border border-violet-300 bg-violet-100 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-violet-800">
@@ -293,9 +295,9 @@ export default async function HomePage() {
               </p>
               <p className="mt-2 text-sm font-semibold text-slate-800">
                 <span className="rounded-md bg-white/80 px-1">1:1</span>{" "}
-                {p.individualPerLesson} Kč / lekce →{" "}
+                {prices.individualPerLessonCzk} Kč / lekce →{" "}
                 <span className="font-display text-lg text-violet-700">
-                  {p.individualCourse.toLocaleString("cs-CZ")} Kč
+                  {prices.individualCourseCzk.toLocaleString("cs-CZ")} Kč
                 </span>{" "}
                 kurz
               </p>

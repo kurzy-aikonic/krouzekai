@@ -1,13 +1,14 @@
 import { site } from "@/lib/site-config";
-import { coursePriceCzk, productFromFormat } from "@/lib/payment";
+import { coursePriceCzk } from "@/lib/course-pricing-store";
+import { productFromFormat } from "@/lib/payment";
 import { absoluteUrl, getSiteUrl, rootSchemaDescription } from "@/lib/seo";
 
 /** Strukturovaná data kurzu na hlavní stránce (doplňuje globální Organization + WebSite). */
-export function HomeJsonLd() {
+export async function HomeJsonLd() {
   const origin = getSiteUrl().toString().replace(/\/$/, "");
   const orgId = `${origin}/#organization`;
-  const skupina = coursePriceCzk(productFromFormat("skupina"));
-  const individual = coursePriceCzk(productFromFormat("individual"));
+  const skupina = await coursePriceCzk(productFromFormat("skupina"));
+  const individual = await coursePriceCzk(productFromFormat("individual"));
   const maxG = site.pricing.groupMaxStudents;
   const registraceUrl = absoluteUrl("/registrace");
 

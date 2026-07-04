@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { Prose } from "@/components/ui/Prose";
+import { getCoursePricing } from "@/lib/course-pricing-store";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 
@@ -10,7 +11,10 @@ export const metadata: Metadata = pageMetadata({
   path: "/obchodni-podminky",
 });
 
-export default function ObchodniPodminkyPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ObchodniPodminkyPage() {
+  const pricing = await getCoursePricing();
   return (
     <>
       <BreadcrumbJsonLd
@@ -92,10 +96,10 @@ export default function ObchodniPodminkyPage() {
         <p>
           Ceny jsou uváděny v <strong>českých korunách (Kč)</strong>. Aktuální
           ceny za celý kurz: skupinový formát{" "}
-          <strong>{site.pricing.skupinaCourse.toLocaleString("cs-CZ")} Kč</strong>
+          <strong>{pricing.skupinaCourseCzk.toLocaleString("cs-CZ")} Kč</strong>
           , individuální formát{" "}
           <strong>
-            {site.pricing.individualCourse.toLocaleString("cs-CZ")} Kč
+            {pricing.individualCourseCzk.toLocaleString("cs-CZ")} Kč
           </strong>
           . {site.pricing.vatNote}
         </p>

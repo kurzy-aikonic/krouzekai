@@ -68,6 +68,24 @@ export async function getAdminEnvChecks(): Promise<AdminEnvCheck[]> {
             : "Soubor data/course-runs.json",
   });
 
+  const { getEmailTemplatesDataSource } = await import(
+    "@/lib/email-templates-store"
+  );
+  const emailSource = await getEmailTemplatesDataSource();
+  checks.push({
+    id: "email_templates",
+    label: "E-mailové šablony",
+    ok: emailSource !== "defaults",
+    detail:
+      emailSource === "defaults"
+        ? "Výchozí texty z kódu — lze upravit v E-maily"
+        : emailSource === "supabase"
+          ? "Supabase"
+          : emailSource === "redis"
+            ? "Redis"
+            : "Soubor data/email-templates.json",
+  });
+
   const regWritable = isRegistrationsJsonlWritable();
   const webhook = Boolean(process.env.REGISTRATIONS_WEBHOOK_URL?.trim());
   checks.push({

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { FaqJsonLd } from "@/components/seo/FaqJsonLd";
-import { faqItems } from "@/data/faq";
+import { buildFaqItems } from "@/data/faq";
+import { getCoursePricing } from "@/lib/course-pricing-store";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -10,7 +11,11 @@ export const metadata: Metadata = pageMetadata({
   path: "/faq",
 });
 
-export default function FaqPage() {
+export const dynamic = "force-dynamic";
+
+export default async function FaqPage() {
+  const pricing = await getCoursePricing();
+  const faqItems = buildFaqItems(pricing);
   const jsonLdItems = faqItems.map((item) => ({
     question: item.q,
     answer: item.a,

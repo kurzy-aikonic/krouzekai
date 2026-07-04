@@ -16,6 +16,11 @@ const NAV_ITEMS = [
     match: (path: string) => path.startsWith("/admin/course-runs"),
   },
   {
+    href: "/admin/emaily",
+    label: "E-maily",
+    match: (path: string) => path.startsWith("/admin/emaily"),
+  },
+  {
     href: "/admin/nastroje",
     label: "Nástroje",
     match: (path: string) => path.startsWith("/admin/nastroje"),

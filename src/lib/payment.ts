@@ -13,7 +13,8 @@ export function productFromFormat(
   return format === "skupina" ? "skupina-course" : "individual-course";
 }
 
-export function coursePriceCzk(product: PaymentProduct): number {
+/** Synchronní fallback pro build / místa bez async (výchozí z site-config). */
+export function coursePriceCzkDefault(product: PaymentProduct): number {
   switch (product) {
     case "skupina-course":
       return site.pricing.skupinaCourse;
