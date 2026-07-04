@@ -9,6 +9,7 @@ const routes: { path: string; changeFrequency: ChangeFreq; priority: number }[] 
     { path: "/registrace", changeFrequency: "weekly", priority: 0.95 },
     { path: "/test-urovne-ai", changeFrequency: "monthly", priority: 0.9 },
     { path: "/aktualni-behy", changeFrequency: "weekly", priority: 0.88 },
+    { path: "/co-deti-tvori", changeFrequency: "monthly", priority: 0.87 },
     { path: "/jak-probiha", changeFrequency: "monthly", priority: 0.85 },
     { path: "/faq", changeFrequency: "monthly", priority: 0.85 },
     { path: "/kontakt", changeFrequency: "yearly", priority: 0.7 },

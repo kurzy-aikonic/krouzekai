@@ -25,4 +25,6 @@ export const metaDescriptions = {
   platba: `Orientační přehled platby po registraci do ${site.name}: převod, variabilní symbol a další platební údaje. Finální pokyny posíláme po individuální domluvě.`,
 
   aktualniBehy: `Aktuální termíny ${site.name}: přehled skupinových i individuálních kurzů, kapacit a dostupnosti míst. Registrace probíhá online.`,
+
+  coDetiTvori: `Co děti reálně tvoří v ${site.name}: hry, prompty, projekty a zpětná vazba z pilotního kurzu. Konkrétní výstupy místo obecných slibů.`,
 } as const;

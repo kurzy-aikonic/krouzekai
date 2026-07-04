@@ -9,6 +9,7 @@ import { site } from "@/lib/site-config";
 const nav = [
   { href: "/", label: "O kurzu", emoji: "🎓" },
   { href: "/test-urovne-ai", label: "AI test zdarma", emoji: "🧠" },
+  { href: "/co-deti-tvori", label: "Co děti tvoří", emoji: "✨" },
   { href: "/jak-probiha", label: "Jak to u nás funguje", emoji: "⚡" },
   { href: "/faq", label: "Časté otázky", emoji: "❓" },
   { href: "/kontakt", label: "Kontakt", emoji: "✉️" },

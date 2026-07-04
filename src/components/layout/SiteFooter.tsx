@@ -92,6 +92,13 @@ export function SiteFooter() {
               AI test zdarma
             </Link>
             <Link
+              href="/co-deti-tvori"
+              className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
+            >
+              <span aria-hidden>✨</span>
+              Co děti tvoří
+            </Link>
+            <Link
               href="/rodic/prihlaseni"
               className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
             >

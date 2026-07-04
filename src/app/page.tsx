@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { HomeCourseRunsSection } from "@/components/home/HomeCourseRunsSection";
+import { RealOutcomesContent } from "@/components/outcomes/RealOutcomesContent";
 import { HomeInteractiveDemos } from "@/components/playful/HomeInteractiveDemos";
 import { HomeJsonLd } from "@/components/seo/HomeJsonLd";
 import { Section } from "@/components/ui/Section";
@@ -337,6 +338,15 @@ export default async function HomePage() {
             </div>
           </aside>
         </div>
+
+        <Section
+          id="co-deti-tvori"
+          title="Co děti reálně tvoří"
+          intro="Ne jen sliby — reálné výstupy z pilotního kurzu: hra v prohlížeči, prompty, učební materiály a vlastní projekt. Bez jmen, jen fakta."
+          className="mt-20"
+        >
+          <RealOutcomesContent variant="compact" />
+        </Section>
 
         <Section
           title="Co si dítě odnese z kurzu"
