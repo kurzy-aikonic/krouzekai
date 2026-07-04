@@ -85,6 +85,13 @@ export function SiteFooter() {
               Aktuální termíny
             </Link>
             <Link
+              href="/test-urovne-ai"
+              className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
+            >
+              <span aria-hidden>🧠</span>
+              AI test zdarma
+            </Link>
+            <Link
               href="/rodic/prihlaseni"
               className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
             >

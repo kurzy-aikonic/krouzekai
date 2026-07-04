@@ -1,4 +1,5 @@
 import type { PaymentProduct } from "@/lib/payment";
+import type { AiSkillLevel } from "@/lib/ai-skill-test";
 
 /** Stav přihlášky pro interní práci (JSONL / webhook / později DB). Uprav ručně v datech nebo přes admin. */
 export const registrationStatuses = [
@@ -70,6 +71,8 @@ export type RegistrationRecord = {
   consentPrivacy: boolean;
   consentAiTools: boolean;
   consentEarlyServiceStart: boolean;
+  aiSkillLevel?: AiSkillLevel;
+  aiSkillLevelSource?: "self-test" | "manual";
   paymentProduct: PaymentProduct;
   amountCzk: number;
   status: RegistrationStatus;

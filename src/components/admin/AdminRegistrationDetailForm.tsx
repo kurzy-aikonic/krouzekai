@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { CourseRun } from "@/data/course-runs";
 import { spotsLeftEffective } from "@/data/course-runs";
+import { AI_SKILL_LEVEL_LABELS } from "@/lib/ai-skill-test";
 import { getPublicRegistrationCode } from "@/lib/registration-code";
 import { variableSymbolFromRegistrationId } from "@/lib/payment";
 import { registrationStatusPillClassName } from "@/lib/registration-status-ui";
@@ -283,6 +284,22 @@ export function AdminRegistrationDetailForm({
               {record.consentPrivacy ? "ano" : "ne"} · AI nástroje:{" "}
               {record.consentAiTools ? "ano" : "ne"} · zahájení před 14 dny:{" "}
               {record.consentEarlyServiceStart ? "ano" : "ne"}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs font-bold uppercase text-slate-500">
+              AI úroveň dítěte
+            </dt>
+            <dd className="mt-0.5 text-slate-700">
+              {record.aiSkillLevel
+                ? `${AI_SKILL_LEVEL_LABELS[record.aiSkillLevel]}${
+                    record.aiSkillLevelSource === "self-test"
+                      ? " (z testu)"
+                      : record.aiSkillLevelSource === "manual"
+                        ? " (ručně zadaná)"
+                        : ""
+                  }`
+                : "neuvedeno"}
             </dd>
           </div>
           <div>

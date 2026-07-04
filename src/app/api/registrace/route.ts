@@ -18,6 +18,7 @@ import {
   turnstileVerificationRequired,
   verifyTurnstileToken,
 } from "@/lib/turnstile-verify";
+import { AI_SKILL_LEVELS } from "@/lib/ai-skill-test";
 import type { RegistrationRecord } from "@/types/registration";
 
 const bodySchema = z.object({
@@ -36,6 +37,8 @@ const bodySchema = z.object({
   consentPrivacy: z.literal(true),
   consentAiTools: z.literal(true),
   consentEarlyServiceStart: z.literal(true),
+  aiSkillLevel: z.enum(AI_SKILL_LEVELS).optional().nullable(),
+  aiSkillLevelSource: z.enum(["self-test", "manual"]).optional().nullable(),
   /** Honeypot — musí zůstat prázdné (proti botům). Nepoužívat název „company“ / „Firma“ — autofill by ho vyplnil. */
   formHoney: z.preprocess(
     (raw) => (raw === null || raw === undefined ? "" : raw),
@@ -134,6 +137,8 @@ export async function POST(request: Request) {
     consentPrivacy: data.consentPrivacy,
     consentAiTools: data.consentAiTools,
     consentEarlyServiceStart: data.consentEarlyServiceStart,
+    aiSkillLevel: data.aiSkillLevel ?? undefined,
+    aiSkillLevelSource: data.aiSkillLevelSource ?? undefined,
     paymentProduct,
     amountCzk,
     status: "nova",

@@ -7,6 +7,7 @@ import { listRegistrationsMerged } from "@/lib/registrations-store";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
+import { parseAiSkillLevel } from "@/lib/ai-skill-test";
 
 export const metadata: Metadata = pageMetadata({
   title: "Registrace na AI kroužek",
@@ -19,7 +20,7 @@ export const dynamic = "force-dynamic";
 export default async function RegistracePage({
   searchParams,
 }: {
-  searchParams: Promise<{ run?: string }>;
+  searchParams: Promise<{ run?: string; aiLevel?: string }>;
 }) {
   const q = await searchParams;
   const pricing = await getPublicCoursePricing();
@@ -64,12 +65,20 @@ export default async function RegistracePage({
           )}{" "}
           Po odeslání vás kontaktujeme, domluvíme podmínky a pak zašleme fakturu.
         </p>
+        <p className="mt-3 rounded-xl border border-violet-200 bg-violet-50/60 px-4 py-3 text-sm font-medium text-violet-900">
+          Doporučení: před registrací vyplňte{" "}
+          <a href="/test-urovne-ai" className="font-bold underline">
+            AI test úrovně zdarma
+          </a>
+          , aby bylo zařazení dítěte co nejpřesnější.
+        </p>
         <div className="mt-10 rounded-3xl border border-slate-200 bg-white/90 p-2 shadow-sm sm:p-3">
           <RegistrationForm
             groupRuns={groupRuns}
             individualRuns={individualRuns}
             occupancyByRunId={occupancyByRunId}
             preferredRunId={q.run}
+            initialAiSkillLevel={parseAiSkillLevel(q.aiLevel)}
             pricing={pricing}
           />
         </div>

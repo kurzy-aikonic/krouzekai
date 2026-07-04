@@ -2,12 +2,14 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 import type { CourseRun } from "@/data/course-runs";
 import { CourseRunCapacityStatus } from "@/components/course-run/CourseRunCapacityStatus";
 import { CourseRunPriceLabel } from "@/components/course-run/CourseRunPriceLabel";
 import { CourseRunPublicMeta } from "@/components/course-run/CourseRunPublicMeta";
+import type { AiSkillLevel } from "@/lib/ai-skill-test";
+import { AI_SKILL_LEVEL_LABELS, parseAiSkillLevel } from "@/lib/ai-skill-test";
 import { courseRunPublicStatus } from "@/lib/course-run-public-status";
 import { site } from "@/lib/site-config";
 
@@ -21,6 +23,7 @@ const TurnstileClient = dynamic(
     import("@marsidev/react-turnstile").then((m) => m.Turnstile),
   { ssr: false },
 );
+const AI_TEST_RESULT_STORAGE_KEY = "krouzekai.aiSkillTestResult";
 
 type Props = {
   groupRuns: CourseRun[];
@@ -29,6 +32,8 @@ type Props = {
   occupancyByRunId: Record<string, number>;
   /** Předvybraný termín z URL (?run=id). */
   preferredRunId?: string;
+  /** Předvyplněná úroveň z AI testu (?aiLevel=...). */
+  initialAiSkillLevel?: AiSkillLevel | null;
   /** Aktuální ceny z adminu. */
   pricing: {
     skupinaCourseCzk: number;
@@ -65,6 +70,7 @@ export function RegistrationForm({
   individualRuns,
   occupancyByRunId,
   preferredRunId,
+  initialAiSkillLevel,
   pricing,
 }: Props) {
   const initial = resolveInitialSelection(
@@ -89,6 +95,12 @@ export function RegistrationForm({
   const [consentPrivacy, setConsentPrivacy] = useState(false);
   const [consentAiTools, setConsentAiTools] = useState(false);
   const [consentEarlyServiceStart, setConsentEarlyServiceStart] = useState(false);
+  const [aiSkillLevel, setAiSkillLevel] = useState<AiSkillLevel | "">(
+    initialAiSkillLevel ?? "",
+  );
+  const [aiSkillLevelSource, setAiSkillLevelSource] = useState<
+    "self-test" | "manual" | ""
+  >(initialAiSkillLevel ? "self-test" : "");
   /** Neviditelné pole — nechte prázdné (antispam). */
   const [hpCompany, setHpCompany] = useState("");
   const [status, setStatus] = useState<
@@ -98,6 +110,21 @@ export function RegistrationForm({
   const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState("");
   const turnstileRef = useRef<TurnstileInstance | null>(null);
+
+  useEffect(() => {
+    if (initialAiSkillLevel || aiSkillLevel) return;
+    try {
+      const raw = localStorage.getItem(AI_TEST_RESULT_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as { level?: unknown };
+      const level = parseAiSkillLevel(parsed.level);
+      if (!level) return;
+      setAiSkillLevel(level);
+      setAiSkillLevelSource("self-test");
+    } catch {
+      // Bezpečně ignorujeme (private mode / poškozený localStorage).
+    }
+  }, [aiSkillLevel, initialAiSkillLevel]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -130,6 +157,8 @@ export function RegistrationForm({
         consentPrivacy,
         consentAiTools,
         consentEarlyServiceStart,
+        aiSkillLevel: aiSkillLevel || null,
+        aiSkillLevelSource: aiSkillLevel ? aiSkillLevelSource || "manual" : null,
         formHoney: hpCompany,
         turnstileToken: turnstileEnabled ? turnstileToken : "",
       }),
@@ -215,6 +244,44 @@ export function RegistrationForm({
           Do té doby je přihláška nezávazná. Individuál:{" "}
           {pricing.individualPerLessonCzk} Kč / lekce.
         </p>
+      </fieldset>
+
+      <fieldset className="space-y-3 rounded-2xl border border-violet-200 bg-violet-50/40 px-4 py-4 sm:px-5">
+        <legend className="font-display px-1 text-sm font-extrabold text-[var(--magic-ink)]">
+          Zařazení podle AI dovedností (doporučeno)
+        </legend>
+        <p className="text-xs font-medium leading-relaxed text-slate-600">
+          Nejlepší je nejdřív vyplnit krátký test. Podle výsledku dítě lépe
+          zařadíme do úrovně, která mu bude sedět.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/test-urovne-ai" className="btn-magic-outline text-sm">
+            Spustit AI test zdarma 🧠
+          </Link>
+        </div>
+        <label className="block text-xs font-bold uppercase tracking-wide text-slate-600">
+          Výsledek úrovně (volitelné)
+        </label>
+        <select
+          value={aiSkillLevel}
+          onChange={(e) => {
+            const value = parseAiSkillLevel(e.target.value);
+            setAiSkillLevel(value ?? "");
+            setAiSkillLevelSource(value ? "manual" : "");
+          }}
+          className="input-playful mt-0"
+        >
+          <option value="">Zatím neuvedeno</option>
+          <option value="beginner">{AI_SKILL_LEVEL_LABELS.beginner}</option>
+          <option value="advanced">{AI_SKILL_LEVEL_LABELS.advanced}</option>
+          <option value="professional">{AI_SKILL_LEVEL_LABELS.professional}</option>
+        </select>
+        {aiSkillLevel ? (
+          <p className="text-xs font-semibold text-violet-900">
+            Vybraná úroveň: {AI_SKILL_LEVEL_LABELS[aiSkillLevel]}
+            {aiSkillLevelSource === "self-test" ? " (z AI testu)" : " (ručně zadaná)"}
+          </p>
+        ) : null}
       </fieldset>
 
       {format === "skupina" && groupRuns.length > 0 ? (

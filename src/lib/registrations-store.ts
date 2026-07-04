@@ -24,6 +24,7 @@ import {
   type RegistrationStatus,
   parseRegistrationStatus,
 } from "@/types/registration";
+import { parseAiSkillLevel } from "@/lib/ai-skill-test";
 
 function registrationsPath(): string {
   return path.join(process.cwd(), "data", "registrations.jsonl");
@@ -148,6 +149,12 @@ function normalizeRecord(
     consentPrivacy: bool(parsed.consentPrivacy),
     consentAiTools: bool(parsed.consentAiTools),
     consentEarlyServiceStart: bool(parsed.consentEarlyServiceStart),
+    aiSkillLevel: parseAiSkillLevel(parsed.aiSkillLevel) ?? undefined,
+    aiSkillLevelSource:
+      parsed.aiSkillLevelSource === "self-test" ||
+      parsed.aiSkillLevelSource === "manual"
+        ? parsed.aiSkillLevelSource
+        : undefined,
     paymentProduct: paymentProductFromParsed(parsed),
     amountCzk: num(parsed.amountCzk),
     status: parseRegistrationStatus(parsed.status),
