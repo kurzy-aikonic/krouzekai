@@ -21,7 +21,9 @@ export default async function AdminEmailyPage() {
         E-mailové šablony
       </h1>
       <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
-        Upravte texty všech automatických e-mailů bez zásahu do kódu. Placeholdery{" "}
+        Upravte texty všech automatických e-mailů bez zásahu do kódu. Přepínejte mezi{" "}
+        <strong>vizuálním editorem</strong> (tučné, kurzíva, odrážky, písmo) a{" "}
+        <strong>HTML kódem</strong>. Placeholdery{" "}
         <code className="rounded bg-slate-100 px-1 text-xs">{"{{klíč}}"}</code>{" "}
         se při odeslání nahradí skutečnými údaji. Po uložení platí pro nové
         odesílání okamžitě.

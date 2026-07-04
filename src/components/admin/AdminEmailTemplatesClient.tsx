@@ -1,6 +1,8 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useCallback, useMemo, useRef, useState } from "react";
+import type { EmailTemplateRichEditorHandle } from "@/components/admin/EmailTemplateRichEditor";
 import {
   DEFAULT_EMAIL_TEMPLATES,
   isEmailTemplateId,
@@ -18,6 +20,23 @@ import {
   type EmailTemplateId,
 } from "@/lib/email-template-types";
 import { site } from "@/lib/site-config";
+
+const EmailTemplateRichEditor = dynamic(
+  () =>
+    import("@/components/admin/EmailTemplateRichEditor").then(
+      (m) => m.EmailTemplateRichEditor,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-8 text-sm text-slate-500">
+        Načítám vizuální editor…
+      </div>
+    ),
+  },
+);
+
+type EditFormat = "visual" | "html";
 
 type Props = {
   initialTemplates: Record<EmailTemplateId, EmailTemplateContent>;
@@ -44,6 +63,7 @@ export function AdminEmailTemplatesClient({
   const [activeId, setActiveId] =
     useState<EmailTemplateId>("registration_confirmation");
   const [view, setView] = useState<"edit" | "preview">("edit");
+  const [editFormat, setEditFormat] = useState<EditFormat>("visual");
   const [testTo, setTestTo] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -51,6 +71,7 @@ export function AdminEmailTemplatesClient({
     "save" | "reset" | "test" | "preview" | null
   >(null);
   const htmlRef = useRef<HTMLTextAreaElement>(null);
+  const richEditorRef = useRef<EmailTemplateRichEditorHandle>(null);
 
   const active = templates[activeId];
   const meta = EMAIL_TEMPLATE_META[activeId];
@@ -84,6 +105,11 @@ export function AdminEmailTemplatesClient({
   );
 
   function insertPlaceholder(key: string) {
+    if (editFormat === "visual") {
+      richEditorRef.current?.insertPlaceholder(key);
+      richEditorRef.current?.focus();
+      return;
+    }
     const el = htmlRef.current;
     if (!el) {
       setActiveField("htmlBody", `${active.htmlBody}{{${key}}}`);
@@ -299,7 +325,34 @@ export function AdminEmailTemplatesClient({
                 <strong>Kdy se posílá:</strong> {meta.whenSent}
               </p>
             </div>
-            <div className="flex rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs font-bold">
+            <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center">
+              {view === "edit" ? (
+                <div className="flex rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs font-bold">
+                  <button
+                    type="button"
+                    onClick={() => setEditFormat("visual")}
+                    className={`rounded-md px-3 py-1.5 ${
+                      editFormat === "visual"
+                        ? "bg-white text-violet-900 shadow-sm"
+                        : "text-slate-600"
+                    }`}
+                  >
+                    Vizuální editor
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditFormat("html")}
+                    className={`rounded-md px-3 py-1.5 ${
+                      editFormat === "html"
+                        ? "bg-white text-violet-900 shadow-sm"
+                        : "text-slate-600"
+                    }`}
+                  >
+                    HTML kód
+                  </button>
+                </div>
+              ) : null}
+              <div className="flex rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs font-bold">
               <button
                 type="button"
                 onClick={() => setView("edit")}
@@ -322,6 +375,7 @@ export function AdminEmailTemplatesClient({
               >
                 Náhled
               </button>
+            </div>
             </div>
           </div>
         </header>
@@ -347,25 +401,50 @@ export function AdminEmailTemplatesClient({
 
             <div>
               <label
-                htmlFor="email-html"
+                htmlFor="email-subject"
                 className="text-xs font-bold uppercase tracking-wide text-slate-500"
               >
-                Tělo e-mailu (HTML)
+                Tělo e-mailu
               </label>
               <p className="mt-1 text-xs leading-relaxed text-slate-500">
-                Používejte placeholdery ve tvaru{" "}
-                <code className="rounded bg-slate-100 px-1">{"{{klíč}}"}</code>.
-                Kliknutím na chip níže vložíte placeholder na pozici kurzoru.
+                {editFormat === "visual" ? (
+                  <>
+                    Formátujte text jako ve Wordu — tučné, kurzíva, odrážky,
+                    písmo. Placeholdery{" "}
+                    <code className="rounded bg-slate-100 px-1">{"{{klíč}}"}</code>{" "}
+                    vkládejte tlačítky níže (zobrazí se jako fialové štítky).
+                    Obal dokumentu (<code>&lt;html&gt;</code>,{" "}
+                    <code>&lt;body&gt;</code>) se ukládá automaticky.
+                  </>
+                ) : (
+                  <>
+                    Celý HTML včetně{" "}
+                    <code className="rounded bg-slate-100 px-1">&lt;html&gt;</code>{" "}
+                    a placeholdery{" "}
+                    <code className="rounded bg-slate-100 px-1">{"{{klíč}}"}</code>.
+                  </>
+                )}
               </p>
-              <textarea
-                id="email-html"
-                ref={htmlRef}
-                value={active.htmlBody}
-                onChange={(e) => setActiveField("htmlBody", e.target.value)}
-                rows={22}
-                spellCheck={false}
-                className="input-portal mt-2 w-full font-mono text-xs leading-relaxed"
-              />
+              {editFormat === "visual" ? (
+                <div className="mt-2">
+                  <EmailTemplateRichEditor
+                    ref={richEditorRef}
+                    key={activeId}
+                    htmlBody={active.htmlBody}
+                    onChange={(htmlBody) => setActiveField("htmlBody", htmlBody)}
+                  />
+                </div>
+              ) : (
+                <textarea
+                  id="email-html"
+                  ref={htmlRef}
+                  value={active.htmlBody}
+                  onChange={(e) => setActiveField("htmlBody", e.target.value)}
+                  rows={22}
+                  spellCheck={false}
+                  className="input-portal mt-2 w-full font-mono text-xs leading-relaxed"
+                />
+              )}
             </div>
 
             <div className="rounded-xl border border-violet-200 bg-violet-50/60 p-4">

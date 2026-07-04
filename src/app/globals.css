@@ -460,6 +460,64 @@ body {
   @apply rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-950;
 }
 
+/* --- Admin: vizuální editor e-mailových šablon (TipTap) --- */
+.email-rich-editor__content {
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.email-rich-editor__content p {
+  margin: 0 0 0.75rem;
+}
+
+.email-rich-editor__content h2 {
+  font-size: 1.125rem;
+  margin: 1.25rem 0 0.5rem;
+  font-weight: 800;
+}
+
+.email-rich-editor__content h3 {
+  font-size: 1rem;
+  margin: 1rem 0 0.5rem;
+  font-weight: 700;
+}
+
+.email-rich-editor__content ul,
+.email-rich-editor__content ol {
+  margin: 0 0 0.75rem;
+  padding-left: 1.25rem;
+}
+
+.email-rich-editor__content a {
+  color: #7c3aed;
+  text-decoration: underline;
+}
+
+.email-rich-editor__content .email-ph-token,
+.email-rich-editor .email-ph-token {
+  display: inline-block;
+  margin: 0 1px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: #ede9fe;
+  border: 1px solid #c4b5fd;
+  color: #5b21b6;
+  font-family: ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  vertical-align: baseline;
+  user-select: none;
+}
+
+.email-rich-editor__content p.is-editor-empty:first-child::before {
+  color: #94a3b8;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
 /* --- Tisk: přehled pro rodiče (Ctrl+P) --- */
 @media print {
   body {
