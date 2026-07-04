@@ -146,6 +146,8 @@ function normalizeRecord(
     parentPhone: str(parsed.parentPhone),
     consentTerms: bool(parsed.consentTerms),
     consentPrivacy: bool(parsed.consentPrivacy),
+    consentAiTools: bool(parsed.consentAiTools),
+    consentEarlyServiceStart: bool(parsed.consentEarlyServiceStart),
     paymentProduct: paymentProductFromParsed(parsed),
     amountCzk: num(parsed.amountCzk),
     status: parseRegistrationStatus(parsed.status),

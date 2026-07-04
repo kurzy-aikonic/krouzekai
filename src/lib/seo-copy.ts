@@ -18,6 +18,10 @@ export const metaDescriptions = {
 
   cookies: `Informace o cookies na webu ${site.name}: nezbytné technologie, analytika po souhlasu a možnosti nastavení cookies v prohlížeči.`,
 
+  pravidlaOnlineKrouzku: `Pravidla online kroužku ${site.name}: bezpečné chování v lekcích, zákaz šikany, pravidla pro nahrávání a používání AI nástrojů.`,
+
+  odstoupeni: `Vzorový formulář odstoupení od smlouvy pro ${site.name}: postup, kontaktní údaje a praktické pokyny pro spotřebitele.`,
+
   platba: `Orientační přehled platby po registraci do ${site.name}: převod, variabilní symbol a další platební údaje. Finální pokyny posíláme po individuální domluvě.`,
 
   aktualniBehy: `Aktuální termíny skupin ${site.name}: přehled vypsaných kurzů, kapacit a dostupnosti míst. Registrace probíhá online.`,

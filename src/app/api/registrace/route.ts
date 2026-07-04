@@ -34,6 +34,8 @@ const bodySchema = z.object({
   parentPhone: z.string().min(9).max(40),
   consentTerms: z.literal(true),
   consentPrivacy: z.literal(true),
+  consentAiTools: z.literal(true),
+  consentEarlyServiceStart: z.literal(true),
   /** Honeypot — musí zůstat prázdné (proti botům). Nepoužívat název „company“ / „Firma“ — autofill by ho vyplnil. */
   formHoney: z.preprocess(
     (raw) => (raw === null || raw === undefined ? "" : raw),
@@ -130,6 +132,8 @@ export async function POST(request: Request) {
     parentPhone: data.parentPhone,
     consentTerms: data.consentTerms,
     consentPrivacy: data.consentPrivacy,
+    consentAiTools: data.consentAiTools,
+    consentEarlyServiceStart: data.consentEarlyServiceStart,
     paymentProduct,
     amountCzk,
     status: "nova",

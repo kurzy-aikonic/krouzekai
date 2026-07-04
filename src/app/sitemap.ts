@@ -13,6 +13,8 @@ const routes: { path: string; changeFrequency: ChangeFreq; priority: number }[] 
     { path: "/kontakt", changeFrequency: "yearly", priority: 0.7 },
     { path: "/obchodni-podminky", changeFrequency: "yearly", priority: 0.4 },
     { path: "/ochrana-osobnich-udaju", changeFrequency: "yearly", priority: 0.4 },
+    { path: "/pravidla-online-krouzku", changeFrequency: "yearly", priority: 0.35 },
+    { path: "/odstoupeni-od-smlouvy", changeFrequency: "yearly", priority: 0.35 },
     { path: "/cookies", changeFrequency: "yearly", priority: 0.35 },
   ];
 

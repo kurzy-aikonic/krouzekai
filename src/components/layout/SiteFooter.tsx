@@ -7,6 +7,8 @@ import { site } from "@/lib/site-config";
 const legal = [
   { href: "/obchodni-podminky", label: "Obchodní podmínky", e: "📜" },
   { href: "/ochrana-osobnich-udaju", label: "Ochrana údajů", e: "🔒" },
+  { href: "/pravidla-online-krouzku", label: "Pravidla kroužku", e: "🛡️" },
+  { href: "/odstoupeni-od-smlouvy", label: "Odstoupení od smlouvy", e: "↩️" },
   { href: "/cookies", label: "Cookies", e: "🍪" },
 ] as const;
 

@@ -83,8 +83,8 @@ export default async function ObchodniPodminkyPage() {
           tomto webu se souhlasem s těmito OP a se zásadami ochrany osobních
           údajů (GDPR). Účastník kurzu je ve věku {site.audience.ageMin} až{" "}
           {site.audience.ageMax} let; objednávku proto činí výhradně jeho zákonný
-          zástupce, který odpovídá za správnost údajů a za účast účastníka v
-          kurzu.
+          zástupce, který odpovídá za správnost údajů, souhlasy udělované při
+          registraci a za účast účastníka v kurzu.
         </p>
         <p>
           Smlouva mezi poskytovatelem a zákazníkem je uzavřena{" "}
@@ -136,18 +136,40 @@ export default async function ObchodniPodminkyPage() {
           od odstoupení, pokud zákon nestanoví jinak.
         </p>
         <p>
+          Při registraci vyžadujeme samostatné potvrzení, že jako spotřebitel
+          <strong> výslovně žádáte o zahájení poskytování služby před uplynutím
+          14 dnů</strong> od uzavření smlouvy. Pokud odstoupíte po zahájení plnění,
+          může být požadována úhrada poměrné části již poskytnutého plnění v
+          rozsahu dovoleném právními předpisy.
+        </p>
+        <p>
           Odstoupení můžete uplatnit jednoznačným projevem vůle zaslaným na{" "}
           <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>. K
-          odstoupení můžete použít vzorový formulář (není povinný), který najdete
-          např. na stránkách České obchodní inspekce.
+          odstoupení můžete použít vzorový formulář (není povinný), který je k
+          dispozici na stránce{" "}
+          <a href="/odstoupeni-od-smlouvy">Odstoupení od smlouvy</a>.
         </p>
-        <h2>7. Zrušení lekcí, nedostavení se, změny rozvrhu</h2>
+        <h2>7. AI nástroje třetích stran a věková omezení</h2>
+        <p>
+          V průběhu kurzu mohou být používány nástroje třetích stran (např.
+          OpenAI ChatGPT, Anthropic Claude a další). Tyto služby mají vlastní
+          podmínky použití, zásady ochrany soukromí a věkové limity. Zákonný
+          zástupce odpovídá za to, že používání těchto nástrojů účastníkem je v
+          souladu s podmínkami příslušného poskytovatele.
+        </p>
+        <p>
+          Poskytovatel neodpovídá za jednostranné změny podmínek třetích stran,
+          omezení či zablokování účtu třetí stranou ani za škodu způsobenou
+          porušením pravidel těchto služeb na straně účastníka nebo zákonného
+          zástupce.
+        </p>
+        <h2>8. Zrušení lekcí, nedostavení se, změny rozvrhu</h2>
         <p>
           Zruší-li poskytovatel lekci z vážného důvodu, nabídne náhradní termín
           nebo jiné přiměřené řešení. Účastník, který se bez omluvy nedostaví,
           nemá nárok na náhradní termín, ledaže se strany dohodnou jinak.
         </p>
-        <h2>8. Reklamace a odpovědnost</h2>
+        <h2>9. Reklamace a odpovědnost</h2>
         <p>
           Reklamaci služby uplatněte bez zbytečného odkladu na{" "}
           <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>. O
@@ -156,13 +178,21 @@ export default async function ObchodniPodminkyPage() {
           spojení, technické problémy na straně zákazníka nebo třetích osob
           mimo rozumnou kontrolu poskytovatele.
         </p>
-        <h2>9. Chování účastníka, bezpečnost a ochrana mládeže</h2>
+        <h2>10. Chování účastníka, bezpečnost a ochrana mládeže</h2>
         <p>
           Účastník se zavazuje chovat v online lekcích slušně, nešířit nevhodný
           obsah a dodržovat pokyny lektora. Zákonný zástupce odpovídá za to, že
           prostředí pro účast dítěte je vhodné.
         </p>
-        <h2>10. Nahrávání online lekcí (bezpečnost, kvalita, reklamace)</h2>
+        <p>
+          Je zakázáno zejména používání AI nástrojů ke generování nelegálního,
+          nenávistného, sexuálně explicitního (NSFW) nebo jinak škodlivého
+          obsahu, ke kyberšikaně, vydávání se za jiné osoby nebo k tvorbě
+          deepfake materiálů jiných účastníků. Při závažném porušení může být
+          účastník z kurzu vyloučen bez nároku na náhradu. Podrobnosti obsahuje
+          dokument <a href="/pravidla-online-krouzku">Pravidla online kroužku</a>.
+        </p>
+        <h2>11. Nahrávání online lekcí (bezpečnost, kvalita, reklamace)</h2>
         <p>
           Za účelem ochrany dítěte, lektora a poskytovatele, zajištění kvality
           výuky a doložení průběhu při řešení reklamací nebo sporných situací
@@ -183,29 +213,35 @@ export default async function ObchodniPodminkyPage() {
           reklamace nebo spor). Po uplynutí doby uchování záznam bezpečně
           odstraníme.
         </p>
-        <h2>11. Duševní vlastnictví</h2>
+        <h2>12. Duševní vlastnictví</h2>
         <p>
           Materiály poskytnuté v kurzu (texty, ukázky, struktura lekcí) jsou
           chráněny právy duševního vlastnictví. Slouží pouze pro osobní potřebu
           účastníka v rámci kurzu; další šíření, komerční využití nebo zpřístupnění
           třetím osobám bez souhlasu poskytovatele není přípustné.
         </p>
-        <h2>12. Ochrana osobních údajů</h2>
+        <p>
+          U výstupů vytvořených s využitím AI nelze zaručit, že jsou bez zásahu
+          práv třetích osob nebo vhodné ke komerčnímu užití. Poskytovatel proto
+          neodpovídá za případné právní nároky třetích osob vzniklé následným
+          využitím takových výstupů mimo výukové účely.
+        </p>
+        <h2>13. Ochrana osobních údajů</h2>
         <p>
           Zpracování osobních údajů upravuje dokument{" "}
           <a href="/ochrana-osobnich-udaju">Ochrana osobních údajů</a> na tomto
           webu, včetně informací podle čl. 13 a 14 nařízení Evropského parlamentu
           a Rady (EU) 2016/679 (GDPR).
         </p>
-        <h2>13. Mimosoudní řešení sporů</h2>
+        <h2>14. Mimosoudní řešení sporů</h2>
         <p>
           Spotřebitel má právo obrátit se na Českou obchodní inspekci (
           <a
-            href="https://www.coi.cz/"
+            href="https://www.adr.coi.cz/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            coi.cz
+            adr.coi.cz
           </a>
           ) s návrhem na zahájení mimosoudního řešení spotřebitelského sporu.
           Platformu pro řešení sporů on-line v rámci EU najdete na{" "}
@@ -218,7 +254,7 @@ export default async function ObchodniPodminkyPage() {
           </a>
           .
         </p>
-        <h2>14. Závěrečná ustanovení</h2>
+        <h2>15. Závěrečná ustanovení</h2>
         <p>
           Právní vztahy se řídí právem České republiky. Soudní příslušnost se
           řídí obecnými ustanoveními; u spotřebitele platí zákonná příslušnost

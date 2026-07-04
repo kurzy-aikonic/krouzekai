@@ -68,6 +68,8 @@ export type RegistrationRecord = {
   parentPhone: string;
   consentTerms: boolean;
   consentPrivacy: boolean;
+  consentAiTools: boolean;
+  consentEarlyServiceStart: boolean;
   paymentProduct: PaymentProduct;
   amountCzk: number;
   status: RegistrationStatus;

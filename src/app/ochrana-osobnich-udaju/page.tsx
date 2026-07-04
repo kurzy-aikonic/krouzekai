@@ -91,6 +91,12 @@ export default function OchranaOsobnichUdajuPage() {
             ledaže byste nám je dobrovolně sdělili v komunikaci; takové údaje
             nebudeme dále zpracovávat bez zákonného důvodu.
           </p>
+          <p>
+            U účastníků mladších 15 let vycházíme při souhlasech souvisejících
+            se službami informační společnosti (např. použití AI nástrojů třetích
+            stran v rámci výuky) ze souhlasu zákonného zástupce v souladu se
+            zákonem č. 110/2019 Sb.
+          </p>
           <h2>3. Účely zpracování a právní základ (čl. 6 GDPR)</h2>
           <ul>
             <li>
@@ -125,6 +131,13 @@ export default function OchranaOsobnichUdajuPage() {
               řešení reklamací a ochrana právních nároků): právní základ{" "}
               <strong>čl. 6 odst. 1 písm. a) GDPR</strong> (souhlas zákonného
               zástupce), který lze kdykoli odvolat pro budoucnost.
+            </li>
+            <li>
+              <strong>Zapojení AI nástrojů třetích stran do výuky</strong>:
+              právní základ{" "}
+              <strong>čl. 6 odst. 1 písm. a) GDPR</strong> (souhlas zákonného
+              zástupce), zejména pokud účastník pracuje se službami, které mají
+              vlastní věkové limity a vlastní zásady zpracování osobních údajů.
             </li>
           </ul>
           <p>
@@ -179,6 +192,16 @@ export default function OchranaOsobnichUdajuPage() {
             <li>
               <strong>Omezení zneužití rozhraní (rate limiting)</strong> — např.
               služba <strong>Supabase</strong>, pokud je v projektu nakonfigurována.
+            </li>
+            <li>
+              <strong>Nástroje pro online výuku a komunikaci</strong> (např.
+              videokonferenční platforma, e-mailové nástroje, případně rodičovská
+              komunikace), pokud jsou použity v konkrétním běhu kurzu.
+            </li>
+            <li>
+              <strong>AI nástroje používané ve výuce</strong> (např. OpenAI,
+              Anthropic nebo jiné platformy dle aktuálního průběhu kurzu) v rozsahu
+              nutném pro výukové zadání.
             </li>
             <li>
               <strong>Platební brána</strong> — pokud bude u aktivní platby zpracování

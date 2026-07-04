@@ -87,6 +87,8 @@ export function RegistrationForm({
   const [parentPhone, setParentPhone] = useState("");
   const [consentTerms, setConsentTerms] = useState(false);
   const [consentPrivacy, setConsentPrivacy] = useState(false);
+  const [consentAiTools, setConsentAiTools] = useState(false);
+  const [consentEarlyServiceStart, setConsentEarlyServiceStart] = useState(false);
   /** Neviditelné pole — nechte prázdné (antispam). */
   const [hpCompany, setHpCompany] = useState("");
   const [status, setStatus] = useState<
@@ -126,6 +128,8 @@ export function RegistrationForm({
         parentPhone,
         consentTerms,
         consentPrivacy,
+        consentAiTools,
+        consentEarlyServiceStart,
         formHoney: hpCompany,
         turnstileToken: turnstileEnabled ? turnstileToken : "",
       }),
@@ -499,7 +503,8 @@ export function RegistrationForm({
             >
               obchodními podmínkami
             </a>
-            .
+            , potvrzuji, že jsem zákonným zástupcem přihlašovaného dítěte a
+            uzavírám smlouvu jeho jménem.
           </span>
         </label>
         <label className="flex cursor-pointer items-start gap-2 text-sm font-medium text-slate-800">
@@ -522,6 +527,33 @@ export function RegistrationForm({
             kurzu, včetně interního nahrávání online lekcí pro bezpečnost,
             kontrolu kvality a případné řešení reklamací (bez veřejného šíření
             či prodeje záznamů).
+          </span>
+        </label>
+        <label className="flex cursor-pointer items-start gap-2 text-sm font-medium text-slate-800">
+          <input
+            type="checkbox"
+            required
+            checked={consentAiTools}
+            onChange={(e) => setConsentAiTools(e.target.checked)}
+            className="mt-0.5 h-5 w-5 rounded border-2 border-[var(--magic-ink)] text-violet-600"
+          />
+          <span>
+            Souhlasím s tím, aby mé dítě v rámci výuky používalo AI nástroje
+            třetích stran (např. ChatGPT, Claude), a beru na vědomí jejich
+            věková pravidla a podmínky použití.
+          </span>
+        </label>
+        <label className="flex cursor-pointer items-start gap-2 text-sm font-medium text-slate-800">
+          <input
+            type="checkbox"
+            required
+            checked={consentEarlyServiceStart}
+            onChange={(e) => setConsentEarlyServiceStart(e.target.checked)}
+            className="mt-0.5 h-5 w-5 rounded border-2 border-[var(--magic-ink)] text-violet-600"
+          />
+          <span>
+            Výslovně žádám o zahájení poskytování služby i před uplynutím
+            14denní lhůty pro odstoupení od smlouvy.
           </span>
         </label>
       </div>

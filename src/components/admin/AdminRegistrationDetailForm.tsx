@@ -280,7 +280,9 @@ export function AdminRegistrationDetailForm({
             <dt className="text-xs font-bold uppercase text-slate-500">Souhlasy</dt>
             <dd className="mt-0.5 text-slate-700">
               OP: {record.consentTerms ? "ano" : "ne"} · GDPR:{" "}
-              {record.consentPrivacy ? "ano" : "ne"}
+              {record.consentPrivacy ? "ano" : "ne"} · AI nástroje:{" "}
+              {record.consentAiTools ? "ano" : "ne"} · zahájení před 14 dny:{" "}
+              {record.consentEarlyServiceStart ? "ano" : "ne"}
             </dd>
           </div>
           <div>
