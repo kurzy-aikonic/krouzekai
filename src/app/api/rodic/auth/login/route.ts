@@ -1,4 +1,5 @@
 import { z } from "zod";
+import bcrypt from "bcryptjs";
 import { apiJson } from "@/lib/api-response";
 import { rejectOversizedJsonBody } from "@/lib/json-body-limit";
 import {
@@ -19,6 +20,13 @@ const bodySchema = z.object({
   email: z.string().email().max(320),
   password: z.string().min(1).max(200),
 });
+
+/**
+ * Dummy hash pro srovnani casu odpovedi pri neexistujicim uctu.
+ * Pomaha omezit user-enumeration podle casovani.
+ */
+const DUMMY_BCRYPT_HASH =
+  "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
 
 export async function POST(request: Request) {
   if (!parentAuthSecretConfigured()) {
@@ -47,16 +55,18 @@ export async function POST(request: Request) {
   }
 
   const email = normalizeParentEmail(parsed.data.email);
-  const account = await findParentAccountByEmail(email);
-  if (!account) {
-    return apiJson(
-      { error: "Neplatný e-mail nebo heslo." },
-      { status: 401 },
-    );
-  }
+  const limitedByEmail = await rateLimitResponse(
+    request,
+    "rodicPrihlaseni",
+    email,
+  );
+  if (limitedByEmail) return limitedByEmail;
 
-  const okPass = await verifyParentPassword(account, parsed.data.password);
-  if (!okPass) {
+  const account = await findParentAccountByEmail(email);
+  const okPass = account
+    ? await verifyParentPassword(account, parsed.data.password)
+    : await bcrypt.compare(parsed.data.password, DUMMY_BCRYPT_HASH);
+  if (!account || !okPass) {
     return apiJson(
       { error: "Neplatný e-mail nebo heslo." },
       { status: 401 },

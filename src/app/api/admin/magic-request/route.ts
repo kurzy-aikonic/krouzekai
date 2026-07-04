@@ -61,6 +61,8 @@ export async function POST(request: Request) {
   }
 
   const email = normalizeAdminEmail(parsed.data.email);
+  const limitedByEmail = await rateLimitResponse(request, "adminMagic", email);
+  if (limitedByEmail) return limitedByEmail;
 
   if (isAdminEmail(email)) {
     const token = signAdminMagicToken(email);

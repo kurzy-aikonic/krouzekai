@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import type { NextResponse } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
@@ -34,6 +35,12 @@ const scopes = {
 export type RateLimitScope = keyof typeof scopes;
 
 type RpcResult = { allowed: boolean; retry_after?: number };
+
+function fingerprintIdentifier(identifier: string): string {
+  const trimmed = identifier.trim().toLowerCase();
+  if (!trimmed) return "";
+  return createHash("sha256").update(trimmed).digest("hex").slice(0, 20);
+}
 
 async function rateLimitViaSupabase(
   scope: RateLimitScope,
@@ -128,11 +135,15 @@ function tooManyResponse(retryAfterSec: number) {
 export async function rateLimitResponse(
   request: Request,
   scope: RateLimitScope,
+  identifier?: string,
 ): Promise<NextResponse | null> {
   const ip = getClientIp(request);
   const cfg = scopes[scope];
+  const idFingerprint =
+    typeof identifier === "string" ? fingerprintIdentifier(identifier) : "";
+  const rateKey = idFingerprint ? `${ip}:${idFingerprint}` : ip;
 
-  const sb = await rateLimitViaSupabase(scope, ip, cfg.limit);
+  const sb = await rateLimitViaSupabase(scope, rateKey, cfg.limit);
   if (sb !== null) {
     if (!sb.allowed) {
       const retry = Math.max(1, Math.floor(sb.retry_after ?? 3600));
@@ -143,7 +154,7 @@ export async function rateLimitResponse(
 
   const limiter = ratelimiter(scope);
   if (limiter) {
-    const result = await limiter.limit(ip);
+    const result = await limiter.limit(rateKey);
     if (result.success) return null;
     const retryAfter = Math.max(
       1,
@@ -159,7 +170,7 @@ export async function rateLimitResponse(
     );
   }
 
-  if (memoryAllow(`${scope}:${ip}`, cfg.limit, cfg.windowMs)) return null;
+  if (memoryAllow(`${scope}:${rateKey}`, cfg.limit, cfg.windowMs)) return null;
 
   return tooManyResponse(Math.ceil(cfg.windowMs / 1000));
 }

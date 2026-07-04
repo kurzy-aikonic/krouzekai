@@ -27,6 +27,7 @@ Tento dokument doplňuje technická opatření v kódu (HTTP hlavičky, CSP, `pr
 2. Po přidání nového endpointu pod `/api/*`:
    - použít `apiJson()` z `src/lib/api-response.ts` (jednotný JSON + `no-store`),
    - zvážit vlastní `RateLimitScope` v `src/lib/rate-limit.ts`,
+   - u auth endpointů zvážit i limit podle identity (např. e-mail) přes `rateLimitResponse(..., identifier)`,
    - u citlivých akcí držet přísnější limity než u veřejného čtení.
 3. **Cross-site POST**: vrstva `src/proxy.ts` blokuje `Sec-Fetch-Site: cross-site` u měnících metod — nové klientské integrace musí volat API ze stejného originu (ne z cizích domén přes cookie).
 

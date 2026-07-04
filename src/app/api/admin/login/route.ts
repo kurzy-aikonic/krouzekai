@@ -6,6 +6,7 @@ import {
   getAdminSecret,
   signAdminSession,
 } from "@/lib/admin-auth";
+import { rejectOversizedJsonBody } from "@/lib/json-body-limit";
 import { rateLimitResponse } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,9 @@ const bodySchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const tooLarge = rejectOversizedJsonBody(request);
+  if (tooLarge) return tooLarge;
+
   const limited = await rateLimitResponse(request, "adminLogin");
   if (limited) return limited;
 

@@ -51,6 +51,9 @@ export async function POST(request: Request) {
   }
 
   const email = normalizeParentEmail(parsed.data.email);
+  const limitedByEmail = await rateLimitResponse(request, "rodicRegister", email);
+  if (limitedByEmail) return limitedByEmail;
+
   const regs = await listRegistrationsByParentEmail(email);
   if (regs.length === 0) {
     return apiJson(
