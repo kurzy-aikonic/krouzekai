@@ -27,6 +27,19 @@ const courseRunSchema = z.object({
     z.string().regex(/^\d{2}:\d{2}$/).optional(),
   ),
   recurrence: z.enum(["weekly", "biweekly", "none"]).optional(),
+  topic: z.preprocess(
+    (v) => (typeof v === "string" ? v.trim() : ""),
+    z.string().max(500).optional(),
+  ),
+  difficulty: z
+    .enum(["beginner", "advanced", "professional"])
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  priceCzk: z
+    .union([z.coerce.number().int().min(100).max(500_000), z.null()])
+    .optional()
+    .transform((v) => (v == null ? undefined : v)),
   active: z.boolean().optional().default(true),
 });
 

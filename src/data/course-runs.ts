@@ -1,5 +1,8 @@
 export type CourseFormat = "skupina" | "individual";
 
+/** Náročnost / úroveň termínu pro rodiče. */
+export type CourseDifficulty = "beginner" | "advanced" | "professional";
+
 /** Opakování lekcí v rámci termínu */
 export type CourseRecurrence = "weekly" | "biweekly" | "none";
 
@@ -8,6 +11,15 @@ export type CourseRun = {
   label: string;
   /** Krátký popis termínu pro rodiče */
   description: string;
+  /** Konkrétní téma nebo zaměření běhu (volitelné). */
+  topic?: string;
+  /** Úroveň náročnosti — zobrazí se rodičům u termínu. */
+  difficulty?: CourseDifficulty;
+  /**
+   * Vlastní cena tohoto termínu (Kč). Skupina = za dítě, 1:1 = celý kurz.
+   * Prázdné = globální cena z adminu → Nástroje.
+   */
+  priceCzk?: number;
   format: CourseFormat;
   capacity: number;
   /** Obsazeno — ruční override; skutečný počet z přihlášek bere větší z obou. */

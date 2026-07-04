@@ -14,6 +14,7 @@ import {
   type CourseRecurrence,
   type WeekdayIso,
 } from "@/lib/course-run-schedule";
+import { COURSE_DIFFICULTY_OPTIONS } from "@/lib/course-run-difficulty";
 
 type Props = {
   scheduleKey: string;
@@ -203,6 +204,25 @@ export function CourseRunScheduleEditor({
             ? run.description || "—"
             : formatScheduleDescription(schedule)}
         </p>
+        {run.topic?.trim() || run.difficulty ? (
+          <p className="mt-2 text-xs text-slate-600">
+            {run.topic?.trim() ? (
+              <>
+                <strong>Téma:</strong> {run.topic.trim()}
+              </>
+            ) : null}
+            {run.difficulty ? (
+              <>
+                {run.topic?.trim() ? " · " : ""}
+                <strong>
+                  {COURSE_DIFFICULTY_OPTIONS.find(
+                    (o) => o.value === run.difficulty,
+                  )?.label ?? run.difficulty}
+                </strong>
+              </>
+            ) : null}
+          </p>
+        ) : null}
         <p className="mt-2 text-xs font-medium text-slate-500">
           {formatScheduleSummary(schedule)}
         </p>

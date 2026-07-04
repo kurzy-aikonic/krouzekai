@@ -1,16 +1,24 @@
 import Link from "next/link";
 import type { CourseRun } from "@/data/course-runs";
 import { CourseRunCapacityStatus } from "@/components/course-run/CourseRunCapacityStatus";
+import { CourseRunPriceLabel } from "@/components/course-run/CourseRunPriceLabel";
+import { CourseRunPublicMeta } from "@/components/course-run/CourseRunPublicMeta";
 import { formatScheduleSummary } from "@/lib/course-run-schedule";
 import { courseRunPublicStatus } from "@/lib/course-run-public-status";
+import type { DefaultCoursePrices } from "@/lib/course-run-pricing";
 import { site } from "@/lib/site-config";
 
 type Props = {
   runs: CourseRun[];
   occupancyByRunId: Record<string, number>;
+  priceDefaults: DefaultCoursePrices;
 };
 
-export function HomeCourseRunsSection({ runs, occupancyByRunId }: Props) {
+export function HomeCourseRunsSection({
+  runs,
+  occupancyByRunId,
+  priceDefaults,
+}: Props) {
   if (runs.length === 0) return null;
 
   return (
@@ -71,6 +79,8 @@ export function HomeCourseRunsSection({ runs, occupancyByRunId }: Props) {
               <p className="mt-2 text-sm leading-relaxed text-slate-700">
                 {run.description}
               </p>
+              <CourseRunPublicMeta run={run} />
+              <CourseRunPriceLabel run={run} defaults={priceDefaults} compact />
               <p className="mt-3 text-xs font-semibold text-violet-800">
                 {formatScheduleSummary(run)}
               </p>

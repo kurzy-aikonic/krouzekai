@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CourseRunCapacityStatus } from "@/components/course-run/CourseRunCapacityStatus";
+import { CourseRunPriceLabel } from "@/components/course-run/CourseRunPriceLabel";
+import { CourseRunPublicMeta } from "@/components/course-run/CourseRunPublicMeta";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { formatScheduleSummary } from "@/lib/course-run-schedule";
 import { countedOccupancyForRun } from "@/lib/course-run-registrations";
 import { courseRunPublicStatus } from "@/lib/course-run-public-status";
+import { getPublicCoursePricing } from "@/lib/course-pricing-store";
 import { listOfferedCourseRuns } from "@/lib/course-runs-store";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { listRegistrationsMerged } from "@/lib/registrations-store";
@@ -23,6 +26,11 @@ export default async function AktualniBehyPage() {
     (r) => r.format === "skupina",
   );
   const merged = await listRegistrationsMerged();
+  const pricing = await getPublicCoursePricing();
+  const priceDefaults = {
+    skupinaCourseCzk: pricing.skupinaCourseCzk,
+    individualCourseCzk: pricing.individualCourseCzk,
+  };
 
   return (
     <>
@@ -72,6 +80,8 @@ export default async function AktualniBehyPage() {
                   <p className="mt-2 text-sm leading-relaxed text-slate-700">
                     {run.description}
                   </p>
+                  <CourseRunPublicMeta run={run} />
+                  <CourseRunPriceLabel run={run} defaults={priceDefaults} />
                   <p className="mt-3 text-xs font-medium text-slate-600">
                     {formatScheduleSummary(run)}
                   </p>

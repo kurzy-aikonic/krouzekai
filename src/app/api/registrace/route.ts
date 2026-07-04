@@ -7,7 +7,7 @@ import { countedOccupancyForRun } from "@/lib/course-run-registrations";
 import { getCourseRunById } from "@/lib/course-runs-store";
 import { sendRegistrationConfirmation } from "@/lib/email";
 import { rejectOversizedJsonBody } from "@/lib/json-body-limit";
-import { coursePriceCzk } from "@/lib/course-pricing-store";
+import { resolveRegistrationAmountCzk } from "@/lib/course-run-pricing-server";
 import { productFromFormat } from "@/lib/payment";
 import { persistRegistration } from "@/lib/persist-registration";
 import { pickUniqueRegistrationCode } from "@/lib/registration-code";
@@ -89,22 +89,23 @@ export async function POST(request: Request) {
 
   const merged = await listRegistrationsMerged();
 
+  let selectedRun = null;
   if (data.runId) {
-    const run = await getCourseRunById(data.runId);
-    if (!run || run.active === false) {
+    selectedRun = await getCourseRunById(data.runId);
+    if (!selectedRun || selectedRun.active === false) {
       return apiJson(
         { error: "Tento termín není v nabídce nebo byl zrušen." },
         { status: 422 },
       );
     }
-    if (run.format !== data.format) {
+    if (selectedRun.format !== data.format) {
       return apiJson(
         { error: "Vybraný termín neodpovídá zvolenému formátu kurzu." },
         { status: 422 },
       );
     }
     const occupied = countedOccupancyForRun(data.runId, data.format, merged);
-    if (spotsLeftEffective(run, occupied) <= 0) {
+    if (spotsLeftEffective(selectedRun, occupied) <= 0) {
       return apiJson({ error: "Tento termín je již plný." }, { status: 409 });
     }
   }
@@ -112,7 +113,10 @@ export async function POST(request: Request) {
   const id = randomUUID();
   const registrationCode = pickUniqueRegistrationCode(merged);
   const paymentProduct = productFromFormat(data.format);
-  const amountCzk = await coursePriceCzk(paymentProduct);
+  const amountCzk = await resolveRegistrationAmountCzk({
+    format: data.format,
+    run: selectedRun,
+  });
 
   const record: RegistrationRecord = {
     id,

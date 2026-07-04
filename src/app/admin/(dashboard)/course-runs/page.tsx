@@ -7,6 +7,7 @@ import {
   listCourseRuns,
   listOfferedCourseRuns,
 } from "@/lib/course-runs-store";
+import { getCoursePricing } from "@/lib/course-pricing-store";
 import { listRegistrationsMerged } from "@/lib/registrations-store";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +19,11 @@ export default async function AdminCourseRunsPage() {
   const persistence = courseRunsPersistenceMode();
   const merged = await listRegistrationsMerged();
   const occupancyByRunId = buildRunOccupancyMap(merged);
+  const pricing = await getCoursePricing();
+  const defaultPricing = {
+    skupinaCourseCzk: pricing.skupinaCourseCzk,
+    individualCourseCzk: pricing.individualCourseCzk,
+  };
 
   return (
     <div>
@@ -46,6 +52,7 @@ export default async function AdminCourseRunsPage() {
         initialRuns={runs}
         occupancyByRunId={occupancyByRunId}
         usingDefaultRuns={dataSource === "defaults"}
+        defaultPricing={defaultPricing}
       />
     </div>
   );
