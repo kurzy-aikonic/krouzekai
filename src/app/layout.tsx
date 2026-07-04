@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Baloo_2, Nunito } from "next/font/google";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { CookieBannerHost } from "@/components/cookies/CookieBannerHost";
+import { CourseSignupToast } from "@/components/layout/CourseSignupToast";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { LazyClickSparkles } from "@/components/playful/LazyClickSparkles";
@@ -66,6 +67,7 @@ export default function RootLayout({
         >
           {children}
         </main>
+        <CourseSignupToast />
         <SiteFooter />
         <CookieBannerHost />
       </body>

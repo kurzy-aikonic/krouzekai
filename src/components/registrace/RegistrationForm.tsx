@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 import type { CourseRun } from "@/data/course-runs";
@@ -73,6 +74,7 @@ export function RegistrationForm({
   initialAiSkillLevel,
   pricing,
 }: Props) {
+  const router = useRouter();
   const initial = resolveInitialSelection(
     preferredRunId,
     groupRuns,
@@ -107,7 +109,6 @@ export function RegistrationForm({
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [message, setMessage] = useState("");
-  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState("");
   const turnstileRef = useRef<TurnstileInstance | null>(null);
 
@@ -135,7 +136,6 @@ export function RegistrationForm({
     }
     setStatus("loading");
     setMessage("");
-    setPaymentUrl(null);
 
     const res = await fetch("/api/registrace", {
       method: "POST",
@@ -191,7 +191,13 @@ export function RegistrationForm({
 
     setStatus("success");
     setMessage(data.message ?? "Odesláno.");
-    if (data.paymentUrl) setPaymentUrl(data.paymentUrl);
+    if (data.registrationCode) {
+      router.push(
+        `/registrace/potvrzeni?code=${encodeURIComponent(data.registrationCode)}`,
+      );
+      return;
+    }
+    router.push("/registrace/potvrzeni");
   }
 
   return (
@@ -662,23 +668,6 @@ export function RegistrationForm({
         pošleme dostupné varianty.
       </p>
 
-      {status === "success" ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className="space-y-3 rounded-2xl border-2 border-emerald-600 bg-emerald-50 px-4 py-4 text-sm font-semibold text-emerald-950"
-        >
-          <p>Mise zahájena! 🚀 Ozveme se vám do 24 hodin s návrhem termínů.</p>
-          {paymentUrl ? (
-            <Link
-              href={paymentUrl}
-              className="inline-flex w-full items-center justify-center rounded-xl border-2 border-emerald-800 bg-emerald-600 px-4 py-3 text-center font-display font-extrabold text-white shadow-[3px_3px_0_#064e3b] hover:bg-emerald-700 sm:w-auto"
-            >
-              Přehled k platbě (po domluvě) 💳
-            </Link>
-          ) : null}
-        </div>
-      ) : null}
       {status === "error" ? (
         <p
           role="alert"

@@ -108,8 +108,73 @@ export const AI_SKILL_TEST_QUESTIONS: readonly AiSkillQuestion[] = [
   },
 ];
 
+export const AI_SKILL_PRO_CONFIRMATION_QUESTIONS: readonly AiSkillQuestion[] = [
+  {
+    id: "pc1",
+    prompt:
+      "Máš navrhnout AI asistenta pro školní projekt. Jak začneš, aby byl výstup kvalitní?",
+    answers: [
+      { id: "a", text: "Napíšu jen krátký dotaz a zkusím štěstí.", points: 0 },
+      { id: "b", text: "Dám AI delší zadání, ale bez jasných kritérií.", points: 1 },
+      { id: "c", text: "Rozdělím zadání na fáze a přidám kritéria kvality.", points: 2 },
+      { id: "d", text: "Nejdřív navrhnu testovací scénáře, potom iteruju prompt po krocích.", points: 3 },
+    ],
+  },
+  {
+    id: "pc2",
+    prompt:
+      "AI vrací chybná fakta, ale text vypadá přesvědčivě. Jak postupuješ?",
+    answers: [
+      { id: "a", text: "Použiju to, pokud to zní dobře.", points: 0 },
+      { id: "b", text: "Rychle to projdu a opravím pár věcí.", points: 1 },
+      { id: "c", text: "Ověřím klíčové body ve více zdrojích.", points: 2 },
+      { id: "d", text: "Zavedu systematický fact-check checklist a upravím prompt proti halucinacím.", points: 3 },
+    ],
+  },
+  {
+    id: "pc3",
+    prompt:
+      "Potřebuješ vytvořit konzistentní výstup ve stejném stylu napříč několika úkoly.",
+    answers: [
+      { id: "a", text: "Každý úkol řeším zvlášť bez pravidel.", points: 0 },
+      { id: "b", text: "Zkusím styl popsat jednou větou.", points: 1 },
+      { id: "c", text: "Použiju šablonu promptu s opakovanými pravidly.", points: 2 },
+      { id: "d", text: "Vytvořím reusable prompt framework, eval kritéria a porovnání variant.", points: 3 },
+    ],
+  },
+  {
+    id: "pc4",
+    prompt:
+      "AI generuje kód hry, ale výkon je slabý a logika nepřehledná. Co je nejlepší přístup?",
+    answers: [
+      { id: "a", text: "Nechám to být, když to aspoň nějak funguje.", points: 0 },
+      { id: "b", text: "Zkusím poprosit AI o „lepší verzi“.", points: 1 },
+      { id: "c", text: "Nechám AI vysvětlit části kódu a postupně je refaktorovat.", points: 2 },
+      { id: "d", text: "Rozbiju problém na moduly, nastavím metriky a iterativně testuju s AI.", points: 3 },
+    ],
+  },
+  {
+    id: "pc5",
+    prompt:
+      "Dítě chce publikovat AI výstup veřejně. Co je právně a eticky nejbezpečnější?",
+    answers: [
+      { id: "a", text: "Publikovat hned bez kontroly.", points: 0 },
+      { id: "b", text: "Změnit pár detailů a publikovat.", points: 1 },
+      { id: "c", text: "Prověřit citlivá data, práva k obsahu a podmínky nástroje.", points: 2 },
+      { id: "d", text: "Udělám právní/etický checklist (soukromí, copyright, zdroje, věková pravidla) a teprve poté publikaci.", points: 3 },
+    ],
+  },
+];
+
 export function aiSkillMaxScore(): number {
   return AI_SKILL_TEST_QUESTIONS.reduce(
+    (sum, q) => sum + Math.max(...q.answers.map((a) => a.points)),
+    0,
+  );
+}
+
+export function aiSkillProConfirmationMaxScore(): number {
+  return AI_SKILL_PRO_CONFIRMATION_QUESTIONS.reduce(
     (sum, q) => sum + Math.max(...q.answers.map((a) => a.points)),
     0,
   );
@@ -119,6 +184,10 @@ export function evaluateAiSkillLevel(totalScore: number): AiSkillLevel {
   if (totalScore >= 12) return "professional";
   if (totalScore >= 6) return "advanced";
   return "beginner";
+}
+
+export function confirmProfessionalLevel(totalScore: number): boolean {
+  return totalScore >= 12;
 }
 
 export function parseAiSkillLevel(value: unknown): AiSkillLevel | null {
