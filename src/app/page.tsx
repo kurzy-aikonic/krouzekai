@@ -180,7 +180,7 @@ export default async function HomePage() {
         />
 
         {/* Rodičovský pruh */}
-        <div className="mt-14 rounded-3xl border-[3px] border-dashed border-violet-400 bg-white/80 p-5 shadow-[6px_6px_0_rgba(49,46,129,0.12)] backdrop-blur-sm sm:p-6">
+        <div className="mt-14 rounded-3xl border border-violet-200 bg-white/90 p-6 shadow-sm backdrop-blur-sm sm:p-7">
           <p className="mt-2 text-base leading-relaxed text-slate-800">
             Kurz je postavený tak, aby děti bavil a zároveň rodičům dával jistotu
             v organizaci, bezpečnosti i kvalitě výuky. Skupiny tvoříme podle věku
@@ -345,10 +345,7 @@ export default async function HomePage() {
         >
           <ul className="grid gap-4 sm:grid-cols-2">
             {outcomes.map((o) => (
-              <li
-                key={o.t}
-                className="flex gap-4 rounded-3xl border-[3px] border-[var(--magic-ink)] bg-white p-5 shadow-[5px_5px_0_#312e81] transition-transform hover:-translate-y-1"
-              >
+              <li key={o.t} className="flex gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-violet-200">
                 <span className="text-3xl" aria-hidden>
                   {o.e}
                 </span>
@@ -361,7 +358,7 @@ export default async function HomePage() {
         </Section>
 
         <Section title="Pro koho to je" className="mt-20">
-          <div className="rounded-3xl border-[3px] border-[var(--magic-ink)] bg-gradient-to-r from-fuchsia-50 via-white to-amber-50 p-6 sm:p-8">
+          <div className="rounded-3xl border border-slate-200 bg-gradient-to-r from-fuchsia-50/60 via-white to-amber-50/60 p-6 shadow-sm sm:p-8">
             <p className="text-lg font-medium leading-relaxed text-slate-800">
               Pro děti {site.audience.ageMin} až {site.audience.ageMax} let,
               které milují technologie a chtějí <strong>tvořit</strong>, ne jen
@@ -400,8 +397,8 @@ export default async function HomePage() {
         </Section>
 
         {/* Meta: jak je web postavený */}
-        <section className="mt-20 rounded-[2rem] border-[3px] border-[var(--magic-ink)] bg-[var(--magic-ink)] p-1 shadow-[8px_8px_0_rgba(0,0,0,0.2)]">
-          <div className="rounded-[1.65rem] bg-gradient-to-br from-white via-violet-50 to-amber-50 px-6 py-8 sm:px-10 sm:py-10">
+        <section className="mt-20 rounded-[2rem] border border-violet-200 bg-white/80 p-1 shadow-sm">
+          <div className="rounded-[1.65rem] bg-gradient-to-br from-white via-violet-50/70 to-amber-50/70 px-6 py-8 sm:px-10 sm:py-10">
             <h2 className="font-display text-2xl font-extrabold text-[var(--magic-ink)] sm:text-3xl">
               Jaké digitální dovednosti si děti osvojí
             </h2>
@@ -414,10 +411,7 @@ export default async function HomePage() {
             <ul className="mt-6 flex flex-wrap gap-2">
               {["Animace", "Barvy & gradienty", "Typografie", "Layout", "Interakce"].map(
                 (tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border-2 border-[var(--magic-ink)] bg-white px-3 py-1 font-display text-xs font-bold text-[var(--magic-ink)] shadow-[2px_2px_0_#312e81]"
-                  >
+                  <span key={tag} className="rounded-full border border-violet-200 bg-white px-3 py-1 font-display text-xs font-bold text-violet-800 shadow-sm">
                     {tag}
                   </span>
                 ),
@@ -429,9 +423,8 @@ export default async function HomePage() {
         <HomeInteractiveDemos />
 
         {/* CTA */}
-        <div className="relative mt-20 overflow-hidden rounded-[2rem] text-center">
-          <div className="rainbow-strip absolute inset-0 opacity-90" aria-hidden />
-          <div className="relative m-[3px] rounded-[1.85rem] bg-[var(--magic-ink)] px-6 py-12 sm:px-10 sm:py-14">
+        <div className="relative mt-20 overflow-hidden rounded-[2rem] border border-violet-200 bg-white text-center shadow-sm">
+          <div className="relative rounded-[1.85rem] bg-gradient-to-br from-violet-900 to-indigo-900 px-6 py-12 sm:px-10 sm:py-14">
             <h2 className="font-display text-2xl font-extrabold text-white sm:text-4xl">
               {hasPublicRuns
                 ? "Vyberte termín a přihlaste dítě"
@@ -442,10 +435,7 @@ export default async function HomePage() {
                 ? "Konkrétní termíny najdete výše — nebo pošlete obecnou nezávaznou přihlášku."
                 : "Vyplňte přihlášku — ozveme se a společně doladíme termín i formát."}
             </p>
-            <Link
-              href="/registrace"
-              className="mt-8 inline-flex min-h-11 w-full max-w-sm items-center justify-center rounded-2xl border-[3px] border-white bg-gradient-to-r from-amber-300 via-orange-400 to-pink-400 px-6 py-3.5 font-display text-base font-extrabold text-[var(--magic-ink)] shadow-[4px_4px_0_rgba(255,255,255,0.5)] transition-transform hover:scale-[1.05] active:scale-[0.98] sm:w-auto sm:max-w-none sm:px-8 sm:py-4 sm:text-lg"
-            >
+            <Link href="/registrace" className="btn-magic mt-8 inline-flex min-h-11 w-full max-w-sm items-center justify-center sm:w-auto sm:max-w-none sm:px-8 sm:py-4 sm:text-lg">
               Nezávazně přihlásit dítě 🚀
             </Link>
             <p className="mx-auto mt-3 max-w-lg text-xs font-semibold text-violet-200">
@@ -454,12 +444,6 @@ export default async function HomePage() {
             </p>
           </div>
         </div>
-        <Link
-          href="/registrace"
-          className="mobile-sticky-cta btn-magic fixed bottom-4 right-4 z-50 px-4 py-3 text-sm shadow-2xl sm:bottom-6 sm:right-6 sm:text-base"
-        >
-          Nezávazně přihlásit dítě 🚀
-        </Link>
       </div>
     </>
   );

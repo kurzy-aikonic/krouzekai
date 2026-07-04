@@ -44,17 +44,16 @@ export function SiteHeader() {
   }, [menuOpen, closeMenu]);
 
   return (
-    <header className="relative sticky top-0 z-40 border-b-[3px] border-[var(--magic-ink)] bg-white/90 shadow-[0_4px_0_rgba(49,46,129,0.15)] backdrop-blur-md supports-[backdrop-filter]:bg-white/80">
-      <div className="rainbow-strip h-1 w-full opacity-90" aria-hidden />
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-2.5 sm:gap-3 sm:px-6 sm:py-3">
+    <header className="sticky top-0 z-40 border-b border-violet-100 bg-white/90 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-white/80">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <div className="flex min-w-0 flex-1 items-start gap-2 sm:gap-3">
           <Link
             href="/"
-            className="group mt-0.5 shrink-0 rounded-2xl border-2 border-transparent p-0.5 transition-transform hover:scale-[1.02] active:scale-[0.98]"
+            className="group mt-0.5 shrink-0 rounded-2xl border border-transparent p-0.5 transition-transform hover:scale-[1.01] active:scale-[0.99]"
             aria-label={`${site.name} — úvod`}
           >
             <span
-              className="flex h-10 w-10 items-center justify-center rounded-2xl border-[3px] border-[var(--magic-ink)] bg-gradient-to-br from-[var(--magic-sun)] to-[var(--magic-coral)] text-lg shadow-[3px_3px_0_#312e81] transition-transform group-hover:-rotate-6 sm:h-11 sm:w-11 sm:text-xl"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-fuchsia-100 text-lg shadow-sm transition-transform group-hover:rotate-3 sm:h-11 sm:w-11 sm:text-xl"
               aria-hidden
             >
               ✨
@@ -80,10 +79,10 @@ export function SiteHeader() {
               key={item.href}
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
-              className={`font-display wiggle-hover flex min-h-10 items-center gap-1 whitespace-nowrap rounded-xl border-2 px-2.5 py-2 text-[11px] font-bold shadow-[2px_2px_0_#312e81] lg:px-3 lg:text-sm ${
+              className={`font-display flex min-h-10 items-center gap-1 whitespace-nowrap rounded-xl border px-2.5 py-2 text-[11px] font-bold transition-colors lg:px-3 lg:text-sm ${
                 isActive(item.href)
-                  ? "border-violet-700 bg-violet-100 text-violet-900"
-                  : "border-[var(--magic-ink)] bg-white text-[var(--magic-ink)]"
+                  ? "border-violet-300 bg-violet-50 text-violet-900"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-violet-200 hover:text-violet-800"
               }`}
             >
               <span className="hidden lg:inline" aria-hidden>
@@ -96,7 +95,7 @@ export function SiteHeader() {
 
         <button
           type="button"
-          className="font-display flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl border-2 border-[var(--magic-ink)] bg-white text-sm font-extrabold text-[var(--magic-ink)] shadow-[2px_2px_0_#312e81] md:hidden"
+          className="font-display flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-sm font-extrabold text-slate-700 shadow-sm md:hidden"
           aria-expanded={menuOpen}
           aria-controls={menuId}
           aria-label={menuOpen ? "Zavřít menu" : "Otevřít menu"}
@@ -116,7 +115,7 @@ export function SiteHeader() {
           />
           <nav
             id={menuId}
-            className="absolute left-0 right-0 top-full z-50 max-h-[min(70vh,calc(100dvh-4rem))] overflow-y-auto overscroll-contain border-b-[3px] border-[var(--magic-ink)] bg-white px-3 py-3 shadow-lg md:hidden"
+            className="absolute left-0 right-0 top-full z-50 max-h-[min(70vh,calc(100dvh-4rem))] overflow-y-auto overscroll-contain border-b border-violet-100 bg-white px-3 py-3 shadow-xl md:hidden"
             aria-label="Hlavní navigace"
           >
             <ul className="flex flex-col gap-1">
@@ -125,10 +124,10 @@ export function SiteHeader() {
                   <Link
                     href={item.href}
                     aria-current={isActive(item.href) ? "page" : undefined}
-                    className={`font-display flex min-h-12 items-center gap-3 rounded-xl border-2 px-4 py-3 text-base font-bold shadow-[2px_2px_0_#312e81] active:bg-violet-50 ${
+                    className={`font-display flex min-h-12 items-center gap-3 rounded-xl border px-4 py-3 text-base font-bold active:bg-violet-50 ${
                       isActive(item.href)
-                        ? "border-violet-700 bg-violet-100 text-violet-900"
-                        : "border-[var(--magic-ink)] bg-white text-[var(--magic-ink)]"
+                        ? "border-violet-300 bg-violet-50 text-violet-900"
+                        : "border-slate-200 bg-white text-slate-700"
                     }`}
                     onClick={closeMenu}
                   >

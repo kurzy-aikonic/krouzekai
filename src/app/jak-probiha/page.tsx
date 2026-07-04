@@ -38,20 +38,22 @@ export default function JakProbihaPage() {
           { name: "Jak to u nás funguje", path: "/jak-probiha" },
         ]}
       />
-      <div className="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16">
-      <h1 className="page-h1">Jak to u nás funguje ⚡</h1>
-      <p className="mt-4 text-slate-600 leading-relaxed">
-        Stručně a srozumitelně pro rodiče i děti — aby bylo jasné, co čekat před
-        první hodinou.
-      </p>
-      <div className="mt-12 space-y-12">
-        {blocks.map((b) => (
-          <Section key={b.title} title={b.title}>
-            <p className="text-slate-600 leading-relaxed">{b.body}</p>
-          </Section>
-        ))}
+      <div className="mx-auto max-w-4xl px-6 py-12 sm:px-6 sm:py-16">
+        <h1 className="page-h1">Jak to u nás funguje ⚡</h1>
+        <p className="mt-4 text-slate-600 leading-relaxed">
+          Stručně a srozumitelně pro rodiče i děti — aby bylo jasné, co čekat před
+          první hodinou.
+        </p>
+        <div className="mt-12 space-y-5">
+          {blocks.map((b) => (
+            <div key={b.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <Section title={b.title}>
+                <p className="text-slate-600 leading-relaxed">{b.body}</p>
+              </Section>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
     </>
   );
 }

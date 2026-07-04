@@ -30,16 +30,16 @@ export default async function FaqPage() {
         ]}
       />
       <FaqJsonLd items={jsonLdItems} />
-      <div className="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-4xl px-6 py-12 sm:px-6 sm:py-16">
         <h1 className="page-h1">Časté otázky ❓</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
           Přehled nejčastějších dotazů rodičů k průběhu, bezpečnosti a organizaci
           kurzu.
         </p>
-        <dl className="mt-12 space-y-8">
+        <dl className="mt-12 space-y-4">
           {faqItems.map((item) => (
-            <div key={item.q}>
-              <dt className="font-semibold text-slate-900">{item.q}</dt>
+            <div key={item.q} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <dt className="font-display text-lg font-extrabold text-slate-900">{item.q}</dt>
               <dd className="mt-2 text-slate-600 leading-relaxed">{item.a}</dd>
             </div>
           ))}

@@ -168,7 +168,7 @@ export function RegistrationForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="card-playful relative mx-auto max-w-xl space-y-6 p-6 sm:p-8"
+      className="relative mx-auto max-w-xl space-y-6 rounded-[1.4rem] border border-slate-200 bg-white p-6 shadow-sm sm:p-8"
     >
       <fieldset className="space-y-3">
         <legend className="font-display text-base font-extrabold text-[var(--magic-ink)]">
@@ -178,7 +178,7 @@ export function RegistrationForm({
           Kurz probíhá vždy online — každá lekce {site.pricing.lessonMinutes}{" "}
           minut, cyklus má {site.pricing.lessons} lekcí.
         </p>
-        <label className="flex cursor-pointer items-center gap-2 rounded-xl border-2 border-violet-200 bg-violet-50/50 px-3 py-2 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] has-[:checked]:bg-white sm:text-sm">
+        <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-violet-200 bg-violet-50/60 px-3 py-2 text-base font-semibold text-slate-800 has-[:checked]:border-violet-400 has-[:checked]:bg-white sm:text-sm">
           <input
             type="radio"
             name="format"
@@ -194,7 +194,7 @@ export function RegistrationForm({
           {pricing.skupinaCourseCzk.toLocaleString("cs-CZ")} Kč /{" "}
           {site.pricing.lessons} lekcí
         </label>
-        <label className="flex cursor-pointer items-center gap-2 rounded-xl border-2 border-violet-200 bg-violet-50/50 px-3 py-2 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] has-[:checked]:bg-white sm:text-sm">
+        <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-violet-200 bg-violet-50/60 px-3 py-2 text-base font-semibold text-slate-800 has-[:checked]:border-violet-400 has-[:checked]:bg-white sm:text-sm">
           <input
             type="radio"
             name="format"
@@ -218,7 +218,7 @@ export function RegistrationForm({
       </fieldset>
 
       {format === "skupina" && groupRuns.length > 0 ? (
-        <fieldset className="space-y-3 rounded-2xl border-2 border-violet-200 bg-violet-50/50 px-4 py-4 sm:px-5">
+        <fieldset className="space-y-3 rounded-2xl border border-violet-200 bg-violet-50/50 px-4 py-4 sm:px-5">
           <legend className="font-display px-1 text-sm font-extrabold text-[var(--magic-ink)]">
             Termín skupiny (volitelně)
           </legend>
@@ -227,7 +227,7 @@ export function RegistrationForm({
             naplnění všech míst — u každého vidíte, kolik míst už je obsazeno.
             Přihláška je do té doby nezávazná.
           </p>
-          <label className="flex cursor-pointer items-start gap-2 rounded-xl border-2 border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] sm:text-sm">
+          <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-violet-400 sm:text-sm">
             <input
               type="radio"
               name="skupina-run"
@@ -244,7 +244,7 @@ export function RegistrationForm({
             return (
               <label
                 key={run.id}
-                className={`flex cursor-pointer flex-col gap-2 rounded-xl border-2 px-3 py-2.5 has-[:checked]:border-[var(--magic-ink)] sm:text-sm ${
+                className={`flex cursor-pointer flex-col gap-2 rounded-xl border px-3 py-2.5 has-[:checked]:border-violet-400 sm:text-sm ${
                   full
                     ? "cursor-not-allowed border-slate-200 bg-slate-100/80 text-slate-500"
                     : "border-violet-200 bg-white/90 text-slate-800 has-[:checked]:bg-white"
@@ -300,7 +300,7 @@ export function RegistrationForm({
       ) : null}
 
       {format === "individual" && individualRuns.length > 0 ? (
-        <fieldset className="space-y-3 rounded-2xl border-2 border-violet-200 bg-violet-50/50 px-4 py-4 sm:px-5">
+        <fieldset className="space-y-3 rounded-2xl border border-violet-200 bg-violet-50/50 px-4 py-4 sm:px-5">
           <legend className="font-display px-1 text-sm font-extrabold text-[var(--magic-ink)]">
             Časový slot 1:1 (volitelně)
           </legend>
@@ -308,7 +308,7 @@ export function RegistrationForm({
             Pokud máme vypsaný konkrétní slot, můžete ho vybrat - jinak nechte
             pole prázdné a čas domluvíme.
           </p>
-          <label className="flex cursor-pointer items-start gap-2 rounded-xl border-2 border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] sm:text-sm">
+          <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-violet-400 sm:text-sm">
             <input
               type="radio"
               name="individual-run"
@@ -325,7 +325,7 @@ export function RegistrationForm({
             return (
               <label
                 key={run.id}
-                className={`flex cursor-pointer items-start gap-2 rounded-xl border-2 px-3 py-2.5 text-base font-semibold has-[:checked]:border-[var(--magic-ink)] sm:text-sm ${
+                className={`flex cursor-pointer items-start gap-2 rounded-xl border px-3 py-2.5 text-base font-semibold has-[:checked]:border-violet-400 sm:text-sm ${
                   full
                     ? "cursor-not-allowed border-slate-200 bg-slate-100/80 text-slate-500"
                     : "border-violet-200 bg-white/90 text-slate-800 has-[:checked]:bg-white"
@@ -410,7 +410,7 @@ export function RegistrationForm({
         </div>
       </div>
 
-      <div className="space-y-4 border-t-2 border-dashed border-violet-200 pt-6">
+      <div className="space-y-4 border-t border-dashed border-violet-200 pt-6">
         <p className="font-display text-base font-extrabold text-[var(--magic-ink)]">
           Zákonný zástupce
         </p>
@@ -559,7 +559,7 @@ export function RegistrationForm({
       </div>
 
       {turnstileEnabled ? (
-        <div className="rounded-2xl border-2 border-violet-200 bg-white/90 px-3 py-4">
+        <div className="rounded-2xl border border-violet-200 bg-white/90 px-3 py-4">
           <p className="mb-3 text-xs font-medium leading-relaxed text-slate-600">
             Jednorázové ověření chrání formulář před spamem (Cloudflare Turnstile).
           </p>

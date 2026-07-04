@@ -1,21 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --magic-sky: #38bdf8;
-  --magic-grape: #a78bfa;
-  --magic-pink: #f472b6;
-  --magic-sun: #fcd34d;
-  --magic-mint: #34d399;
-  --magic-coral: #fb923c;
-  --magic-lilac: #e9d5ff;
-  --magic-ink: #312e81;
-  --magic-ink-soft: #4338ca;
+  --magic-sky: #60a5fa;
+  --magic-grape: #8b5cf6;
+  --magic-pink: #ec4899;
+  --magic-sun: #f59e0b;
+  --magic-mint: #22c55e;
+  --magic-coral: #f97316;
+  --magic-lilac: #ede9fe;
+  --magic-ink: #1e1b4b;
+  --magic-ink-soft: #3730a3;
 
-  --background: #eef2ff;
+  --background: #f7f8fc;
   --foreground: var(--magic-ink);
   --surface: #ffffff;
-  --accent: #7c3aed;
-  --accent-hover: #6d28d9;
+  --accent: #6d28d9;
+  --accent-hover: #5b21b6;
 }
 
 @theme inline {
@@ -116,10 +116,10 @@ body {
 
 .magic-gradient-bg {
   background:
-    radial-gradient(ellipse 120% 80% at 50% -20%, #c4b5fd 0%, transparent 50%),
-    radial-gradient(ellipse 80% 50% at 100% 50%, #fbcfe8 0%, transparent 45%),
-    radial-gradient(ellipse 70% 60% at 0% 80%, #a5f3fc 0%, transparent 40%),
-    linear-gradient(180deg, #eef2ff 0%, #fdf4ff 45%, #ecfeff 100%);
+    radial-gradient(ellipse 120% 75% at 50% -25%, #ddd6fe 0%, transparent 52%),
+    radial-gradient(ellipse 80% 45% at 100% 45%, #fce7f3 0%, transparent 46%),
+    radial-gradient(ellipse 70% 60% at 0% 80%, #e0f2fe 0%, transparent 44%),
+    linear-gradient(180deg, #f7f8fc 0%, #fdfcff 42%, #f4f8ff 100%);
 }
 
 .magic-blob {
@@ -208,16 +208,14 @@ body {
 
 .btn-magic {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  @apply inline-flex min-h-11 items-center justify-center rounded-2xl px-6 py-3.5 text-base font-bold text-white shadow-lg transition-all duration-200 sm:min-h-0;
-  background: linear-gradient(135deg, #7c3aed, #db2777, #f97316);
-  background-size: 200% 200%;
-  box-shadow:
-    0 4px 14px rgba(124, 58, 237, 0.45),
-    0 0 0 3px rgba(255, 255, 255, 0.35) inset;
+  @apply inline-flex min-h-11 items-center justify-center rounded-2xl px-6 py-3 text-base font-bold text-white shadow-sm transition-all duration-200 sm:min-h-0;
+  background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+  border: 1px solid rgba(76, 29, 149, 0.35);
+  box-shadow: 0 10px 24px rgba(109, 40, 217, 0.22);
 }
 .btn-magic:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(109, 40, 217, 0.28);
 }
 .btn-magic:focus-visible {
   outline: none;
@@ -227,16 +225,18 @@ body {
     0 10px 20px rgba(0, 0, 0, 0.2);
 }
 .btn-magic:active {
-  transform: translateY(0) scale(0.98);
+  transform: translateY(0) scale(0.99);
 }
 
 .btn-magic-outline {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  @apply inline-flex min-h-11 items-center justify-center rounded-2xl border-[3px] border-[var(--magic-ink)] bg-white px-6 py-3.5 text-base font-bold text-[var(--magic-ink)] shadow-md transition-all duration-200 sm:min-h-0;
+  @apply inline-flex min-h-11 items-center justify-center rounded-2xl border border-violet-200 bg-white px-6 py-3 text-base font-bold text-violet-900 shadow-sm transition-all duration-200 sm:min-h-0;
 }
 .btn-magic-outline:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  border-color: #a78bfa;
+  background: #faf5ff;
+  box-shadow: 0 8px 20px rgba(30, 27, 75, 0.12);
 }
 .btn-magic-outline:focus-visible {
   outline: none;
@@ -247,11 +247,12 @@ body {
 }
 
 .card-playful {
-  @apply rounded-3xl border-[3px] border-[var(--magic-ink)] bg-white p-5 shadow-[6px_6px_0_#312e81] transition-transform duration-200;
+  @apply rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-200;
 }
 .card-playful:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  border-color: #ddd6fe;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.1);
 }
 
 .sparkle-burst {
@@ -320,21 +321,17 @@ body {
 }
 
 .paper-dots {
-  background-image: radial-gradient(
-    circle,
-    rgba(49, 46, 129, 0.06) 1px,
-    transparent 1px
-  );
-  background-size: 18px 18px;
+  background-image: radial-gradient(circle, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 .page-h1 {
   font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  @apply text-3xl font-extrabold tracking-tight text-[var(--magic-ink)] sm:text-4xl;
+  @apply text-3xl font-extrabold tracking-tight text-[var(--magic-ink)] sm:text-5xl;
 }
 
 .input-playful {
-  @apply mt-1 w-full rounded-xl border-2 border-[var(--magic-ink)] bg-white px-3 py-2.5 text-base font-semibold text-slate-900 shadow-[2px_2px_0_#312e81] transition-shadow focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-400/50 sm:text-sm;
+  @apply mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base font-semibold text-slate-900 shadow-sm transition-all focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-300/50 sm:text-sm;
 }
 
 .snake-details > summary {

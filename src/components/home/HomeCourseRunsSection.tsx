@@ -24,7 +24,7 @@ export function HomeCourseRunsSection({
   return (
     <section
       id="aktualni-terminy"
-      className="mt-14 scroll-mt-24 rounded-[2rem] border-[3px] border-[var(--magic-ink)] bg-gradient-to-br from-violet-50 via-white to-amber-50 p-6 shadow-[8px_8px_0_rgba(49,46,129,0.15)] sm:p-8"
+      className="mt-14 scroll-mt-24 rounded-[2rem] border border-violet-200 bg-gradient-to-br from-violet-50/60 via-white to-amber-50/60 p-6 shadow-sm sm:p-8"
       aria-labelledby="home-runs-heading"
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -90,7 +90,7 @@ export function HomeCourseRunsSection({
               {status.acceptsRegistration ? (
                 <Link
                   href={`/registrace?run=${encodeURIComponent(run.id)}`}
-                  className="mt-5 inline-flex w-full justify-center rounded-xl border-2 border-[var(--magic-ink)] bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2.5 text-sm font-extrabold text-white shadow-[3px_3px_0_#312e81] transition hover:-translate-y-0.5"
+                  className="mt-5 inline-flex w-full justify-center rounded-xl border border-violet-300 bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-2.5 text-sm font-extrabold text-white shadow-sm transition hover:-translate-y-0.5"
                 >
                   Přihlásit na tento termín →
                 </Link>

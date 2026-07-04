@@ -44,7 +44,7 @@ export default async function RegistracePage({
           { name: "Registrace", path: "/registrace" },
         ]}
       />
-      <div className="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16">
+      <div className="mx-auto max-w-4xl px-6 py-12 sm:px-6 sm:py-16">
         <h1 className="page-h1">Registrace 📝</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
           Vyplňte údaje o dítěti ({site.audience.ageMin}–{site.audience.ageMax}{" "}
@@ -64,7 +64,7 @@ export default async function RegistracePage({
           )}{" "}
           Po odeslání vás kontaktujeme, domluvíme podmínky a pak zašleme fakturu.
         </p>
-        <div className="mt-10">
+        <div className="mt-10 rounded-3xl border border-slate-200 bg-white/90 p-2 shadow-sm sm:p-3">
           <RegistrationForm
             groupRuns={groupRuns}
             individualRuns={individualRuns}
