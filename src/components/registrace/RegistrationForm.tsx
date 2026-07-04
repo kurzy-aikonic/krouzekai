@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
 import type { CourseRun } from "@/data/course-runs";
-import { spotsLeftEffective } from "@/data/course-runs";
+import { CourseRunCapacityStatus } from "@/components/course-run/CourseRunCapacityStatus";
+import { courseRunPublicStatus } from "@/lib/course-run-public-status";
 import { site } from "@/lib/site-config";
 
 const turnstileSiteKey =
@@ -196,9 +197,9 @@ export function RegistrationForm({
           {site.pricing.lessons} lekcí
         </label>
         <p className="text-xs font-medium leading-relaxed text-slate-600">
-          Skupinový termín otevřeme od {site.pricing.groupMinStudentsToOpen}{" "}
-          přihlášených (kapacita max. {site.pricing.groupMaxStudents} dětí na
-          lekci). Individuál: {site.pricing.individualPerLesson} Kč / lekce.
+          Skupinový kurz spouštíme až po naplnění kapacity termínu (100 % míst).
+          Do té doby je přihláška nezávazná. Individuál:{" "}
+          {site.pricing.individualPerLesson} Kč / lekce.
         </p>
       </fieldset>
 
@@ -208,8 +209,9 @@ export function RegistrationForm({
             Termín skupiny (volitelně)
           </legend>
           <p className="text-xs font-medium leading-relaxed text-slate-600">
-            Můžete vybrat konkrétní termín, nebo nechat pole prázdné a domluvit
-            se s námi později.
+            Vyberte termín, který vám sedí. Kurz v daném termínu startuje až po
+            naplnění všech míst — u každého vidíte, kolik míst už je obsazeno.
+            Přihláška je do té doby nezávazná.
           </p>
           <label className="flex cursor-pointer items-start gap-2 rounded-xl border-2 border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-[var(--magic-ink)] sm:text-sm">
             <input
@@ -223,36 +225,40 @@ export function RegistrationForm({
           </label>
           {groupRuns.map((run) => {
             const counted = occupancyByRunId[run.id] ?? 0;
-            const free = spotsLeftEffective(run, counted);
-            const full = free <= 0;
+            const status = courseRunPublicStatus(run, counted);
+            const full = !status.acceptsRegistration;
             return (
               <label
                 key={run.id}
-                className={`flex cursor-pointer items-start gap-2 rounded-xl border-2 px-3 py-2.5 text-base font-semibold has-[:checked]:border-[var(--magic-ink)] sm:text-sm ${
+                className={`flex cursor-pointer flex-col gap-2 rounded-xl border-2 px-3 py-2.5 has-[:checked]:border-[var(--magic-ink)] sm:text-sm ${
                   full
                     ? "cursor-not-allowed border-slate-200 bg-slate-100/80 text-slate-500"
                     : "border-violet-200 bg-white/90 text-slate-800 has-[:checked]:bg-white"
                 }`}
               >
-                <input
-                  type="radio"
-                  name="skupina-run"
-                  checked={groupRunId === run.id}
-                  onChange={() => setGroupRunId(run.id)}
-                  disabled={full}
-                  className="mt-0.5 h-4 w-4 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600 disabled:opacity-40"
-                />
-                <span className="min-w-0 flex-1">
-                  <span className="block font-bold">{run.label}</span>
-                  <span className="mt-0.5 block text-xs font-medium leading-relaxed text-slate-600">
-                    {run.description}
-                  </span>
-                  <span className="mt-1 block text-[11px] font-bold uppercase tracking-wide text-violet-700">
-                    {full
-                      ? "Kapacita naplněna"
-                      : `Ještě ${free} ${free === 1 ? "místo" : free < 5 ? "místa" : "míst"}`}
+                <span className="flex items-start gap-2 text-base font-semibold">
+                  <input
+                    type="radio"
+                    name="skupina-run"
+                    checked={groupRunId === run.id}
+                    onChange={() => setGroupRunId(run.id)}
+                    disabled={full}
+                    className="mt-0.5 h-4 w-4 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600 disabled:opacity-40"
+                  />
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-bold">{run.label}</span>
+                    <span className="mt-0.5 block text-xs font-medium leading-relaxed text-slate-600">
+                      {run.description}
+                    </span>
                   </span>
                 </span>
+                <div className="pl-6">
+                  <CourseRunCapacityStatus
+                    run={run}
+                    registrationCount={counted}
+                    compact
+                  />
+                </div>
               </label>
             );
           })}
@@ -291,8 +297,8 @@ export function RegistrationForm({
           </label>
           {individualRuns.map((run) => {
             const counted = occupancyByRunId[run.id] ?? 0;
-            const free = spotsLeftEffective(run, counted);
-            const full = free <= 0;
+            const status = courseRunPublicStatus(run, counted);
+            const full = !status.acceptsRegistration;
             return (
               <label
                 key={run.id}
@@ -316,9 +322,7 @@ export function RegistrationForm({
                     {run.description}
                   </span>
                   <span className="mt-1 block text-[11px] font-bold uppercase tracking-wide text-violet-700">
-                    {full
-                      ? "Obsazeno"
-                      : `Ještě ${free} ${free === 1 ? "místo" : free < 5 ? "místa" : "míst"}`}
+                    {full ? "Slot obsazen" : "Volný slot"}
                   </span>
                 </span>
               </label>

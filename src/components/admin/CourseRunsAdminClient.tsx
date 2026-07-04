@@ -143,6 +143,17 @@ export function CourseRunsAdminClient({
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [dirty]);
 
+  const occupancyCountByRunId = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const run of runs) {
+      const rows = (occupancyByRunId[run.id] ?? []).filter(
+        (row) => row.format === run.format,
+      );
+      map[run.id] = countedTowardCapacity(rows);
+    }
+    return map;
+  }, [runs, occupancyByRunId]);
+
   const freeByRunId = useMemo(() => {
     const map: Record<string, number> = {};
     for (const run of runs) {
@@ -335,16 +346,15 @@ export function CourseRunsAdminClient({
       <div className="portal-card border-violet-100 p-4 text-sm leading-relaxed text-slate-700 sm:p-5">
         <p>
           Skupinové termíny se nabízejí u přihlášky ve formátu „Skupina“,
-          individuální u „1:1“. Výběr na webu je volitelný — rodič může nechat
-          domluvu na později. Tabulka níže ukazuje přihlášky k termínu; zrušené
-          se nepočítají do kapacity. Volná místa = kapacita minus větší z{" "}
-          <strong>ručního obsazeno</strong> a <strong>počtu přihlášek</strong>.
+          individuální u „1:1“. <strong>Skupinu spouštíme až po 100 % obsazení
+          kapacity termínu</strong> — do té doby sbíráme nezávazné přihlášky
+          (stav „sbírá“). Po naplnění kapacity se termín označí jako potvrzený
+          ke spuštění.
         </p>
         <p className="mt-2 text-xs text-slate-500">
           <strong>Rozvrh</strong> — den, čas a opakování; nadpis a popis pro web se
-          doplní samy. <strong>Zrušit termín</strong> odebere ho z nabídky na
-          přihlášce; stávající přihlášky zůstanou — můžete je v detailu přehodit
-          na jiný termín.
+          doplní samy. Kapacita u skupiny = kolik dětí musí být přihlášeno, než
+          kurz může startovat.
         </p>
       </div>
 
@@ -383,7 +393,7 @@ export function CourseRunsAdminClient({
       <CourseRunsOverview
         runs={runs}
         clientKeys={clientKeys}
-        occupancyFreeByRunId={freeByRunId}
+        occupancyCountByRunId={occupancyCountByRunId}
         expandedKey={expandedKey}
         onSelect={focusRun}
       />

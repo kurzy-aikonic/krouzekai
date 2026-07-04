@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CourseRunCapacityStatus } from "@/components/course-run/CourseRunCapacityStatus";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
-import { spotsLeftEffective } from "@/data/course-runs";
 import { formatScheduleSummary } from "@/lib/course-run-schedule";
 import { countedOccupancyForRun } from "@/lib/course-run-registrations";
+import { courseRunPublicStatus } from "@/lib/course-run-public-status";
 import { listOfferedCourseRuns } from "@/lib/course-runs-store";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { listRegistrationsMerged } from "@/lib/registrations-store";
@@ -34,9 +35,9 @@ export default async function AktualniBehyPage() {
       <div className="mx-auto max-w-3xl px-6 py-12 sm:px-6 sm:py-16">
         <h1 className="page-h1">Aktuální termíny 📅</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
-          Přehled skupinových termínů, které právě nabízíme na webu. Přihlášku
-          vyplníte na stránce registrace — tam můžete (volitelně) vybrat konkrétní
-          termín, pokud je v nabídce volno.
+          Skupinové termíny, které právě nabízíme. Kurz startuje až po naplnění
+          kapacity (100 % míst) — do té doby sbíráme nezávazné přihlášky a u
+          každého termínu vidíte průběh obsazenosti.
         </p>
         {runs.length === 0 ? (
           <div className="card-playful mt-10 p-6 text-sm leading-relaxed text-slate-700">
@@ -55,26 +56,16 @@ export default async function AktualniBehyPage() {
           <ul className="mt-10 space-y-4">
             {runs.map((run) => {
               const occ = countedOccupancyForRun(run.id, "skupina", merged);
-              const free = spotsLeftEffective(run, occ);
-              const full = free <= 0;
+              const status = courseRunPublicStatus(run, occ);
               return (
                 <li
                   key={run.id}
                   className={`card-playful border-2 p-5 sm:p-6 ${
-                    full
-                      ? "border-slate-200 bg-slate-50/90"
+                    status.isGroupLaunchReady
+                      ? "border-emerald-200 bg-emerald-50/40"
                       : "border-violet-100"
                   }`}
                 >
-                  {!full ? (
-                    <span className="mb-3 inline-flex rounded-full border-2 border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-emerald-900">
-                      Volná místa
-                    </span>
-                  ) : (
-                    <span className="mb-3 inline-flex rounded-full border-2 border-slate-300 bg-slate-100 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-slate-700">
-                      Plně obsazeno
-                    </span>
-                  )}
                   <h2 className="font-display text-lg font-extrabold text-[var(--magic-ink)]">
                     {run.label}
                   </h2>
@@ -83,25 +74,25 @@ export default async function AktualniBehyPage() {
                   </p>
                   <p className="mt-3 text-xs font-medium text-slate-600">
                     {formatScheduleSummary(run)}
-                    {" · "}
-                    Kapacita {run.capacity} · odhad volných míst:{" "}
-                    <strong>{free}</strong>
                   </p>
-                  <Link
-                    href={
-                      full
-                        ? "/registrace"
-                        : `/registrace?run=${encodeURIComponent(run.id)}`
-                    }
-                    className={`mt-5 inline-flex w-full justify-center rounded-xl border-2 px-4 py-2.5 text-sm font-extrabold transition sm:w-auto ${
-                      full
-                        ? "border-slate-200 bg-slate-100 text-slate-500"
-                        : "border-[var(--magic-ink)] bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-[3px_3px_0_#312e81] hover:-translate-y-0.5"
-                    }`}
-                    aria-disabled={full}
-                  >
-                    {full ? "Termín je plný — obecná přihláška" : "Přihlásit na tento termín →"}
-                  </Link>
+                  <div className="mt-4">
+                    <CourseRunCapacityStatus run={run} registrationCount={occ} />
+                  </div>
+                  {status.acceptsRegistration ? (
+                    <Link
+                      href={`/registrace?run=${encodeURIComponent(run.id)}`}
+                      className="mt-5 inline-flex w-full justify-center rounded-xl border-2 border-[var(--magic-ink)] bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2.5 text-sm font-extrabold text-white shadow-[3px_3px_0_#312e81] transition hover:-translate-y-0.5 sm:w-auto"
+                    >
+                      Přihlásit na tento termín →
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/registrace"
+                      className="mt-5 inline-flex w-full justify-center rounded-xl border-2 border-slate-200 bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-600 sm:w-auto"
+                    >
+                      Kapacita naplněna — jiný termín
+                    </Link>
+                  )}
                 </li>
               );
             })}

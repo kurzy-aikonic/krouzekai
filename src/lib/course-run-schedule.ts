@@ -144,7 +144,7 @@ export function formatScheduleDescription(run: CourseRun): string {
   if (s.format === "individual") {
     return `Individuální lekce online, ${site.pricing.lessonMinutes} minut, ${site.pricing.lessons} lekcí${repPart}.`;
   }
-  return `Online, ${site.pricing.lessonMinutes} minut, ${site.pricing.lessons} lekcí${repPart}. Skupina max. ${site.pricing.groupMaxStudents} dětí.`;
+  return `Online, ${site.pricing.lessonMinutes} minut, ${site.pricing.lessons} lekcí${repPart}. Skupina ${s.capacity} dětí — start až po naplnění kapacity.`;
 }
 
 export function slugFromSchedule(run: CourseRun): string {

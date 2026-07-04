@@ -35,7 +35,11 @@ export const faqItems: { q: string; a: string }[] = [
   },
   {
     q: "Kdy se skupinový kurz skutečně rozběhne?",
-    a: `Nejdřív s vámi domluvíme termín a složení skupiny podle zájmu. Skupinový termín otevřeme, když se přihlásí alespoň ${site.pricing.groupMinStudentsToOpen} dětí. Ve skupině je nejvýše ${site.pricing.groupMaxStudents} dětí.`,
+    a: "Skupinový termín spouštíme až po naplnění kapacity — tedy když jsou obsazena všechna místa daného termínu (např. 5 z 5). Do té doby sbíráme nezávazné přihlášky a u každého termínu vidíte průběh obsazenosti. Po naplnění kapacity vás kontaktujeme s fakturací a organizací startu.",
+  },
+  {
+    q: "Proč ještě nemůžeme platit, i když jsme přihlášení?",
+    a: "Dokud není skupina plně obsazená, kurz ještě není potvrzen ke spuštění. Fakturu a platební instrukce posíláme až po naplnění kapacity termínu — předtím je přihláška nezávazná.",
   },
   {
     q: "Kde vidím vypsané termíny skupin?",

@@ -2,11 +2,12 @@
 
 import type { CourseRun } from "@/data/course-runs";
 import { formatScheduleSummary } from "@/lib/course-run-schedule";
+import { courseRunAdminCapacityLabel } from "@/lib/course-run-public-status";
 
 type Props = {
   runs: CourseRun[];
   clientKeys: string[];
-  occupancyFreeByRunId: Record<string, number>;
+  occupancyCountByRunId: Record<string, number>;
   expandedKey: string | null;
   onSelect: (key: string) => void;
 };
@@ -14,7 +15,7 @@ type Props = {
 export function CourseRunsOverview({
   runs,
   clientKeys,
-  occupancyFreeByRunId,
+  occupancyCountByRunId,
   expandedKey,
   onSelect,
 }: Props) {
@@ -54,7 +55,7 @@ export function CourseRunsOverview({
                 <th className="px-4 py-2.5 sm:px-5">Termín</th>
                 <th className="px-4 py-2.5">Formát</th>
                 <th className="px-4 py-2.5">Stav</th>
-                <th className="px-4 py-2.5">Volno</th>
+                <th className="px-4 py-2.5">Kapacita / stav</th>
                 <th className="px-4 py-2.5" />
               </tr>
             </thead>
@@ -62,7 +63,8 @@ export function CourseRunsOverview({
               {runs.map((run, index) => {
                 const key = clientKeys[index];
                 const active = run.active !== false;
-                const free = occupancyFreeByRunId[run.id] ?? run.capacity;
+                const occ = occupancyCountByRunId[run.id] ?? 0;
+                const capLabel = courseRunAdminCapacityLabel(run, occ);
                 const selected = expandedKey === key;
                 return (
                   <tr
@@ -92,7 +94,7 @@ export function CourseRunsOverview({
                       </span>
                     </td>
                     <td className="whitespace-nowrap px-4 py-3 text-slate-700">
-                      cca <strong>{free}</strong> / {run.capacity}
+                      {capLabel}
                     </td>
                     <td className="px-4 py-3">
                       <button

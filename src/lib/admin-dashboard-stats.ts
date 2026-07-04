@@ -12,7 +12,7 @@ import type { RegistrationRecord } from "@/types/registration";
 export type AdminDashboardStats = {
   novaCount: number;
   last7d: number;
-  fullRuns: { id: string; label: string; format: string }[];
+  fullRuns: { id: string; label: string; format: string; launchReady: boolean }[];
   orphanCount: number;
   awaitingPaymentCount: number;
   awaitingPaymentCzk: number;
@@ -34,14 +34,20 @@ export function computeAdminDashboardStats(
 
   const fullRuns = courseRuns
     .filter((r) => r.active !== false)
-    .filter((run) => {
+    .map((run) => {
       const occ = countedOccupancyForRun(run.id, run.format, items);
-      return spotsLeftEffective(run, occ) <= 0;
+      return {
+        run,
+        occ,
+        launchReady: spotsLeftEffective(run, occ) <= 0,
+      };
     })
-    .map((run) => ({
+    .filter(({ launchReady }) => launchReady)
+    .map(({ run, launchReady }) => ({
       id: run.id,
       label: run.label,
       format: run.format === "skupina" ? "Skupina" : "1:1",
+      launchReady,
     }));
 
   const orphanCount = items.filter(

@@ -40,10 +40,13 @@ export function AdminDashboardSummary({ stats }: Props) {
           className="portal-card block p-4 transition hover:border-violet-300 hover:bg-violet-50/40"
         >
           <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-            Plné termíny
+            Kapacita naplněna
           </p>
-          <p className="mt-1 font-display text-2xl font-extrabold text-amber-800">
+          <p className="mt-1 font-display text-2xl font-extrabold text-emerald-800">
             {stats.fullRuns.length}
+          </p>
+          <p className="mt-1 text-[10px] font-medium text-slate-500">
+            Skupiny připravené ke spuštění
           </p>
         </Link>
         <Link
@@ -115,7 +118,7 @@ export function AdminDashboardSummary({ stats }: Props) {
           {stats.fullRuns.length > 0 ? (
             <div>
               <p className="text-xs font-bold uppercase text-slate-500">
-                Plné termíny
+                Kapacita naplněna (start skupiny)
               </p>
               <ul className="mt-2 space-y-1 text-sm text-slate-700">
                 {stats.fullRuns.map((run) => (

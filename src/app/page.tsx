@@ -5,7 +5,6 @@ import { HomeInteractiveDemos } from "@/components/playful/HomeInteractiveDemos"
 import { HomeJsonLd } from "@/components/seo/HomeJsonLd";
 import { Section } from "@/components/ui/Section";
 import { countedOccupancyForRun } from "@/lib/course-run-registrations";
-import { spotsLeftEffective } from "@/data/course-runs";
 import { listOfferedCourseRuns } from "@/lib/course-runs-store";
 import { listRegistrationsMerged } from "@/lib/registrations-store";
 import { pageMetadata } from "@/lib/seo";
@@ -82,10 +81,13 @@ export default async function HomePage() {
   const p = site.pricing;
   const offered = await listOfferedCourseRuns();
   const merged = await listRegistrationsMerged();
-  const freeByRunId: Record<string, number> = {};
+  const occupancyByRunId: Record<string, number> = {};
   for (const run of offered) {
-    const occ = countedOccupancyForRun(run.id, run.format, merged);
-    freeByRunId[run.id] = spotsLeftEffective(run, occ);
+    occupancyByRunId[run.id] = countedOccupancyForRun(
+      run.id,
+      run.format,
+      merged,
+    );
   }
   const hasPublicRuns = offered.length > 0;
 
@@ -166,7 +168,7 @@ export default async function HomePage() {
           </div>
         </header>
 
-        <HomeCourseRunsSection runs={offered} freeByRunId={freeByRunId} />
+        <HomeCourseRunsSection runs={offered} occupancyByRunId={occupancyByRunId} />
 
         {/* Rodičovský pruh */}
         <div className="mt-14 rounded-3xl border-[3px] border-dashed border-violet-400 bg-white/80 p-5 shadow-[6px_6px_0_rgba(49,46,129,0.12)] backdrop-blur-sm sm:p-6">
@@ -298,9 +300,8 @@ export default async function HomePage() {
                 kurz
               </p>
               <p className="mt-3 text-xs font-medium leading-relaxed text-slate-600">
-                Skupina: termín domluvíme po registraci. Kurz otevíráme už od{" "}
-                {p.groupMinStudentsToOpen} přihlášených, maximální kapacita je{" "}
-                {p.groupMaxStudents} dětí pro zachování individuálního přístupu.
+                Skupinu spouštíme až po naplnění kapacity termínu (100 % míst).
+                Přihláška je do té doby nezávazná.
               </p>
               <p className="mt-2 text-xs font-medium text-slate-600">{p.vatNote}</p>
               <Link href="/registrace" className="btn-magic mt-5 w-full text-center">

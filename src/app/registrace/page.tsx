@@ -50,8 +50,8 @@ export default async function RegistracePage({
           {offered.length > 0 ? (
             <>
               {" "}
-              Níže můžete vybrat konkrétní termín — nebo nechat domluvu na
-              později.
+              Níže můžete vybrat konkrétní termín — u skupin vidíte obsazenost;
+              kurz startuje až po naplnění kapacity.
             </>
           ) : (
             <>

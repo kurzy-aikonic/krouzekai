@@ -75,10 +75,10 @@ export const site = {
     individualCourse: 30000,
     lessons: 10,
     lessonMinutes: 60,
-    /** Max. dětí ve skupině na lekci. */
+    /** Max. dětí ve skupině na lekci (orientační horní hranice copy). */
     groupMaxStudents: 6,
-    /** Min. přihlášených ke spuštění skupinového běhu. */
-    groupMinStudentsToOpen: 3,
+    /** Skupinový kurz startuje až po 100 % obsazení kapacity daného termínu. */
+    groupLaunchRequiresFullCapacity: true as const,
     vatNote: "Poskytovatel není plátcem DPH.",
   },
 } as const;
