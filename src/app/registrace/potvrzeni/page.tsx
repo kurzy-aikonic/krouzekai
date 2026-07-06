@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { RegistrationLeadEvent } from "@/components/analytics/RegistrationLeadEvent";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { getCourseRunById } from "@/lib/course-runs-store";
 import { pageMetadata } from "@/lib/seo";
@@ -53,9 +54,17 @@ export default async function RegistracePotvrzeniPage({
       : null;
 
   const formatLabel = format === "individual" ? "Individuální 1:1" : "Skupinový kurz";
+  const registrationCode = (record?.registrationCode ?? code).trim();
 
   return (
     <>
+      {registrationCode ? (
+        <RegistrationLeadEvent
+          registrationCode={registrationCode}
+          format={format}
+          amountCzk={amount}
+        />
+      ) : null}
       <BreadcrumbJsonLd
         items={[
           { name: "Úvod", path: "/" },
@@ -98,7 +107,7 @@ export default async function RegistracePotvrzeniPage({
                 Kód přihlášky
               </dt>
               <dd className="mt-1 font-mono text-base font-bold text-violet-900">
-                {(record?.registrationCode ?? code) || "—"}
+                {registrationCode || "—"}
               </dd>
             </div>
             <div>
@@ -162,9 +171,9 @@ export default async function RegistracePotvrzeniPage({
         </section>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          {code ? (
+          {registrationCode ? (
             <Link
-              href={`/platba?registrace=${encodeURIComponent(code)}`}
+              href={`/platba?registrace=${encodeURIComponent(registrationCode)}`}
               className="btn-magic"
             >
               Přehled k platbě 💳
