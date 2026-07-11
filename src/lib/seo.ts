@@ -41,6 +41,8 @@ export const seoKeywords = [
 const ogImageFromEnv = process.env.NEXT_PUBLIC_OG_IMAGE;
 const ogImageFallback = "/og-image.png";
 const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
+/** Ověřovací kód ze Seznam Webmaster Tools (seznam-wmt meta tag). Nastav v .env po registraci webu. */
+const seznamSiteVerification = process.env.NEXT_PUBLIC_SEZNAM_SITE_VERIFICATION;
 
 function openGraphImages(): NonNullable<Metadata["openGraph"]>["images"] {
   const candidate = ogImageFromEnv?.trim() || ogImageFallback;
@@ -154,8 +156,15 @@ export const rootMetadata: Metadata = {
   publisher: site.shortName,
   category: "education",
   keywords: [...seoKeywords],
-  ...(googleSiteVerification
-    ? { verification: { google: googleSiteVerification } }
+  ...(googleSiteVerification || seznamSiteVerification
+    ? {
+        verification: {
+          ...(googleSiteVerification ? { google: googleSiteVerification } : {}),
+          ...(seznamSiteVerification
+            ? { other: { "seznam-wmt": seznamSiteVerification } }
+            : {}),
+        },
+      }
     : {}),
   formatDetection: {
     email: false,

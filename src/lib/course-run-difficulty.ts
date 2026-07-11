@@ -28,7 +28,7 @@ export const COURSE_DIFFICULTY_OPTIONS: {
   },
   {
     value: "professional",
-    label: "Profesionál",
+    label: "AI tvůrce",
     hint: "Ambiciózní projekty, větší samostatnost",
     badgeClass: "border-violet-300 bg-violet-100 text-violet-950",
   },

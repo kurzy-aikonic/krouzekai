@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { guideArticles } from "@/data/guide-articles";
 import { listOfferedCourseRuns } from "@/lib/course-runs-store";
 import { site } from "@/lib/site-config";
 
@@ -54,6 +55,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "weekly",
     priority: 0.88,
   });
+
+  entries.push({
+    url: `${base}/pruvodce`,
+    lastModified: new Date("2026-07-11"),
+    changeFrequency: "monthly",
+    priority: 0.6,
+  });
+
+  for (const article of guideArticles) {
+    entries.push({
+      url: `${base}/pruvodce/${article.slug}`,
+      lastModified: new Date(article.updatedAt ?? article.publishedAt),
+      changeFrequency: "monthly",
+      priority: 0.55,
+    });
+  }
 
   return entries;
 }

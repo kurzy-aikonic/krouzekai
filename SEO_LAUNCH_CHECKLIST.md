@@ -51,6 +51,18 @@ Otevři v prohlížeči (nahraď doménu, pokud je jiná):
 
 ---
 
+## Fáze 2b — Seznam Webmaster (doporučeno pro CZ publikum)
+
+Seznam.cz má u rodičovské cílovky v ČR stále nezanedbatelný podíl vyhledávání — vyplatí se zaregistrovat web i tady, ne jen v Google.
+
+1. Jdi na [Seznam Webmaster](https://search.seznam.cz/webmaster/).
+2. Přidej web a zvol ověření přes **meta tag** (`seznam-wmt`).
+3. Zkopírovaný ověřovací kód vlož do `NEXT_PUBLIC_SEZNAM_SITE_VERIFICATION` v produkčním `.env` a znovu nasaď.
+   - V kódu se propisuje přes `metadata.verification.other["seznam-wmt"]` v `src/lib/seo.ts`.
+4. Po ověření přidej `sitemap.xml` ve stejné administraci.
+
+---
+
 ## Fáze 3 — Strukturovaná data (rich results)
 
 1. **Rich Results Test**  

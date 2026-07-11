@@ -59,7 +59,7 @@ export default async function AktualniBehyPage() {
               href="/registrace"
               className="btn-magic-outline mt-6 inline-flex text-sm"
             >
-              Registrace na kurz
+              Nezávazně přihlásit dítě
             </Link>
           </div>
         ) : (
@@ -125,7 +125,7 @@ export default async function AktualniBehyPage() {
           href="/registrace"
           className="btn-magic mt-8 inline-flex w-full max-w-md justify-center text-sm sm:w-auto"
         >
-          Přihlásit se na kurz
+          Nezávazně přihlásit dítě
         </Link>
       </div>
     </>

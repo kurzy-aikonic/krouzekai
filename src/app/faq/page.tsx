@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { FaqJsonLd } from "@/components/seo/FaqJsonLd";
 import { buildFaqItems } from "@/data/faq";
@@ -42,6 +43,14 @@ export default async function FaqPage() {
             <div key={item.q} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <dt className="font-display text-lg font-extrabold text-slate-900">{item.q}</dt>
               <dd className="mt-2 text-slate-600 leading-relaxed">{item.a}</dd>
+              {item.relatedLink ? (
+                <Link
+                  href={item.relatedLink.href}
+                  className="mt-2 inline-block text-sm font-semibold text-violet-700 underline hover:text-violet-900"
+                >
+                  {item.relatedLink.label} →
+                </Link>
+              ) : null}
             </div>
           ))}
         </dl>

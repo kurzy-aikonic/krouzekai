@@ -204,9 +204,8 @@ export default async function HomePage() {
         <div className="mt-14 rounded-3xl border border-violet-200 bg-white/90 p-6 shadow-sm backdrop-blur-sm sm:p-7">
           <p className="mt-2 text-base leading-relaxed text-slate-800">
             Kurz je postavený tak, aby děti bavil a zároveň rodičům dával jistotu
-            v organizaci, bezpečnosti i kvalitě výuky. Skupiny tvoříme podle věku
-            a úrovně, aby tempo odpovídalo každému dítěti. Přesné složení i termín
-            vždy potvrzujeme individuálně po registraci.
+            v organizaci, bezpečnosti i kvalitě výuky. Přesné složení skupiny i
+            termín vždy potvrzujeme individuálně po registraci.
           </p>
         </div>
 
@@ -249,11 +248,11 @@ export default async function HomePage() {
                 Krok 3
               </p>
               <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-800">
-                Faktura, platba a start kurzu
+                Potvrdíme místo a pošleme vše k první lekci
               </p>
               <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">
-                Po domluvě zašleme fakturu; po úhradě potvrdíme místo a pošleme
-                organizační info k první lekci.
+                Mezitím zašleme fakturu a po úhradě máte místo jisté — žádné
+                další kroky na vaší straně.
               </p>
             </div>
           </div>
@@ -277,7 +276,7 @@ export default async function HomePage() {
                   />
                   <div className="relative flex items-start gap-3">
                     <span
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-[var(--magic-ink)] bg-gradient-to-br text-2xl shadow-[2px_2px_0_#312e81] from-white to-violet-50"
+                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border-2 border-[var(--magic-ink)] bg-gradient-to-br text-2xl shadow-sm from-white to-violet-50"
                       aria-hidden
                     >
                       {item.emoji}
@@ -300,35 +299,42 @@ export default async function HomePage() {
           </Section>
 
           <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-            <div className="card-playful relative overflow-hidden bg-gradient-to-b from-amber-50 to-orange-50">
-              <div className="absolute -right-6 top-2 rotate-12 font-display text-6xl opacity-20" aria-hidden>
-                💰
-              </div>
+            <div className="card-playful bg-gradient-to-b from-amber-50 to-orange-50">
               <h2 className="font-display text-xl font-extrabold text-[var(--magic-ink)]">
                 Ceny
               </h2>
               <p className="mt-2 text-xs font-semibold text-violet-800">
                 {p.lessons} lekcí × {p.lessonMinutes} min · vždy online
               </p>
-              <p className="mt-3 text-sm font-semibold text-slate-800">
-                <span className="rounded-md bg-white/80 px-1">Skupina</span>{" "}
-                {prices.skupinaPerLessonCzk} Kč / lekce →{" "}
-                <span className="font-display text-lg font-extrabold text-violet-700">
-                  {prices.skupinaCourseCzk.toLocaleString("cs-CZ")} Kč
-                </span>{" "}
-                kurz
-                <span className="ml-2 rounded-full border border-violet-300 bg-violet-100 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-violet-800">
-                  Nejoblíbenější
-                </span>
-              </p>
-              <p className="mt-2 text-sm font-semibold text-slate-800">
-                <span className="rounded-md bg-white/80 px-1">1:1</span>{" "}
-                {prices.individualPerLessonCzk} Kč / lekce →{" "}
-                <span className="font-display text-lg text-violet-700">
-                  {prices.individualCourseCzk.toLocaleString("cs-CZ")} Kč
-                </span>{" "}
-                kurz
-              </p>
+
+              <div className="mt-4 overflow-hidden rounded-2xl border border-violet-200 bg-white/90">
+                <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-3 gap-y-1 px-4 py-3 text-sm">
+                  <span className="col-span-3 text-[10px] font-extrabold uppercase tracking-wide text-slate-500">
+                    Formát
+                  </span>
+                  <span className="font-bold text-slate-800">
+                    Skupina
+                    <span className="ml-2 rounded-full border border-violet-300 bg-violet-100 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-violet-800">
+                      Nejoblíbenější
+                    </span>
+                  </span>
+                  <span className="text-right text-xs font-semibold text-slate-600">
+                    {prices.skupinaPerLessonCzk} Kč/lekce
+                  </span>
+                  <span className="text-right font-display text-lg font-extrabold text-violet-700">
+                    {prices.skupinaCourseCzk.toLocaleString("cs-CZ")} Kč
+                  </span>
+                </div>
+                <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-3 border-t border-violet-100 px-4 py-3 text-sm">
+                  <span className="font-bold text-slate-800">1:1 individuálně</span>
+                  <span className="text-right text-xs font-semibold text-slate-600">
+                    {prices.individualPerLessonCzk} Kč/lekce
+                  </span>
+                  <span className="text-right font-display text-lg font-extrabold text-violet-700">
+                    {prices.individualCourseCzk.toLocaleString("cs-CZ")} Kč
+                  </span>
+                </div>
+              </div>
               <p className="mt-3 text-xs font-medium leading-relaxed text-slate-600">
                 Skupinu spouštíme až po naplnění kapacity termínu (100 % míst).
                 Přihláška je do té doby nezávazná.
@@ -426,15 +432,15 @@ export default async function HomePage() {
           </div>
         </Section>
 
-        {/* Meta: jak je web postavený */}
+        {/* Meta: tenhle web jako ukázka toho, co se děti naučí */}
         <section className="mt-20 rounded-[2rem] border border-violet-200 bg-white/80 p-1 shadow-sm">
           <div className="rounded-[1.65rem] bg-gradient-to-br from-white via-violet-50/70 to-amber-50/70 px-6 py-8 sm:px-10 sm:py-10">
             <h2 className="font-display text-2xl font-extrabold text-[var(--magic-ink)] sm:text-3xl">
-              Jaké digitální dovednosti si děti osvojí
+              Tenhle web je ukázka toho, co se děti naučí
             </h2>
             <p className="mt-4 text-base font-medium leading-relaxed text-slate-800 sm:text-lg">
-              Animované pozadí, barevné karty, vlastní fonty, klikací hvězdičky —
-              to všechno jsou stavební kameny moderního webu. Na kurzu dětem
+              Animace, barevné karty, vlastní fonty i rozvržení stránky — to
+              všechno jsou stavební kameny moderního webu. Na kroužku dětem
               ukážeme, jak podobné věci vznikají a jak je bezpečně vytvářet s
               pomocí AI.
             </p>
@@ -460,7 +466,7 @@ export default async function HomePage() {
                 ? "Vyberte termín a přihlaste dítě"
                 : "Přihlaste dítě do prvních termínů"}
             </h2>
-            <p className="mx-auto mt-3 max-w-lg text-base font-medium text-violet-200">
+            <p className="mx-auto mt-3 max-w-lg text-base font-medium text-violet-100">
               {hasPublicRuns
                 ? "Konkrétní termíny najdete výše — nebo pošlete obecnou nezávaznou přihlášku."
                 : "Vyplňte přihlášku — ozveme se a společně doladíme termín i formát."}
@@ -468,7 +474,7 @@ export default async function HomePage() {
             <Link href="/registrace" className="btn-magic mt-8 inline-flex min-h-11 w-full max-w-sm items-center justify-center sm:w-auto sm:max-w-none sm:px-8 sm:py-4 sm:text-lg">
               Nezávazně přihlásit dítě
             </Link>
-            <p className="mx-auto mt-3 max-w-lg text-xs font-semibold text-violet-200">
+            <p className="mx-auto mt-3 max-w-lg text-xs font-semibold text-violet-100">
               Odeslání přihlášky je nezávazné. Po potvrzení otevřených termínů
               vám pošleme dostupné varianty.
             </p>

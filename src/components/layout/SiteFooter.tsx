@@ -26,10 +26,9 @@ export function SiteFooter() {
               Online kroužek AI pro děti
             </p>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate-700">
-              Pro děti {site.audience.ageMin}–{site.audience.ageMax} let;
-              skupiny skládáme podle věku, aby tempo sedělo všem. Rodiče vidí
-              přehledně, co dítě získá, jak výuka probíhá a jak zajišťujeme
-              bezpečné prostředí.
+              Pro děti {site.audience.ageMin}–{site.audience.ageMax} let.
+              Rodiče vidí přehledně, co dítě získá, jak výuka probíhá a jak
+              zajišťujeme bezpečné prostředí.
             </p>
             <div className="mt-5 flex flex-col items-center gap-2 md:items-start">
               <a
@@ -92,6 +91,12 @@ export function SiteFooter() {
               className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
             >
               Co děti tvoří
+            </Link>
+            <Link
+              href="/pruvodce"
+              className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
+            >
+              Průvodce pro rodiče
             </Link>
             <Link
               href="/rodic/prihlaseni"

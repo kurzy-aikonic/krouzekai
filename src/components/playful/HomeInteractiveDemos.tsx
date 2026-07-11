@@ -12,18 +12,6 @@ function BlockPlaceholder({ label }: { label: string }) {
   );
 }
 
-const SnakePlaygroundClient = dynamic(
-  () => import("@/components/playful/SnakePlayground").then((m) => m.SnakePlayground),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="card-playful mt-16 flex min-h-[14rem] items-center justify-center p-6 text-center text-sm font-medium text-slate-600 sm:min-h-[16rem]">
-        Načítám mini-hru…
-      </div>
-    ),
-  },
-);
-
 const SchoolStudyDemoClient = dynamic(
   () => import("@/components/playful/SchoolStudyDemo").then((m) => m.SchoolStudyDemo),
   {
@@ -36,19 +24,13 @@ const SchoolStudyDemoClient = dynamic(
   },
 );
 
+/** Na homepage necháváme jen ukázku, která prodává hodnotu rodičům — mini-hra Snake je na /co-deti-tvori. */
 export function HomeInteractiveDemos() {
   return (
-    <>
-      <LazyWhenVisible
-        placeholder={<BlockPlaceholder label="Mini-hra se načte při posunu sem ↓" />}
-      >
-        <SnakePlaygroundClient />
-      </LazyWhenVisible>
-      <LazyWhenVisible
-        placeholder={<BlockPlaceholder label="Ukázka pro školu se načte při posunu sem ↓" />}
-      >
-        <SchoolStudyDemoClient />
-      </LazyWhenVisible>
-    </>
+    <LazyWhenVisible
+      placeholder={<BlockPlaceholder label="Ukázka se načte, jakmile se zobrazí." />}
+    >
+      <SchoolStudyDemoClient />
+    </LazyWhenVisible>
   );
 }

@@ -128,7 +128,7 @@ export function AiSkillTestClient() {
       <div className="rounded-2xl border border-violet-200 bg-violet-50/70 p-4 text-sm text-violet-950">
         Test má {baseQuestions.length} krátkých otázek. Na konci dostanete
         doporučenou úroveň: <strong>Začátečník</strong>, <strong>Pokročilý</strong> nebo{" "}
-        <strong>Profesionál</strong>. Pokud vyjde profesionál, otevře se ještě
+        <strong>AI tvůrce</strong>. Pokud vyjde AI tvůrce, otevře se ještě
         náročný potvrzovací test.
       </div>
 
@@ -181,7 +181,7 @@ export function AiSkillTestClient() {
             {needsProConfirmation && !showProConfirmation ? (
               <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
                 <p className="text-sm font-semibold text-amber-950">
-                  Vyšla úroveň profesionál. Ještě potřebujeme potvrzení přes
+                  Vyšla úroveň AI tvůrce. Ještě potřebujeme potvrzení přes
                   náročný doplňkový test.
                 </p>
                 <button
@@ -197,7 +197,7 @@ export function AiSkillTestClient() {
             {showProConfirmation ? (
               <div className="space-y-4 rounded-xl border border-violet-200 bg-violet-50/40 p-4">
                 <h3 className="font-display text-lg font-extrabold text-violet-900">
-                  Potvrzovací test úrovně Profesionál
+                  Potvrzovací test úrovně AI tvůrce
                 </h3>
                 {proQuestions.map((q, index) => (
                   <section key={q.id} className="rounded-xl border border-violet-100 bg-white p-4">
@@ -244,7 +244,7 @@ export function AiSkillTestClient() {
                 ) : null}
                 {needsProConfirmation && !finalResult.confirmed ? (
                   <p className="mt-2 text-sm text-emerald-900">
-                    Náročný test úroveň profesionál nepotvrdil, doporučujeme
+                    Náročný test úroveň AI tvůrce nepotvrdil, doporučujeme
                     zařazení jako pokročilý.
                   </p>
                 ) : null}

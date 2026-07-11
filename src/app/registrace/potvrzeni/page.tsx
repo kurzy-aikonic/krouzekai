@@ -147,7 +147,7 @@ export default async function RegistracePotvrzeniPage({
             </li>
             <li>
               <strong>2)</strong> Doporučíme finální úroveň dítěte (začátečník /
-              pokročilý / profesionál) a domluvíme konkrétní termín.
+              pokročilý / AI tvůrce) a domluvíme konkrétní termín.
             </li>
             <li>
               <strong>3)</strong> Zašleme fakturu a po úhradě organizační informace

@@ -56,10 +56,10 @@ export const site = {
   },
 
   lektor: {
-    name: "Zkušený tým lektorů",
+    name: "Lektorský tým AIKONIC",
     role: "Lektorský tým AIKONIC",
     bioShort:
-      "Náš tým proškolil přes 2 500 lidí v Česku. Spolupracujeme např. s Českou spořitelnou, ČEZ nebo Škoda Auto. Učíme praktické použití AI — bez zbytečné teorie.",
+      "Kroužek vedou lektoři z týmu AIKONIC, který má za sebou přes 2 500 proškolených lidí v Česku a spolupráci s firmami jako Česká spořitelna, ČEZ nebo Škoda Auto. Na kroužku učíme stejným praktickým způsobem — bez zbytečné teorie, s důrazem na to, aby dítě odešlo s hotovým výsledkem.",
   },
 
   /** Cílová skupina — jednotný zdroj pro copy, validaci přihlášky a SEO. */

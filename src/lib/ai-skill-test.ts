@@ -21,7 +21,7 @@ export const AI_SKILL_LEVELS: readonly AiSkillLevel[] = [
 export const AI_SKILL_LEVEL_LABELS: Record<AiSkillLevel, string> = {
   beginner: "Začátečník",
   advanced: "Pokročilý",
-  professional: "Profesionál",
+  professional: "AI tvůrce",
 };
 
 export const AI_SKILL_LEVEL_HINTS: Record<AiSkillLevel, string> = {

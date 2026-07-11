@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { RealOutcomesContent } from "@/components/outcomes/RealOutcomesContent";
+import { SnakeShowcase } from "@/components/playful/SnakeShowcase";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { Section } from "@/components/ui/Section";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
@@ -32,6 +33,8 @@ export default function CoDetiTvoriPage() {
         <Section className="mt-10">
           <RealOutcomesContent variant="full" />
         </Section>
+
+        <SnakeShowcase />
 
         <div className="mt-14 rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-900 to-indigo-900 px-6 py-10 text-center sm:px-10">
           <h2 className="font-display text-2xl font-extrabold text-white sm:text-3xl">

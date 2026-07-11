@@ -2,7 +2,9 @@ import { site } from "@/lib/site-config";
 import type { CoursePricing } from "@/lib/course-pricing-store";
 import { perLessonCzk } from "@/lib/course-pricing-utils";
 
-export function buildFaqItems(pricing: CoursePricing): { q: string; a: string }[] {
+export function buildFaqItems(
+  pricing: CoursePricing,
+): { q: string; a: string; relatedLink?: { label: string; href: string } }[] {
   const skupinaPerLesson = perLessonCzk(pricing.skupinaCourseCzk);
   const individualPerLesson = perLessonCzk(pricing.individualCourseCzk);
 
@@ -10,6 +12,7 @@ export function buildFaqItems(pricing: CoursePricing): { q: string; a: string }[
   {
     q: "Musí dítě umět programovat?",
     a: "Vůbec ne. Používáme vibecoding, kde kód píše AI podle instrukcí dítěte.",
+    relatedLink: { label: "Co je vibecoding a jak funguje", href: "/pruvodce/co-je-vibecoding" },
   },
   {
     q: "Jaký je vhodný věk?",
@@ -26,6 +29,7 @@ export function buildFaqItems(pricing: CoursePricing): { q: string; a: string }[
   {
     q: "Je práce s AI pro děti bezpečná?",
     a: "Ano. Děti učíme etiku, ochranu soukromí a kyberbezpečnost hned od první lekce — co je bezpečné sdílet, co ne a kdy AI výstupům věřit. Rodiče navíc dostanou stručné doporučení k účtům u AI nástrojů (věková omezení) a k rozumnému dohledu nad dítětem během kurzu.",
+    relatedLink: { label: "Je ChatGPT bezpečný pro děti? Celý průvodce", href: "/pruvodce/je-chatgpt-bezpecny-pro-deti" },
   },
   {
     q: "Jak probíhá platba?",
@@ -46,6 +50,7 @@ export function buildFaqItems(pricing: CoursePricing): { q: string; a: string }[
   {
     q: "Kde vidím vypsané termíny skupin?",
     a: `Na stránce „Aktuální termíny“ je přehled toho, co právě nabízíme. Při registraci můžete (pokud to dává smysl) vybrat konkrétní termín — nebo nechat výběr na pozdější domluvě.`,
+    relatedLink: { label: "Zobrazit aktuální termíny", href: "/aktualni-behy" },
   },
   {
     q: "Co když je termín už plný?",

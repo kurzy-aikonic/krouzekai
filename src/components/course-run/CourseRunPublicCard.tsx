@@ -54,7 +54,7 @@ export function CourseRunPublicCard({
       {status.acceptsRegistration ? (
         <Link
           href={`/registrace?run=${encodeURIComponent(run.id)}`}
-          className="mt-5 inline-flex w-full justify-center rounded-xl border-2 border-[var(--magic-ink)] bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2.5 text-sm font-extrabold text-white shadow-[3px_3px_0_#312e81] transition hover:-translate-y-0.5 sm:w-auto"
+          className="mt-5 inline-flex w-full justify-center rounded-xl border border-violet-600 bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2.5 text-sm font-extrabold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:w-auto"
         >
           Přihlásit na tento termín →
         </Link>

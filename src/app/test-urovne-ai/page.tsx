@@ -6,7 +6,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata: Metadata = pageMetadata({
   title: "AI test pro děti zdarma — zjistěte úroveň",
   description:
-    "Krátký zábavný test zdarma, který doporučí úroveň dítěte pro kurz: začátečník, pokročilý nebo profesionál.",
+    "Krátký zábavný test zdarma, který doporučí úroveň dítěte pro kurz: začátečník, pokročilý nebo AI tvůrce.",
   path: "/test-urovne-ai",
   keywords: ["test AI dovedností pro děti", "úroveň dítěte AI"],
 });
