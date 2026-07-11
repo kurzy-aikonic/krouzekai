@@ -45,3 +45,32 @@ Tento dokument shrnuje doporuceni pro posun projektu na "top" uroven z pohledu p
 - Pravidelne overeni dorucitelnosti e-mailu (SPF/DKIM/DMARC).
 - Pravidelny audit zavislosti (`npm audit`) a incident runbook.
 - Minimalizace PII v logach a dukladna rotace tajemstvi.
+
+## 5) Produktove mezery specificke pro tento typ projektu (nalezeno pri auditu 07/2026)
+
+Hotovo:
+
+- **Cekaci listina na plny termin** — `/cekaci-listina`, `/api/waitlist`,
+  admin prehled `/admin/waitlist`. Plny termin uz nekonci slepou ulickou.
+
+Zbyva (serazeno podle dopadu):
+
+1. **Realna online platba** (Stripe / GoPay / Comgate) — `src/lib/payment.ts`
+   je zatim prazdny stub, vse jde pres rucni bankovni prevod. Nejvetsi treni
+   v cele ceste od registrace k platbe.
+2. **Video na homepage** — ukazka lekce / lektor mluvi. U online kurzu bez
+   osobniho kontaktu jeden z nejsilnejsich konverznich prvku.
+3. **Vic social proof primo na homepage** — konkretni cisla (pocet
+   absolventu), vic citaci rodicu (dnes jen na `/co-deti-tvori`).
+4. **Stranka s osnovou kurzu** (lekce 1-10, temata po tydnech) — snizuje
+   nejistotu "co presne za ty penize dite dostane".
+5. **E-mailova nurture sekvence** — dnes jen transakcni e-maily. Chybi:
+   uvitaci e-mail "co si pripravit", pripominka den pred lekci, po kurzu
+   zadost o recenzi.
+6. **Certifikat/diplom po dokonceni kurzu** — silny "sdileci" moment pro
+   rodice na socialni site (organicky marketing) + motivace pro dite.
+7. **Kalendarova pozvanka (.ics)** k prvni lekci v potvrzovacim e-mailu.
+8. **Zivy chat / WhatsApp tlacitko** — nizkoprahovy kontakt pred platbou,
+   bezne u krouzku pro deti.
+9. **Systematicky accessibility pass** — skip links, ARIA na zbylych
+   interaktivnich prvcich (zaklady uz existuji: SiteHeader, RegistrationForm).

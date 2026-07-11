@@ -71,6 +71,29 @@ export const DEFAULT_EMAIL_TEMPLATES: Record<
   <p style="font-size:14px;color:#475569;">Dotazy? Napište na <a href="mailto:{{contactEmail}}">{{contactEmail}}</a>.</p>
   <p>S pozdravem,<br/>{{siteShortName}}</p>`),
   },
+  waitlist_confirmation: {
+    subject: "Zapsáno do čekací listiny ({{siteShortName}})",
+    htmlBody: wrap(`
+  <p>Dobrý den,</p>
+  <p>děkujeme za zájem o kurz <strong>{{siteName}}</strong>. Vybraný termín je momentálně plný, zapsali jsme vás proto do <strong>čekací listiny</strong>.</p>
+  <p><strong>Formát:</strong> {{formatLabel}}</p>
+  {{runLineHtml}}
+  <p>Ozveme se vám, jakmile se uvolní místo, nebo jakmile otevřeme nový termín stejného formátu. Zápis do čekací listiny nic nestojí a nezavazuje k platbě.</p>
+  <p style="font-size: 14px; color: #475569;">Pokud budete chtít cokoli upřesnit, napište nám na <a href="mailto:{{contactEmail}}">{{contactEmail}}</a>.</p>
+  <p>S pozdravem,<br/>{{siteShortName}}</p>`),
+  },
+  waitlist_internal: {
+    subject: "Nový zájemce v čekací listině: {{childName}}",
+    htmlBody: wrap(`
+  <h2 style="margin: 0 0 12px;">Nový zájemce v čekací listině</h2>
+  <p style="margin: 0 0 8px;"><strong>Rodič:</strong> {{parentName}}</p>
+  <p style="margin: 0 0 8px;"><strong>E-mail:</strong> {{parentEmail}}</p>
+  <p style="margin: 0 0 8px;"><strong>Telefon:</strong> {{parentPhone}}</p>
+  <p style="margin: 0 0 8px;"><strong>Dítě:</strong> {{childName}}</p>
+  <p style="margin: 0 0 8px;"><strong>Formát:</strong> {{formatLabel}}</p>
+  <p style="margin: 0 0 8px;"><strong>Termín, o který byl zájem:</strong> {{runLabel}}</p>
+  <p style="margin: 0 0 8px;"><strong>Poznámka:</strong> {{note}}</p>`),
+  },
   parent_magic_link: {
     subject: "Přehled pro rodiče — odkaz ({{siteShortName}})",
     htmlBody: wrap(`

@@ -6,6 +6,7 @@ import type { CourseRun } from "@/data/course-runs";
 import type { EmailTemplateId } from "@/lib/email-template-types";
 import type { RegistrationRecord, RegistrationStatus } from "@/types/registration";
 import { registrationStatusLabelsCs } from "@/types/registration";
+import type { WaitlistEntry } from "@/types/waitlist";
 
 function paymentUrl(registrationId: string): string {
   const base = site.baseUrl.replace(/\/$/, "");
@@ -84,6 +85,35 @@ export function buildRegistrationStatusChangeVars(
     parentPortalUrl: escapeHtml(`${base}/rodic/prihlaseni`),
     contactEmail: escapeHtml(site.contactEmail),
     siteShortName: escapeHtml(site.shortName),
+  };
+}
+
+export function buildWaitlistConfirmationVars(
+  entry: WaitlistEntry,
+): Record<string, string> {
+  const runLineHtml = entry.runLabel
+    ? `<p><strong>Termín, o který byl zájem:</strong> ${escapeHtml(entry.runLabel)}</p>`
+    : "";
+  return {
+    siteName: escapeHtml(site.name),
+    siteShortName: escapeHtml(site.shortName),
+    contactEmail: escapeHtml(site.contactEmail),
+    formatLabel: escapeHtml(formatLabel(entry.format)),
+    runLineHtml,
+  };
+}
+
+export function buildWaitlistInternalVars(
+  entry: WaitlistEntry,
+): Record<string, string> {
+  return {
+    parentName: escapeHtml(entry.parentName),
+    parentEmail: escapeHtml(entry.parentEmail),
+    parentPhone: escapeHtml(entry.parentPhone ?? "—"),
+    childName: escapeHtml(entry.childName ?? "—"),
+    formatLabel: escapeHtml(formatLabel(entry.format)),
+    runLabel: escapeHtml(entry.runLabel ?? "bez konkrétního termínu"),
+    note: escapeHtml(entry.note ?? "—"),
   };
 }
 

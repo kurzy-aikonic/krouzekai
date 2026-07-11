@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "fs/promises";
 import path from "path";
+import { cache } from "react";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import { defaultCourseRuns, type CourseRun } from "@/data/course-runs";
@@ -208,7 +209,8 @@ type ResolvedCourseRuns = {
  * typický problém na Vercelu, kde tabulka existuje s `runs: []`, ale admin ukládá
  * jinde nebo data ještě nejsou v DB.
  */
-async function resolveCourseRuns(): Promise<ResolvedCourseRuns> {
+/** `cache()` memoizuje výsledek po dobu jednoho requestu — bez toho se termíny čtou opakovaně. */
+const resolveCourseRuns = cache(async (): Promise<ResolvedCourseRuns> => {
   const fromDb = await loadFromSupabase();
   if (fromDb !== null && fromDb.length > 0) {
     return { runs: fromDb, source: "supabase" };
@@ -239,7 +241,7 @@ async function resolveCourseRuns(): Promise<ResolvedCourseRuns> {
   }
 
   return { runs: defaultCourseRuns, source: "defaults" };
-}
+});
 
 export async function getCourseRunsDataSource(): Promise<CourseRunsDataSource> {
   return (await resolveCourseRuns()).source;

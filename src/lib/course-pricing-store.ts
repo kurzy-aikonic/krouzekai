@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "fs/promises";
 import path from "path";
+import { cache } from "react";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import {
@@ -106,10 +107,14 @@ async function loadFromFile(): Promise<CoursePricing | null> {
   }
 }
 
-async function resolveCoursePricing(): Promise<{
+/**
+ * `cache()` memoizuje výsledek pro dobu jednoho requestu/renderu (React RSC cache) —
+ * homepage a JSON-LD dřív četly ceny opakovaně (2–3× stejný I/O do Supabase/souboru).
+ */
+const resolveCoursePricing = cache(async (): Promise<{
   pricing: CoursePricing;
   source: CoursePricingDataSource;
-}> {
+}> => {
   const fromDb = await loadFromSupabase();
   if (fromDb !== null) {
     return { pricing: fromDb, source: "supabase" };
@@ -129,7 +134,7 @@ async function resolveCoursePricing(): Promise<{
   }
 
   return { pricing: defaultCoursePricing(), source: "defaults" };
-}
+});
 
 export async function getCoursePricingDataSource(): Promise<CoursePricingDataSource> {
   return (await resolveCoursePricing()).source;

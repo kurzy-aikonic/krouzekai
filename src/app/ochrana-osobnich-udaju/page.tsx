@@ -80,6 +80,12 @@ export default function OchranaOsobnichUdajuPage() {
               návštěvníkům webu).
             </li>
             <li>
+              <strong>Čekací listina na plný termín:</strong> pokud se přihlásíte
+              do čekací listiny u plně obsazeného termínu, zpracováváme jméno a
+              e-mail (případně telefon, jméno dítěte a vaši poznámku), abychom vás
+              mohli kontaktovat při uvolnění místa nebo otevření nového termínu.
+            </li>
+            <li>
               <strong>Záznamy online lekcí (audio/video):</strong> pokud je
               nahrávání aktivní, pořizujeme záznam v rozsahu nezbytném pro
               bezpečnost účastníků, kontrolu kvality výuky a případné řešení
@@ -139,6 +145,12 @@ export default function OchranaOsobnichUdajuPage() {
               zástupce), zejména pokud účastník pracuje se službami, které mají
               vlastní věkové limity a vlastní zásady zpracování osobních údajů.
             </li>
+            <li>
+              <strong>Čekací listina na plný termín</strong> (kontaktování při
+              uvolnění místa nebo otevření nového termínu): právní základ{" "}
+              <strong>čl. 6 odst. 1 písm. a) GDPR</strong> (souhlas), který můžete
+              kdykoli odvolat.
+            </li>
           </ul>
           <p>
             Poskytnutí údajů nutných pro registraci je smluvním a zákonným
@@ -166,6 +178,11 @@ export default function OchranaOsobnichUdajuPage() {
               <strong>6 měsíců od konání lekce</strong>; delší uchování je možné
               pouze po dobu nezbytnou pro řešení konkrétní reklamace, stížnosti
               nebo právního sporu.
+            </li>
+            <li>
+              Údaje z čekací listiny uchováváme nejdéle <strong>12 měsíců</strong>{" "}
+              od zápisu, nebo do dřívějšího odvolání souhlasu; poté je vymažeme,
+              pokud se nepřevedou do skutečné přihlášky.
             </li>
           </ul>
           <h2>5. Příjemci a zpracovatelé</h2>

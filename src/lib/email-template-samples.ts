@@ -58,6 +58,24 @@ export function sampleEmailTemplateVars(
         previousStatusLabel: registrationStatusLabelsCs.nova,
         newStatusLabel: registrationStatusLabelsCs.kontaktovano,
       };
+    case "waitlist_confirmation":
+      return {
+        ...common,
+        formatLabel: "Skupinový kurz",
+        runLineHtml:
+          '<p><strong>Termín, o který byl zájem:</strong> Skupina A — úterý 17:00 (ukázka)</p>',
+      };
+    case "waitlist_internal":
+      return {
+        ...common,
+        parentName: "Jan Novák",
+        parentEmail: "rodic@example.cz",
+        parentPhone: "+420 777 123 456",
+        childName: "Ema Nováková",
+        formatLabel: "Skupinový kurz",
+        runLabel: "Skupina A — úterý 17:00",
+        note: "Ideálně úterý nebo čtvrtek odpoledne.",
+      };
     case "parent_magic_link":
     case "admin_magic_link":
       return common;

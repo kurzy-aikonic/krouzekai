@@ -240,6 +240,29 @@ async function upsertRegistrationInSupabase(record: RegistrationRecord): Promise
   }
 }
 
+/** Hromadný upsert jedním requestem — rychlejší a levnější než cyklus jednotlivých upsertů. */
+async function upsertRegistrationsInSupabase(
+  records: RegistrationRecord[],
+): Promise<void> {
+  if (records.length === 0) return;
+  const supabase = getSupabaseAdmin();
+  if (!supabase) {
+    throw new Error("Supabase není nakonfigurováno.");
+  }
+  const now = new Date().toISOString();
+  const rows = records.map((record) => ({
+    id: record.id,
+    payload: registrationRecordToPayload(record),
+    updated_at: now,
+  }));
+  const { error } = await supabase
+    .from("web_registrations")
+    .upsert(rows, { onConflict: "id" });
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
 /**
  * Sloučí JSONL + Supabase podle `id` — záznam ze Supabase přepíše stejné id ze souboru.
  */
@@ -274,12 +297,13 @@ export async function listRegistrationsByParentEmail(
  * Zdroje: `data/registrations.jsonl` + Supabase `web_registrations` (sloučeno).
  * Při pouhém webhooku (`REGISTRATIONS_WEBHOOK_URL`) tato funkce data z webhooku nevidí.
  */
-export async function findRegistrationById(
+/** Najde přihlášku v už načteném (sloučeném) seznamu — bez dalšího I/O. */
+export function findRegistrationInList(
+  list: RegistrationRecord[],
   lookup: string,
-): Promise<RegistrationRecord | null> {
+): RegistrationRecord | null {
   const t = lookup.trim();
   if (!t) return null;
-  const list = await listRegistrationsMerged();
   if (isRegistrationUuidLookup(t)) {
     return list.find((r) => r.id === t) ?? null;
   }
@@ -288,6 +312,13 @@ export async function findRegistrationById(
     return list.find((r) => getPublicRegistrationCode(r) === u) ?? null;
   }
   return null;
+}
+
+export async function findRegistrationById(
+  lookup: string,
+): Promise<RegistrationRecord | null> {
+  const list = await listRegistrationsMerged();
+  return findRegistrationInList(list, lookup);
 }
 
 export type RegistrationAdminPatch = Partial<
@@ -473,12 +504,12 @@ export async function bulkUpdateRegistrationStatus(
   if (updated > 0) {
     const supabase = getSupabaseAdmin();
     if (supabase) {
-      for (const r of nextList) {
-        if (!targetIds.has(r.id)) continue;
+      const toUpsert = nextList.filter((r) => {
+        if (!targetIds.has(r.id)) return false;
         const orig = all.find((x) => x.id === r.id);
-        if (!orig || orig.status === newStatus) continue;
-        await upsertRegistrationInSupabase(r);
-      }
+        return Boolean(orig) && orig!.status !== newStatus;
+      });
+      await upsertRegistrationsInSupabase(toUpsert);
     } else {
       const body =
         nextList
@@ -572,13 +603,14 @@ export async function bulkUpdateRegistrationRunId(
   if (updated > 0) {
     const supabase = getSupabaseAdmin();
     if (supabase) {
-      for (const r of nextList) {
-        if (!targetIds.has(r.id)) continue;
+      const toUpsert = nextList.filter((r) => {
+        if (!targetIds.has(r.id)) return false;
         const orig = all.find((x) => x.id === r.id);
-        if (!orig || orig.runId === r.runId) continue;
-        if (targetRun && targetRun.format !== orig.format) continue;
-        await upsertRegistrationInSupabase(r);
-      }
+        if (!orig || orig.runId === r.runId) return false;
+        if (targetRun && targetRun.format !== orig.format) return false;
+        return true;
+      });
+      await upsertRegistrationsInSupabase(toUpsert);
     } else {
       const body =
         nextList

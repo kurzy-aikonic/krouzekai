@@ -50,6 +50,7 @@ Dokument pro návrat k otevřeným úkolům kolem webu a provozu kurzu. Projekt 
 
 - [ ] V produkčním hostingu nastavit `SUPABASE_URL` a `SUPABASE_SERVICE_ROLE_KEY` (rate limit přes Supabase)
 - [ ] Ověřit, že v Supabase běží SQL z `supabase-rate-limit.sql` a vzniká tabulka `web_rate_limits`
+- [ ] Spustit `supabase-waitlist.sql` (tabulka `web_waitlist` pro čekací listinu na plný termín)
 - [ ] Zkontrolovat, že `service_role` klíč není nikde veřejný (`NEXT_PUBLIC_*`) ani v repozitáři
 - [ ] Pokud používáš webhook přihlášek: nastavit `REGISTRATIONS_WEBHOOK_SECRET` a ověřovat `Authorization: Bearer ...` na přijímači
 - [ ] Spustit před nasazením `npm run lint` a `npm run build` ve složce `web/`

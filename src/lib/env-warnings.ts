@@ -32,6 +32,21 @@ export function logProductionEnvWarnings(): void {
     );
   }
 
+  if (!process.env.TURNSTILE_SECRET_KEY?.trim()) {
+    missing.push(
+      "TURNSTILE_SECRET_KEY (bez něj se u registrace/checkoutu úplně vypíná ověření proti robotům)",
+    );
+  }
+
+  if (
+    process.env.REGISTRATIONS_WEBHOOK_URL?.trim() &&
+    !process.env.REGISTRATIONS_WEBHOOK_SECRET?.trim()
+  ) {
+    missing.push(
+      "REGISTRATIONS_WEBHOOK_SECRET (webhook běží bez ověření Authorization hlavičky)",
+    );
+  }
+
   if (missing.length > 0) {
     console.warn(
       `[krouzek-ai] Produkce: zkontrolujte proměnné prostředí: ${missing.join("; ")}`,

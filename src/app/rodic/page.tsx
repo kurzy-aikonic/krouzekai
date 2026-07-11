@@ -165,8 +165,10 @@ export default async function RodicDashboardPage() {
     redirect("/rodic/prihlaseni");
   }
 
-  const registrations = await listRegistrationsByParentEmail(email);
-  const courseRuns = await listCourseRuns();
+  const [registrations, courseRuns] = await Promise.all([
+    listRegistrationsByParentEmail(email),
+    listCourseRuns(),
+  ]);
   const runById = new Map(courseRuns.map((cr) => [cr.id, cr]));
 
   return (

@@ -19,11 +19,13 @@ export const metadata: Metadata = pageMetadata({
 export const revalidate = 300;
 
 export default async function AktualniBehyPage() {
-  const runs = await listOfferedCourseRuns();
+  const [runs, merged, pricing] = await Promise.all([
+    listOfferedCourseRuns(),
+    listRegistrationsMerged(),
+    getPublicCoursePricing(),
+  ]);
   const groupRuns = runs.filter((r) => r.format === "skupina");
   const individualRuns = runs.filter((r) => r.format === "individual");
-  const merged = await listRegistrationsMerged();
-  const pricing = await getPublicCoursePricing();
   const priceDefaults = {
     skupinaCourseCzk: pricing.skupinaCourseCzk,
     individualCourseCzk: pricing.individualCourseCzk,

@@ -2,10 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { Baloo_2, Nunito } from "next/font/google";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { CookieBannerHost } from "@/components/cookies/CookieBannerHost";
-import { CourseSignupToast } from "@/components/layout/CourseSignupToast";
+import {
+  DeferredClickSparkles,
+  DeferredCourseSignupToast,
+} from "@/components/layout/DeferredChrome";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-import { LazyClickSparkles } from "@/components/playful/LazyClickSparkles";
 import { MagicBackdrop } from "@/components/playful/MagicBackdrop";
 import { GlobalJsonLd } from "@/components/seo/GlobalJsonLd";
 import { rootMetadata } from "@/lib/seo";
@@ -52,7 +54,7 @@ export default function RootLayout({
         <GoogleAnalytics />
         <GlobalJsonLd />
         <MagicBackdrop />
-        <LazyClickSparkles />
+        <DeferredClickSparkles />
         <a
           href="#obsah"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-2xl focus:border-2 focus:border-[var(--magic-ink)] focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-[var(--magic-ink)] focus:shadow-lg"
@@ -67,7 +69,7 @@ export default function RootLayout({
         >
           {children}
         </main>
-        <CourseSignupToast />
+        <DeferredCourseSignupToast />
         <SiteFooter />
         <CookieBannerHost />
       </body>

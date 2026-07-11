@@ -54,7 +54,8 @@ export function buildFaqItems(
   },
   {
     q: "Co když je termín už plný?",
-    a: "Na přihlášce se plný termín obvykle nedá vybrat. Napište nám — můžeme nabídnout jiný termín nebo vás zařadit na čekací listinu podle domluvy.",
+    a: "U plného termínu se na stránce s aktuálními běhy zobrazí tlačítko „Čekací listina“ — zapíšeme si váš kontakt a ozveme se, jakmile se uvolní místo nebo otevřeme nový termín stejného formátu.",
+    relatedLink: { label: "Zobrazit aktuální termíny", href: "/aktualni-behy" },
   },
   {
     q: "Jak zjistím stav přihlášky a platby?",

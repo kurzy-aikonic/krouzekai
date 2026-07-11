@@ -88,9 +88,11 @@ const outcomes = [
 
 export default async function HomePage() {
   const p = site.pricing;
-  const prices = await getPublicCoursePricing();
-  const offered = await listOfferedCourseRuns();
-  const merged = await listRegistrationsMerged();
+  const [prices, offered, merged] = await Promise.all([
+    getPublicCoursePricing(),
+    listOfferedCourseRuns(),
+    listRegistrationsMerged(),
+  ]);
   const occupancyByRunId: Record<string, number> = {};
   for (const run of offered) {
     occupancyByRunId[run.id] = countedOccupancyForRun(
@@ -181,6 +183,7 @@ export default async function HomePage() {
               alt="Ukázka jednoduché hry v prohlížeči, jakou si dítě může vytvořit s AI v kroužku"
               width={900}
               height={600}
+              sizes="(min-width: 1024px) 45vw, (min-width: 640px) 28rem, 100vw"
               className="h-auto w-full"
               priority
             />

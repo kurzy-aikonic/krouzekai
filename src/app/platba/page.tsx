@@ -68,8 +68,10 @@ export default async function PlatbaPage({ searchParams }: PageProps) {
     );
   }
 
-  const record = await findRegistrationById(rawId);
-  const prices = await getPublicCoursePricing();
+  const [record, prices] = await Promise.all([
+    findRegistrationById(rawId),
+    getPublicCoursePricing(),
+  ]);
   const vs = variableSymbolFromRegistrationId(
     record?.id ?? (isRegistrationUuidLookup(rawId) ? rawId : ""),
   );

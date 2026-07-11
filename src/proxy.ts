@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { apiJson } from "@/lib/api-response";
+import { rateLimitResponse } from "@/lib/rate-limit";
 
 const STATE_CHANGING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+
+/** Stránky, které načtou přihlášku podle krátkého veřejného kódu z query parametru — hádání kódu bez limitu by je odhalilo. */
+const REGISTRATION_LOOKUP_PATHS = new Set(["/platba", "/registrace/potvrzeni"]);
 
 function sameOrigin(request: NextRequest, originHeader: string): boolean {
   try {
@@ -13,8 +17,19 @@ function sameOrigin(request: NextRequest, originHeader: string): boolean {
   }
 }
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (
+    request.method === "GET" &&
+    REGISTRATION_LOOKUP_PATHS.has(pathname) &&
+    request.nextUrl.searchParams.size > 0
+  ) {
+    const limited = await rateLimitResponse(request, "registrationLookup");
+    if (limited) return limited;
+    return NextResponse.next();
+  }
+
   if (!pathname.startsWith("/api/")) return NextResponse.next();
   if (!STATE_CHANGING.has(request.method)) return NextResponse.next();
 
@@ -32,5 +47,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/:path*"],
+  matcher: ["/api/:path*", "/platba", "/registrace/potvrzeni"],
 };

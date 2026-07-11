@@ -11,7 +11,8 @@ export const metadata: Metadata = pageMetadata({
   path: "/obchodni-podminky",
 });
 
-export const dynamic = "force-dynamic";
+// Právní text i výchozí ceny se nemění v řádu sekund — ISR místo force-dynamic.
+export const revalidate = 300;
 
 export default async function ObchodniPodminkyPage() {
   const pricing = await getCoursePricing();

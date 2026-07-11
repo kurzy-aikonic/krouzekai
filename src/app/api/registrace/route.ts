@@ -92,11 +92,12 @@ export async function POST(request: Request) {
     }
   }
 
-  const merged = await listRegistrationsMerged();
+  const [merged, selectedRun] = await Promise.all([
+    listRegistrationsMerged(),
+    data.runId ? getCourseRunById(data.runId) : Promise.resolve(null),
+  ]);
 
-  let selectedRun = null;
   if (data.runId) {
-    selectedRun = await getCourseRunById(data.runId);
     if (!selectedRun || selectedRun.active === false) {
       return apiJson(
         { error: "Tento termín není v nabídce nebo byl zrušen." },
@@ -174,7 +175,6 @@ export async function POST(request: Request) {
   return apiJson(
     {
       ok: true,
-      registrationId: id,
       registrationCode,
       paymentUrl: paymentPath,
       emailStatus,

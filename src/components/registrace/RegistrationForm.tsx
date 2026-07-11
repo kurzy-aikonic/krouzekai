@@ -151,7 +151,6 @@ export function RegistrationForm({
       error?: string;
       message?: string;
       paymentUrl?: string;
-      registrationId?: string;
       registrationCode?: string;
       emailStatus?: "sent" | "skipped" | "failed";
       format?: "skupina" | "individual";

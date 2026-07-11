@@ -4,7 +4,7 @@ import { countedOccupancyForRun } from "@/lib/course-run-registrations";
 import { getPublicRegistrationCode } from "@/lib/registration-code";
 import { listCourseRuns } from "@/lib/course-runs-store";
 import {
-  findRegistrationById,
+  findRegistrationInList,
   isRegistrationsJsonlWritable,
   listRegistrationsMerged,
 } from "@/lib/registrations-store";
@@ -19,12 +19,14 @@ type PageProps = { params: Promise<{ id: string }> };
 
 export default async function AdminRegistrationDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const record = await findRegistrationById(id);
+  const [allItems, courseRuns] = await Promise.all([
+    listRegistrationsMerged(),
+    listCourseRuns(),
+  ]);
+  const record = findRegistrationInList(allItems, id);
   if (!record) notFound();
 
   const writable = isRegistrationsJsonlWritable();
-  const courseRuns = await listCourseRuns();
-  const allItems = await listRegistrationsMerged();
   const occupancyByRunId: Record<string, number> = {};
   for (const run of courseRuns) {
     occupancyByRunId[run.id] = countedOccupancyForRun(

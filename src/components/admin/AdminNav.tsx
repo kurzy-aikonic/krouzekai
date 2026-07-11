@@ -16,6 +16,11 @@ const NAV_ITEMS = [
     match: (path: string) => path.startsWith("/admin/course-runs"),
   },
   {
+    href: "/admin/waitlist",
+    label: "Čekací listina",
+    match: (path: string) => path.startsWith("/admin/waitlist"),
+  },
+  {
     href: "/admin/emaily",
     label: "E-maily",
     match: (path: string) => path.startsWith("/admin/emaily"),

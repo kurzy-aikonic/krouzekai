@@ -7,12 +7,15 @@ import {
   buildRegistrationConfirmationVars,
   buildRegistrationInternalVars,
   buildRegistrationStatusChangeVars,
+  buildWaitlistConfirmationVars,
+  buildWaitlistInternalVars,
 } from "@/lib/email-template-vars";
 import type { EmailTemplateId } from "@/lib/email-template-types";
 import { getEmailTemplate } from "@/lib/email-templates-store";
 import { getPublicRegistrationCode } from "@/lib/registration-code";
 import { site } from "@/lib/site-config";
 import type { RegistrationRecord, RegistrationStatus } from "@/types/registration";
+import type { WaitlistEntry } from "@/types/waitlist";
 
 async function sendResendEmail(args: {
   apiKey: string;
@@ -159,6 +162,39 @@ export async function sendRegistrationStatusChangeNotice(
   });
 }
 
+export async function sendWaitlistConfirmation(
+  entry: WaitlistEntry,
+): Promise<SendRegistrationResult> {
+  const internalTo = process.env.RESEND_INTERNAL_TO ?? site.contactEmail;
+
+  const parentResult = await sendFromTemplate({
+    templateId: "waitlist_confirmation",
+    to: [entry.parentEmail],
+    vars: buildWaitlistConfirmationVars(entry),
+    logLabel: `potvrzení čekací listiny ${entry.id}`,
+  });
+
+  if (!parentResult.ok) return parentResult;
+
+  const internalRecipients = internalTo
+    .split(",")
+    .map((x) => x.trim())
+    .filter(Boolean);
+  if (internalRecipients.length > 0) {
+    const internalMail = await sendFromTemplate({
+      templateId: "waitlist_internal",
+      to: internalRecipients,
+      vars: buildWaitlistInternalVars(entry),
+      logLabel: `interní kopie čekací listiny ${entry.id}`,
+    });
+    if (!internalMail.ok) {
+      console.error("[email][internal]", internalMail.error);
+    }
+  }
+
+  return parentResult;
+}
+
 export async function sendAdminTestEmail(to: string): Promise<SendRegistrationResult> {
   return sendTemplatedEmail({
     templateId: "admin_test",
@@ -173,7 +209,15 @@ export async function sendParentPortalMagicLink(
 ): Promise<SendRegistrationResult> {
   const cfg = resendConfig();
   if (!cfg.ready) {
-    console.info("[email] Rodičovský odkaz (bez Resend):", magicUrl);
+    // V produkci nikdy nelogovat celou URL (obsahuje platný session token) — jen v devu,
+    // kde bez Resend jinak není šance odkaz otestovat.
+    if (process.env.NODE_ENV === "production") {
+      console.error(
+        "[email] Rodičovský magic link se nepodařilo odeslat — chybí RESEND_API_KEY.",
+      );
+    } else {
+      console.info("[email] Rodičovský odkaz (bez Resend):", magicUrl);
+    }
     return { ok: true, provider: "skipped", reason: "no_api_key" };
   }
   return sendFromTemplate({
@@ -190,7 +234,13 @@ export async function sendAdminMagicLink(
 ): Promise<SendRegistrationResult> {
   const cfg = resendConfig();
   if (!cfg.ready) {
-    console.info("[email] Admin magic link (bez Resend):", magicUrl);
+    if (process.env.NODE_ENV === "production") {
+      console.error(
+        "[email] Admin magic link se nepodařilo odeslat — chybí RESEND_API_KEY.",
+      );
+    } else {
+      console.info("[email] Admin magic link (bez Resend):", magicUrl);
+    }
     return { ok: true, provider: "skipped", reason: "no_api_key" };
   }
   return sendFromTemplate({

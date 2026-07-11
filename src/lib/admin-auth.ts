@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHash, createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 
 /** HttpOnly cookie — podepsaná session (viz `signAdminSession`), ne otevřený ADMIN_SECRET. */
@@ -27,6 +27,21 @@ export function getAdminSecret(): string | null {
   return s;
 }
 
+/**
+ * Samostatný klíč pro Bearer přístup k admin API — oddělený od `ADMIN_SECRET`
+ * (přihlašovací heslo do UI), aby šel API klíč rotovat/zneplatnit bez dopadu na login.
+ * Pokud není nastaven, `verifyAdminRequest` se pro zpětnou kompatibilitu vrátí k `ADMIN_SECRET`.
+ */
+export function getAdminApiKey(): string | null {
+  const s = process.env.ADMIN_API_KEY?.trim();
+  if (!s || s.length < 16) return null;
+  return s;
+}
+
+export function adminApiKeyConfigured(): boolean {
+  return getAdminApiKey() !== null;
+}
+
 /** Seznam e-mailů administrátorů z ADMIN_EMAILS (oddělené čárkou). */
 export function getAdminEmails(): string[] {
   const raw = process.env.ADMIN_EMAILS?.trim();
@@ -46,13 +61,16 @@ export function isAdminEmail(email: string): boolean {
   return getAdminEmails().includes(normalized);
 }
 
-/** Porovnání tajemství bez časových úniků (stejná délka řetězců). */
+/**
+ * Porovnání tajemství bez časových úniků. Obě strany se nejdřív hashují na pevnou
+ * délku (SHA-256) — jinak by časový rozdíl u nestejně dlouhých vstupů prozradil
+ * délku skutečného secretu ještě před `timingSafeEqual`.
+ */
 export function constantTimeEqual(a: string, b: string): boolean {
   try {
-    const ba = Buffer.from(a, "utf8");
-    const bb = Buffer.from(b, "utf8");
-    if (ba.length !== bb.length) return false;
-    return timingSafeEqual(ba, bb);
+    const ha = createHash("sha256").update(a, "utf8").digest();
+    const hb = createHash("sha256").update(b, "utf8").digest();
+    return timingSafeEqual(ha, hb);
   } catch {
     return false;
   }
@@ -127,7 +145,12 @@ export function getAdminSessionEmail(token: string | undefined): string | null {
   if (token == null || token === "") return null;
   const p = verifySigned(token);
   if (!p) return null;
-  if (p.t === "admin") return "legacy";
+  if (p.t === "admin") {
+    // Legacy session (přihlášení jen tajným klíčem, bez e-mailu) musí expirovat stejně
+    // jako běžná session — jinak by ukradená cookie zůstala platná navždy.
+    if (Date.now() > p.iat + SESSION_MS) return null;
+    return "legacy";
+  }
   if (p.t === "admin_s") {
     if (Date.now() > p.exp) return null;
     if (!isAdminEmail(p.e)) return null;
@@ -166,7 +189,7 @@ export function getAdminActorFromRequest(request: Request): string {
   return "neznámý";
 }
 
-/** Ověření pro route handlery: Bearer token nebo session cookie. */
+/** Ověření pro route handlery: Bearer token (ADMIN_API_KEY, nebo ADMIN_SECRET jako fallback) nebo session cookie. */
 export function verifyAdminRequest(request: Request): boolean {
   const secret = getAdminSecret();
   if (!secret) return false;
@@ -174,6 +197,8 @@ export function verifyAdminRequest(request: Request): boolean {
   const auth = request.headers.get("authorization");
   if (auth?.startsWith("Bearer ")) {
     const token = auth.slice("Bearer ".length).trim();
+    const apiKey = getAdminApiKey();
+    if (apiKey) return constantTimeEqual(token, apiKey);
     return constantTimeEqual(token, secret);
   }
 

@@ -23,12 +23,14 @@ export default async function RegistracePage({
 }: {
   searchParams: Promise<{ run?: string; aiLevel?: string }>;
 }) {
-  const q = await searchParams;
-  const pricing = await getPublicCoursePricing();
-  const offered = await listOfferedCourseRuns();
+  const [q, pricing, offered, merged] = await Promise.all([
+    searchParams,
+    getPublicCoursePricing(),
+    listOfferedCourseRuns(),
+    listRegistrationsMerged(),
+  ]);
   const groupRuns = offered.filter((r) => r.format === "skupina");
   const individualRuns = offered.filter((r) => r.format === "individual");
-  const merged = await listRegistrationsMerged();
   const occupancyByRunId: Record<string, number> = {};
   for (const run of offered) {
     occupancyByRunId[run.id] = countedOccupancyForRun(

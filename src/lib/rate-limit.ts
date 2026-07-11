@@ -12,6 +12,8 @@ const scopes = {
   /** Veřejná přihláška — citlivé na spam. */
   registrace: { limit: 8, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
   checkout: { limit: 30, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
+  /** Zápis do čekací listiny na plný termín. */
+  waitlist: { limit: 8, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
   /** Požadavek na magic odkaz e-mailem — přísněji než běžné přihlášení. */
   rodicMagic: { limit: 5, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
   /** GET dokončení magic odkazu (redirect + cookie). */
@@ -22,6 +24,8 @@ const scopes = {
   rodicRegister: { limit: 8, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
   /** Veřejný výpis termínů (GET). */
   courseRunsPublic: { limit: 180, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
+  /** /platba a /registrace/potvrzeni — načtou přihlášku podle krátkého veřejného kódu (proti hádání kódu). */
+  registrationLookup: { limit: 40, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
   /** Admin API (po ověření nebo u loginu). */
   adminApi: { limit: 200, windowLabel: "1 h" as const, windowMs: ONE_HOUR_MS },
   /** Přihlášení do adminu (sdílené tajemství) — proti brute force. */
@@ -36,6 +40,12 @@ export type RateLimitScope = keyof typeof scopes;
 
 type RpcResult = { allowed: boolean; retry_after?: number };
 
+/** `configured: false` = Supabase se pro rate limit nepoužívá (jiný backend); `ok: false` = nakonfigurováno, ale RPC selhalo. */
+type SupabaseRateLimitOutcome =
+  | { configured: false }
+  | { configured: true; ok: true; row: RpcResult }
+  | { configured: true; ok: false };
+
 function fingerprintIdentifier(identifier: string): string {
   const trimmed = identifier.trim().toLowerCase();
   if (!trimmed) return "";
@@ -46,9 +56,9 @@ async function rateLimitViaSupabase(
   scope: RateLimitScope,
   ip: string,
   limit: number,
-): Promise<RpcResult | null> {
+): Promise<SupabaseRateLimitOutcome> {
   const supabase = getSupabaseAdmin();
-  if (!supabase) return null;
+  if (!supabase) return { configured: false };
 
   const { data, error } = await supabase.rpc("web_check_rate_limit", {
     p_scope: scope,
@@ -58,16 +68,16 @@ async function rateLimitViaSupabase(
 
   if (error) {
     console.error("[rate-limit] Supabase:", error.message);
-    return null;
+    return { configured: true, ok: false };
   }
 
   const row = data as RpcResult | null;
   if (!row || typeof row.allowed !== "boolean") {
     console.error("[rate-limit] Supabase: neočekávaná odpověď", data);
-    return null;
+    return { configured: true, ok: false };
   }
 
-  return row;
+  return { configured: true, ok: true, row };
 }
 
 function createRedis(): Redis | null {
@@ -144,12 +154,33 @@ export async function rateLimitResponse(
   const rateKey = idFingerprint ? `${ip}:${idFingerprint}` : ip;
 
   const sb = await rateLimitViaSupabase(scope, rateKey, cfg.limit);
-  if (sb !== null) {
-    if (!sb.allowed) {
-      const retry = Math.max(1, Math.floor(sb.retry_after ?? 3600));
-      return tooManyResponse(retry);
+  if (sb.configured) {
+    if (sb.ok) {
+      if (!sb.row.allowed) {
+        const retry = Math.max(1, Math.floor(sb.row.retry_after ?? 3600));
+        return tooManyResponse(retry);
+      }
+      return null;
     }
-    return null;
+
+    // Supabase je nakonfigurováno (produkce s ním počítá), ale RPC selhalo.
+    // Fail-open by při výpadku Supabase dočasně vypnul rate limiting úplně —
+    // proto padáme jen na skutečně distribuovaný fallback (Redis), ne na paměť instance.
+    const limiter = ratelimiter(scope);
+    if (limiter) {
+      const result = await limiter.limit(rateKey);
+      if (result.success) return null;
+      const retryAfter = Math.max(
+        1,
+        Math.ceil((result.reset - Date.now()) / 1000),
+      );
+      return tooManyResponse(retryAfter);
+    }
+
+    console.error(
+      `[security] Rate limit fail-closed (scope=${scope}) — Supabase RPC selhalo a chybí UPSTASH_REDIS_* fallback.`,
+    );
+    return tooManyResponse(60);
   }
 
   const limiter = ratelimiter(scope);
