@@ -6,29 +6,8 @@ export function MagicBackdrop() {
       aria-hidden
     >
       <div className="magic-gradient-bg absolute inset-0" />
-      <div className="magic-blob magic-blob--a absolute -left-20 top-20 h-48 w-48 rounded-full opacity-30 blur-xl sm:h-72 sm:w-72 sm:opacity-45 sm:blur-3xl" />
-      <div className="magic-blob magic-blob--b absolute -right-16 top-1/3 h-56 w-56 rounded-full opacity-26 blur-xl sm:h-96 sm:w-96 sm:opacity-35 sm:blur-3xl" />
-      <div className="magic-blob magic-blob--c absolute bottom-0 left-1/3 hidden h-64 w-64 -translate-x-1/2 rounded-full opacity-28 blur-2xl sm:block sm:h-80 sm:w-80 sm:opacity-33 sm:blur-3xl" />
-      <svg
-        className="magic-stars absolute inset-0 h-full w-full opacity-[0.18]"
-        xmlns="http://www.w3.org/2000/svg"
-        preserveAspectRatio="xMidYMid slice"
-      >
-        <defs>
-          <pattern
-            id="star-grid"
-            width="80"
-            height="80"
-            patternUnits="userSpaceOnUse"
-          >
-            <circle cx="10" cy="20" r="1.2" className="fill-[var(--magic-sun)]" />
-            <circle cx="45" cy="8" r="0.8" className="fill-white" />
-            <circle cx="70" cy="55" r="1" className="fill-[var(--magic-pink)]" />
-            <circle cx="25" cy="65" r="0.7" className="fill-[var(--magic-mint)]" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#star-grid)" />
-      </svg>
+      <div className="magic-blob magic-blob--a absolute -left-20 top-20 h-48 w-48 rounded-full opacity-20 blur-2xl sm:h-64 sm:w-64 sm:opacity-20 sm:blur-3xl" />
+      <div className="magic-blob magic-blob--b absolute -right-16 top-1/3 h-56 w-56 rounded-full opacity-16 blur-2xl sm:h-72 sm:w-72 sm:opacity-16 sm:blur-3xl" />
     </div>
   );
 }

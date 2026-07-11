@@ -358,7 +358,7 @@ export function RegistrationForm({
             Konkrétní termíny zatím nejsou vypsané.
           </p>
           <p className="mt-1 text-xs font-medium leading-relaxed text-slate-700">
-            Přihlášku můžete odeslat hned - konkrétní termín vám potvrdíme podle
+            Přihlášku můžete odeslat hned — konkrétní termín vám potvrdíme podle
             zájmu a věkové skupiny.
           </p>
         </div>
@@ -370,7 +370,7 @@ export function RegistrationForm({
             Časový slot 1:1 (volitelně)
           </legend>
           <p className="text-xs font-medium leading-relaxed text-slate-600">
-            Pokud máme vypsaný konkrétní slot, můžete ho vybrat - jinak nechte
+            Pokud máme vypsaný konkrétní slot, můžete ho vybrat — jinak nechte
             pole prázdné a čas domluvíme.
           </p>
           <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-violet-400 sm:text-sm">
@@ -433,7 +433,7 @@ export function RegistrationForm({
             Veřejné 1:1 sloty zatím nejsou vypsané.
           </p>
           <p className="mt-1 text-xs font-medium leading-relaxed text-slate-700">
-            Přihlášku můžete odeslat - konkrétní čas kurzu s vámi domluvíme.
+            Přihlášku můžete odeslat — konkrétní čas kurzu s vámi domluvíme.
           </p>
         </div>
       ) : null}
@@ -653,7 +653,7 @@ export function RegistrationForm({
         }
         className="btn-magic w-full disabled:translate-y-0 disabled:opacity-50"
       >
-        {status === "loading" ? "Odesílám… ✨" : "Odeslat přihlášku 🚀"}
+        {status === "loading" ? "Odesílám…" : "Odeslat přihlášku"}
       </button>
       <p className="text-center text-xs font-semibold text-slate-600">
         Odeslání přihlášky je nezávazné. Po potvrzení otevřených termínů vám

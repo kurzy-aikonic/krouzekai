@@ -58,7 +58,7 @@ export function CourseSignupToast() {
 
       <div className="mt-3">
         <Link href="/registrace" className="btn-magic w-full text-sm">
-          Přihlásit na kurz 🚀
+          Přihlásit na kurz
         </Link>
       </div>
     </div>

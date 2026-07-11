@@ -14,7 +14,7 @@ export function GlobalJsonLd() {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "Organization",
+        "@type": "EducationalOrganization",
         "@id": orgId,
         name: site.shortName,
         alternateName: site.name,

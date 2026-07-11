@@ -78,7 +78,7 @@ export default async function RegistracePotvrzeniPage({
             Přihláška byla úspěšně odeslána
           </p>
           <h1 className="mt-2 font-display text-3xl font-extrabold text-emerald-950 sm:text-4xl">
-            Mise zahájena! 🚀
+            Mise zahájena!
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-emerald-900 sm:text-base">
             Děkujeme za registraci do {site.name}. Ozveme se vám do 24 hodin a

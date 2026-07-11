@@ -20,7 +20,7 @@ export default function KontaktPage() {
         ]}
       />
       <div className="mx-auto max-w-4xl px-6 py-12 sm:px-6 sm:py-16">
-        <h1 className="page-h1">Kontakt ✉️</h1>
+        <h1 className="page-h1">Kontakt</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
           Máte dotaz k termínům, formátu nebo vhodnosti kurzu pro vaše dítě?
           Napište nám — stejné kontakty jako u{" "}

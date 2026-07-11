@@ -10,12 +10,13 @@ import { listRegistrationsMerged } from "@/lib/registrations-store";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Aktuální termíny kroužku",
+  title: "Termíny AI kroužku pro děti — aktuální běhy",
   description: metaDescriptions.aktualniBehy,
   path: "/aktualni-behy",
+  keywords: ["termíny AI kroužku", "AI kroužek zápis 2026"],
 });
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default async function AktualniBehyPage() {
   const runs = await listOfferedCourseRuns();
@@ -41,7 +42,7 @@ export default async function AktualniBehyPage() {
         ]}
       />
       <div className="mx-auto max-w-4xl px-6 py-12 sm:px-6 sm:py-16">
-        <h1 className="page-h1">Aktuální termíny 📅</h1>
+        <h1 className="page-h1">Aktuální termíny</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
           Všechny termíny, které právě nabízíme — skupinové i individuální 1:1.
           Skupinový kurz startuje až po naplnění kapacity (100 % míst) — do té

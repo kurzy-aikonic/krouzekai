@@ -24,16 +24,12 @@ export function buildFaqItems(pricing: CoursePricing): { q: string; a: string }[
     a: "Ne. Využíváme bezplatné verze nástrojů nebo naše licence.",
   },
   {
-    q: "Je práce s AI bezpečná?",
-    a: "Ano. Děti učíme etiku, ochranu soukromí a kyberbezpečnost hned od první lekce.",
+    q: "Je práce s AI pro děti bezpečná?",
+    a: "Ano. Děti učíme etiku, ochranu soukromí a kyberbezpečnost hned od první lekce — co je bezpečné sdílet, co ne a kdy AI výstupům věřit. Rodiče navíc dostanou stručné doporučení k účtům u AI nástrojů (věková omezení) a k rozumnému dohledu nad dítětem během kurzu.",
   },
   {
     q: "Jak probíhá platba?",
     a: "Po registraci vás kontaktujeme a domluvíme podmínky. Fakturu vystavujeme a posíláme individuálně, nikoli automaticky z webu. Po obdržení faktury platíte podle uvedených údajů.",
-  },
-  {
-    q: "Je práce s AI pro děti bezpečná?",
-    a: "V kurzu probíráme bezpečnost a etiku — co sdílet, co ne, kdy AI věřit. Rodiče dostanou stručné doporučení k účtům nástrojů a dohledu.",
   },
   {
     q: "Kolik to stojí?",

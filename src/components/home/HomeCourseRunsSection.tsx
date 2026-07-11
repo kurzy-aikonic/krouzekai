@@ -72,7 +72,7 @@ export function HomeCourseRunsSection({
 
       <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
         <Link href="/registrace" className="btn-magic w-full text-center sm:w-auto">
-          Nezávazně přihlásit dítě 🚀
+          Nezávazně přihlásit dítě
         </Link>
       </div>
     </section>

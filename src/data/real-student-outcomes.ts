@@ -5,6 +5,9 @@ export type OutcomeProject = {
   title: string;
   summary: string;
   detail: string;
+  /** Ilustrativní náhled projektu (public/projects/…). Dočasné vizuály, dokud nemáme reálné screenshoty. */
+  imageSrc?: string;
+  imageAlt?: string;
 };
 
 export type FeedbackRating = {
@@ -27,6 +30,9 @@ export const realOutcomeProjects: OutcomeProject[] = [
       "Během první lekce dítě s AI vytvořilo jednoduchou arkádovou hru v HTML — včetně opravy chyby a spuštění.",
     detail:
       "Student zadal zadání, nechal si vygenerovat kód, otestoval hru a společně s lektorem doladil chybu při spuštění. Výsledek šel okamžitě spustit v prohlížeči — silný praktický efekt bez klasického programování.",
+    imageSrc: "/projects/project-mini-hra.png",
+    imageAlt:
+      "Ilustrace mini arkádové hry v prohlížeči, kterou lze vytvořit s AI v kroužku (dočasný ilustrativní náhled)",
   },
   {
     emoji: "📝",
@@ -51,6 +57,9 @@ export const realOutcomeProjects: OutcomeProject[] = [
       "Cíl kurzu: do desáté lekce mít funkční prototyp — web, mini aplikaci nebo projekt připravený k publikování.",
     detail:
       "Student pracoval s Claude Cowork, artefakty a nástroji pro tvorbu webu. Největší přínos v hodnocení? Právě režim Cowork a práce na vlastním projektu od nápadu po hotový výstup.",
+    imageSrc: "/projects/project-vlastni-web.png",
+    imageAlt:
+      "Ilustrace jednoduché webové stránky vytvořené s AI v kroužku (dočasný ilustrativní náhled)",
   },
   {
     emoji: "🔍",

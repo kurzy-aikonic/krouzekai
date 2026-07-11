@@ -6,9 +6,10 @@ import { Section } from "@/components/ui/Section";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Co děti reálně tvoří",
+  title: "Co děti tvoří s AI — reálné projekty z kurzu",
   description: metaDescriptions.coDetiTvori,
   path: "/co-deti-tvori",
+  keywords: ["co se děti naučí s AI", "dětské AI projekty", "tvorba her s AI"],
 });
 
 export default function CoDetiTvoriPage() {
@@ -21,7 +22,7 @@ export default function CoDetiTvoriPage() {
         ]}
       />
       <div className="mx-auto max-w-4xl px-6 py-12 sm:px-6 sm:py-16">
-        <h1 className="page-h1">Co děti reálně tvoří ✨</h1>
+        <h1 className="page-h1">Co děti reálně tvoří</h1>
         <p className="mt-4 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
           Ne sliby z brožury — konkrétní výstupy z reálného kurzu. Hry, prompty,
           učební materiály i vlastní projekt. A zpětná vazba absolventa, která
@@ -44,7 +45,7 @@ export default function CoDetiTvoriPage() {
             href="/registrace"
             className="btn-magic mt-6 inline-flex min-h-11 items-center justify-center px-8"
           >
-            Nezávazně přihlásit dítě 🚀
+            Nezávazně přihlásit dítě
           </Link>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { HomeCourseRunsSection } from "@/components/home/HomeCourseRunsSection";
 import { RealOutcomesContent } from "@/components/outcomes/RealOutcomesContent";
@@ -13,13 +14,19 @@ import { pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Kroužek umělé inteligence pro děti | Vaše dítě vytvoří hru s AI",
+  title: "Kroužek umělé inteligence pro děti — hra nebo web s AI",
   description:
-    "Moderní online kroužek pro děti 10–17 let. Učíme tvořit aplikace, weby a hry pomocí AI bez nutnosti programování. Přihlaste se nezávazně!",
+    "Moderní online kroužek umělé inteligence pro děti 10–17 let. Učíme tvořit hry, appky a weby pomocí AI bez nutnosti programování. Přihlaste se nezávazně!",
   path: "/",
+  keywords: [
+    "kroužek umělé inteligence pro děti",
+    "AI kroužek online",
+    "kurz AI pro děti",
+  ],
 });
 
-export const dynamic = "force-dynamic";
+// Termíny a obsazenost se nemění po vteřinách — ISR místo force-dynamic zrychlí TTFB.
+export const revalidate = 300;
 
 const learnItems = [
   {
@@ -27,7 +34,7 @@ const learnItems = [
     title: "Vibecoding",
     text: "Dítě se naučí zadat AI jasné instrukce a převést nápad do funkčního projektu.",
     example: "Např. „Navrhni pixelovou hru, kde hráč sbírá hvězdy.“",
-    accent: "from-violet-400 to-fuchsia-400",
+    accent: "from-violet-400 to-violet-600",
     border: "border-violet-500",
   },
   {
@@ -35,7 +42,7 @@ const learnItems = [
     title: "Prompt engineering",
     text: "Dítě si osvojí, jak s AI komunikovat přesně a bezpečně.",
     example: "Např. přidat pravidla stylu, délku odpovědi, bezpečnost.",
-    accent: "from-sky-400 to-cyan-400",
+    accent: "from-sky-400 to-sky-600",
     border: "border-sky-500",
   },
   {
@@ -43,7 +50,7 @@ const learnItems = [
     title: "AI game design",
     text: "Návrh levelů, postav a herních mechanik s AI jako tvůrčím pomocníkem.",
     example: "Např. generování nápadů na nepřátele a odměny.",
-    accent: "from-amber-400 to-orange-400",
+    accent: "from-amber-400 to-amber-600",
     border: "border-amber-500",
   },
   {
@@ -51,24 +58,24 @@ const learnItems = [
     title: "Tvorba vizuálů",
     text: "Grafika, postavy i pozadí pro vlastní projekt dítěte.",
     example: "Např. styl „komiksový vesmír“ pro celou hru.",
-    accent: "from-emerald-400 to-teal-400",
-    border: "border-emerald-500",
+    accent: "from-violet-400 to-violet-600",
+    border: "border-violet-500",
   },
   {
     emoji: "🤖",
     title: "Vlastní AI asistent",
     text: "Mini chatbot nebo praktický AI pomocník pro konkrétní úkol.",
     example: "Např. asistent na učení slovíček nebo plánování úkolů.",
-    accent: "from-rose-400 to-pink-400",
-    border: "border-rose-500",
+    accent: "from-sky-400 to-sky-600",
+    border: "border-sky-500",
   },
   {
     emoji: "🛡️",
     title: "Bezpečnost a etika",
     text: "Co je bezpečné sdílet, co ne a jak ověřovat výstupy AI.",
     example: "Např. fakt vs. halucinace, soukromí, respekt k druhým.",
-    accent: "from-indigo-400 to-violet-400",
-    border: "border-indigo-500",
+    accent: "from-amber-400 to-amber-600",
+    border: "border-amber-500",
   },
 ] as const;
 
@@ -99,44 +106,40 @@ export default async function HomePage() {
       <HomeJsonLd />
       <div className="relative mx-auto max-w-6xl px-6 py-10 pb-28 sm:px-6 sm:py-14 sm:pb-14">
         {/* Hero */}
-        <header className="relative overflow-x-hidden">
-          <div
-            className="float-slow pointer-events-none absolute -right-2 top-0 hidden text-4xl sm:right-8 sm:block sm:text-5xl"
-            aria-hidden
-          >
-            🚀
-          </div>
-          <div
-            className="float-delay pointer-events-none absolute -left-2 top-24 hidden text-3xl sm:left-4 sm:block sm:text-4xl"
-            aria-hidden
-          >
-            🎮
-          </div>
-
-          <h1 className="font-display mt-5 max-w-4xl text-3xl font-extrabold leading-[1.12] tracking-tight sm:mt-6 sm:text-5xl lg:text-6xl">
-            <span className="text-gradient-magic">Vaše dítě vytvoří vlastní hru,</span>
-            <br />
-            <span className="text-[var(--magic-ink)]">appku nebo web</span>
-            <br />
-            <span className="text-lg font-bold text-violet-700 sm:text-3xl lg:text-4xl">
-              — s AI, bez nudného programování ✨
-            </span>
+        <header className="relative grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <div>
+          <h1 className="font-display mt-5 max-w-3xl text-3xl font-extrabold leading-[1.12] tracking-tight sm:mt-6 sm:text-5xl lg:text-6xl">
+            <span className="text-gradient-magic">Vaše dítě vytvoří vlastní hru, appku nebo web</span>{" "}
+            <span className="text-[var(--magic-ink)]">— s pomocí AI</span>
           </h1>
+          <p className="mt-3 max-w-xl text-lg font-bold text-violet-700 sm:text-xl">
+            Online kroužek pro děti {site.audience.ageMin}–{site.audience.ageMax} let. Bez klasického programování.
+          </p>
 
-          <p className="mt-5 max-w-2xl text-base font-semibold leading-relaxed text-slate-800 sm:mt-6 sm:text-lg md:text-xl">
-            Pro děti, které chtějí tvořit, a rodiče, kteří chtějí jasný výsledek{" "}
-            <span className="rounded-lg bg-[var(--magic-sun)] px-2 py-0.5 font-display text-[var(--magic-ink)]">
-              {site.audience.ageMin}–{site.audience.ageMax} let
-            </span>
-            . Skupiny skládáme podle věku - tempo i témata ladíme na konkrétní
-            segment, ne na jeden univerzální mix. Skupinka max.{" "}
-            {p.groupMaxStudents} nebo kurz 1:1. Žádná suchá teorie — jen nápad,
-            AI a{" "}
+          <p className="mt-5 max-w-2xl text-base font-semibold leading-relaxed text-slate-800 sm:mt-6 sm:text-lg">
+            Žádná suchá teorie — jen nápad, AI a{" "}
             <span className="underline decoration-wavy decoration-[var(--magic-pink)] decoration-2">
-              hotová věc
+              hotový výsledek
             </span>
             , který dítě skutečně vytvoří.
           </p>
+
+          <ul className="mt-5 flex max-w-2xl flex-wrap gap-2" aria-label="Klíčové parametry kurzu">
+            {[
+              `${site.audience.ageMin}–${site.audience.ageMax} let`,
+              `Skupinka max. ${p.groupMaxStudents} dětí nebo 1:1`,
+              `${p.lessons} lekcí × ${p.lessonMinutes} min`,
+              "Vždy online",
+            ].map((fact) => (
+              <li
+                key={fact}
+                className="rounded-full border border-violet-200 bg-white px-3 py-1.5 text-xs font-bold text-violet-900 shadow-sm sm:text-sm"
+              >
+                {fact}
+              </li>
+            ))}
+          </ul>
+
           <p className="mt-4 max-w-2xl text-sm font-semibold leading-relaxed text-violet-900 sm:text-base">
             {hasPublicRuns ? (
               <>
@@ -154,7 +157,7 @@ export default async function HomePage() {
 
           <div className="mt-8 flex w-full max-w-md flex-col gap-3 sm:mt-10 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center">
             <Link href="/registrace" className="btn-magic w-full text-center sm:w-auto">
-              Nezávazně přihlásit dítě 🚀
+              Nezávazně přihlásit dítě
             </Link>
             {hasPublicRuns ? (
               <Link
@@ -165,10 +168,27 @@ export default async function HomePage() {
               </Link>
             ) : (
               <Link href="/jak-probiha" className="btn-magic-outline w-full text-center sm:w-auto">
-                Jak to u nás funguje
+                Jak kroužek probíhá
               </Link>
             )}
           </div>
+        </div>
+
+        <div className="relative mx-auto w-full max-w-md lg:mx-0 lg:max-w-none">
+          <div className="relative overflow-hidden rounded-3xl border border-violet-200 bg-white shadow-[0_20px_45px_-15px_rgba(109,40,217,0.35)]">
+            <Image
+              src="/projects/project-mini-hra.png"
+              alt="Ukázka jednoduché hry v prohlížeči, jakou si dítě může vytvořit s AI v kroužku"
+              width={900}
+              height={600}
+              className="h-auto w-full"
+              priority
+            />
+          </div>
+          <p className="mt-2 text-center text-xs font-medium text-slate-500 lg:text-left">
+            Ilustrační náhled — takhle může vypadat hra, kterou si dítě vytvoří s AI.
+          </p>
+        </div>
         </header>
 
         <HomeCourseRunsSection
@@ -315,7 +335,7 @@ export default async function HomePage() {
               </p>
               <p className="mt-2 text-xs font-medium text-slate-600">{p.vatNote}</p>
               <Link href="/registrace" className="btn-magic mt-5 w-full text-center">
-                Nezávazně přihlásit dítě 🚀
+                Nezávazně přihlásit dítě
               </Link>
             </div>
 
@@ -373,8 +393,8 @@ export default async function HomePage() {
               Pro děti {site.audience.ageMin} až {site.audience.ageMax} let,
               které milují technologie a chtějí <strong>tvořit</strong>, ne jen
               scrollovat. Skupiny dělíme podle věku, aby úroveň seděla všem v
-              kurzu - žádný univerzální mix, kde by se starší nudili a mladší
-              nestíhali. Není to klasický kurz programování - tady děti staví věci s
+              kurzu — žádný univerzální mix, kde by se starší nudili a mladší
+              nestíhali. Není to klasický kurz programování — tady děti staví věci s
               AI. A rodiče mohou být v klidu: všechno dětem vysvětlíme
               srozumitelně, lidsky a s důrazem na kyberbezpečnost.
             </p>
@@ -401,7 +421,7 @@ export default async function HomePage() {
             </div>
             <p className="mt-4 font-medium leading-relaxed text-slate-800">
               Dětem předáváme moderní digitální dovednosti prakticky a srozumitelně
-              - tak, aby je uměly bezpečně využít ve škole i mimo ni. 🎯
+              — tak, aby je uměly bezpečně využít ve škole i mimo ni.
             </p>
           </div>
         </Section>
@@ -446,7 +466,7 @@ export default async function HomePage() {
                 : "Vyplňte přihlášku — ozveme se a společně doladíme termín i formát."}
             </p>
             <Link href="/registrace" className="btn-magic mt-8 inline-flex min-h-11 w-full max-w-sm items-center justify-center sm:w-auto sm:max-w-none sm:px-8 sm:py-4 sm:text-lg">
-              Nezávazně přihlásit dítě 🚀
+              Nezávazně přihlásit dítě
             </Link>
             <p className="mx-auto mt-3 max-w-lg text-xs font-semibold text-violet-200">
               Odeslání přihlášky je nezávazné. Po potvrzení otevřených termínů

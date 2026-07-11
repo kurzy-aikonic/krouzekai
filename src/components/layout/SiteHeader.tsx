@@ -7,13 +7,12 @@ import { BrandSubtitle } from "@/components/layout/BrandSubtitle";
 import { site } from "@/lib/site-config";
 
 const nav = [
-  { href: "/", label: "O kurzu", emoji: "🎓" },
-  { href: "/test-urovne-ai", label: "AI test zdarma", emoji: "🧠" },
-  { href: "/co-deti-tvori", label: "Co děti tvoří", emoji: "✨" },
-  { href: "/jak-probiha", label: "Jak to u nás funguje", emoji: "⚡" },
-  { href: "/faq", label: "Časté otázky", emoji: "❓" },
-  { href: "/kontakt", label: "Kontakt", emoji: "✉️" },
-  { href: "/registrace", label: "Registrace", emoji: "🚀" },
+  { href: "/", label: "O kurzu" },
+  { href: "/test-urovne-ai", label: "AI test" },
+  { href: "/co-deti-tvori", label: "Co děti tvoří" },
+  { href: "/jak-probiha", label: "Jak kroužek probíhá" },
+  { href: "/faq", label: "Časté otázky" },
+  { href: "/kontakt", label: "Kontakt" },
 ] as const;
 
 export function SiteHeader() {
@@ -81,30 +80,41 @@ export function SiteHeader() {
               key={item.href}
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
-              className={`font-display flex min-h-10 items-center gap-1 whitespace-nowrap rounded-xl border px-2.5 py-2 text-[11px] font-bold transition-colors lg:px-3 lg:text-sm ${
+              className={`font-display relative flex min-h-10 items-center whitespace-nowrap rounded-xl px-2.5 py-2 text-[11px] font-bold transition-colors lg:px-3 lg:text-sm ${
                 isActive(item.href)
-                  ? "border-violet-300 bg-violet-50 text-violet-900"
-                  : "border-slate-200 bg-white text-slate-700 hover:border-violet-200 hover:text-violet-800"
+                  ? "text-violet-900"
+                  : "text-slate-700 hover:text-violet-800"
               }`}
             >
-              <span className="hidden lg:inline" aria-hidden>
-                {item.emoji}
-              </span>
               <span>{item.label}</span>
+              {isActive(item.href) ? (
+                <span
+                  className="absolute inset-x-2.5 -bottom-[1px] h-[3px] rounded-full bg-violet-600 lg:inset-x-3"
+                  aria-hidden
+                />
+              ) : null}
             </Link>
           ))}
+          <Link href="/registrace" className="btn-magic ml-1 min-h-10 px-4 py-2 text-[11px] lg:px-5 lg:text-sm">
+            Registrace
+          </Link>
         </nav>
 
-        <button
-          type="button"
-          className="font-display flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-sm font-extrabold text-slate-700 shadow-sm md:hidden"
-          aria-expanded={menuOpen}
-          aria-controls={menuId}
-          aria-label={menuOpen ? "Zavřít menu" : "Otevřít menu"}
-          onClick={() => setMenuOpen((o) => !o)}
-        >
-          {menuOpen ? "✕" : "☰"}
-        </button>
+        <div className="flex shrink-0 items-center gap-2 md:hidden">
+          <Link href="/registrace" className="btn-magic min-h-11 px-4 text-sm">
+            Registrace
+          </Link>
+          <button
+            type="button"
+            className="font-display flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-sm font-extrabold text-slate-700 shadow-sm"
+            aria-expanded={menuOpen}
+            aria-controls={menuId}
+            aria-label={menuOpen ? "Zavřít menu" : "Otevřít menu"}
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            {menuOpen ? "✕" : "☰"}
+          </button>
+        </div>
       </div>
 
       {menuOpen ? (
@@ -126,16 +136,13 @@ export function SiteHeader() {
                   <Link
                     href={item.href}
                     aria-current={isActive(item.href) ? "page" : undefined}
-                    className={`font-display flex min-h-12 items-center gap-3 rounded-xl border px-4 py-3 text-base font-bold active:bg-violet-50 ${
+                    className={`font-display flex min-h-12 items-center rounded-xl border px-4 py-3 text-base font-bold active:bg-violet-50 ${
                       isActive(item.href)
                         ? "border-violet-300 bg-violet-50 text-violet-900"
                         : "border-slate-200 bg-white text-slate-700"
                     }`}
                     onClick={closeMenu}
                   >
-                    <span className="text-xl" aria-hidden>
-                      {item.emoji}
-                    </span>
                     {item.label}
                   </Link>
                 </li>

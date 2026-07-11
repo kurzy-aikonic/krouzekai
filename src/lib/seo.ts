@@ -25,36 +25,29 @@ export function rootSchemaDescription(): string {
 export const seoKeywords = [
   "Kroužek umělé inteligence",
   "kroužek umělé inteligence online",
-  "krouzekumeleinteligence",
   "kroužek AI",
   "AI kroužek pro děti",
   "kurz AI pro děti",
   "ChatGPT pro děti",
-  "Claude",
-  "Cursor",
   "vibecoding",
   "promptování",
-  "kurz pro děti",
   "online kurz",
   "tvorba her",
   "programování bez kódu",
   `děti ${site.audience.ageMin}–${site.audience.ageMax} let`,
   "Aikonic",
-  "AIKONIC",
 ] as const;
 
 const ogImageFromEnv = process.env.NEXT_PUBLIC_OG_IMAGE;
-const ogImageFallback = "/logo_krouzek_umele_iteligence_edited.png";
+const ogImageFallback = "/og-image.png";
 const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 
 function openGraphImages(): NonNullable<Metadata["openGraph"]>["images"] {
   const candidate = ogImageFromEnv?.trim() || ogImageFallback;
   try {
     const url = new URL(candidate, getSiteUrl());
-    if (ogImageFromEnv?.trim()) {
-      return [{ url: url.toString(), width: 1200, height: 630, alt: site.name }];
-    }
-    return [{ url: url.toString(), alt: site.name }];
+    // Vlastní OG obrázek (og-image.png) i env override mají standardní rozměr 1200×630.
+    return [{ url: url.toString(), width: 1200, height: 630, alt: site.name }];
   } catch {
     return undefined;
   }
@@ -81,6 +74,8 @@ export type PageSeoInput = {
   title: string;
   description: string;
   path: string;
+  /** Specifická klíčová slova pro danou stránku (3–5 ks). Globální seznam zůstává jako fallback. */
+  keywords?: string[];
   /** Např. platební stránka — neindexovat, ale sledovat odkazy */
   noIndex?: boolean;
 };
@@ -99,13 +94,12 @@ export function pageMetadata(input: PageSeoInput): Metadata {
   return {
     title: input.title,
     description: input.description,
-    keywords: [...seoKeywords],
+    // Web je čistě český — jediná varianta jazyka, x-default/cs-CZ duplikace nemá smysl.
+    keywords: input.keywords?.length
+      ? [...input.keywords, ...seoKeywords]
+      : [...seoKeywords],
     alternates: {
       canonical,
-      languages: {
-        "cs-CZ": canonical,
-        "x-default": canonical,
-      },
     },
     robots: input.noIndex
       ? { index: false, follow: true }

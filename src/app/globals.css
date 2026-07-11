@@ -45,32 +45,16 @@ html {
   }
   .magic-blob,
   .magic-gradient-bg,
-  .magic-stars,
-  .float-slow,
-  .float-delay,
   .wiggle-hover,
-  .sparkle-bit,
-  .rainbow-border-anim {
+  .sparkle-bit {
     animation: none !important;
   }
 }
 
-/* Úzké displeje: žádné animované pozadí ani „plavání“ emoji — výrazně levnější GPU */
+/* Úzké displeje: žádné animované pozadí — výrazně levnější GPU */
 @media (max-width: 639px) {
-  .magic-blob,
-  .magic-stars {
+  .magic-blob {
     animation: none !important;
-  }
-  .magic-stars {
-    opacity: 0.18 !important;
-  }
-  .float-slow,
-  .float-delay {
-    animation: none !important;
-  }
-  .rainbow-strip {
-    animation: none !important;
-    background-position: 0% 50%;
   }
   .magic-gradient-bg {
     background:
@@ -134,15 +118,6 @@ body {
   animation-delay: -6s;
   animation-duration: 22s;
 }
-.magic-blob--c {
-  background: linear-gradient(135deg, #fde68a, #fb923c);
-  animation-delay: -12s;
-  animation-duration: 20s;
-}
-
-.magic-stars {
-  animation: stars-twinkle 8s ease-in-out infinite;
-}
 
 @keyframes blob-drift {
   0%,
@@ -155,35 +130,6 @@ body {
   66% {
     transform: translate(-20px, 15px) scale(0.95);
   }
-}
-
-@keyframes stars-twinkle {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.55;
-  }
-}
-
-@keyframes float-y {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.float-slow {
-  animation: float-y 4s ease-in-out infinite;
-}
-
-.float-delay {
-  animation: float-y 5s ease-in-out infinite;
-  animation-delay: -2s;
 }
 
 .wiggle-hover {
@@ -280,43 +226,6 @@ body {
   to {
     opacity: 0;
     transform: rotate(var(--d, 0deg)) translateY(-52px);
-  }
-}
-
-.rainbow-strip {
-  background: linear-gradient(
-    90deg,
-    #ef4444,
-    #f97316,
-    #eab308,
-    #22c55e,
-    #3b82f6,
-    #a855f7,
-    #ec4899
-  );
-  background-size: 200% 100%;
-  animation: rainbow-shift 6s linear infinite;
-}
-
-@keyframes rainbow-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
-}
-
-.rainbow-border-anim {
-  animation: rainbow-border-rotate 4s linear infinite;
-}
-
-@keyframes rainbow-border-rotate {
-  0% {
-    filter: hue-rotate(0deg);
-  }
-  100% {
-    filter: hue-rotate(360deg);
   }
 }
 

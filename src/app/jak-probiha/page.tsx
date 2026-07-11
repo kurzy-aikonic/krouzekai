@@ -5,9 +5,10 @@ import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Jak to u nás funguje",
+  title: "Jak probíhá online kroužek AI pro děti",
   description: metaDescriptions.jakProbiha,
   path: "/jak-probiha",
+  keywords: ["jak probíhá online kroužek AI", "online výuka AI děti"],
 });
 
 const blocks = [
@@ -35,11 +36,11 @@ export default function JakProbihaPage() {
       <BreadcrumbJsonLd
         items={[
           { name: "Úvod", path: "/" },
-          { name: "Jak to u nás funguje", path: "/jak-probiha" },
+          { name: "Jak kroužek probíhá", path: "/jak-probiha" },
         ]}
       />
       <div className="mx-auto max-w-4xl px-6 py-12 sm:px-6 sm:py-16">
-        <h1 className="page-h1">Jak to u nás funguje ⚡</h1>
+        <h1 className="page-h1">Jak kroužek probíhá</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
           Stručně a srozumitelně pro rodiče i děti — aby bylo jasné, co čekat před
           první hodinou.

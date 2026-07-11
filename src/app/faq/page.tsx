@@ -6,12 +6,13 @@ import { getCoursePricing } from "@/lib/course-pricing-store";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Časté otázky o kroužku (FAQ)",
+  title: "Časté otázky — AI kroužek pro děti",
   description: metaDescriptions.faq,
   path: "/faq",
+  keywords: ["AI kroužek otázky", "bezpečnost AI pro děti", "cena AI kroužku"],
 });
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default async function FaqPage() {
   const pricing = await getCoursePricing();
@@ -31,7 +32,7 @@ export default async function FaqPage() {
       />
       <FaqJsonLd items={jsonLdItems} />
       <div className="mx-auto max-w-4xl px-6 py-12 sm:px-6 sm:py-16">
-        <h1 className="page-h1">Časté otázky ❓</h1>
+        <h1 className="page-h1">Časté otázky</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
           Přehled nejčastějších dotazů rodičů k průběhu, bezpečnosti a organizaci
           kurzu.

@@ -5,11 +5,11 @@ import { SocialIcons } from "@/components/layout/SocialIcons";
 import { site } from "@/lib/site-config";
 
 const legal = [
-  { href: "/obchodni-podminky", label: "Obchodní podmínky", e: "📜" },
-  { href: "/ochrana-osobnich-udaju", label: "Ochrana údajů", e: "🔒" },
-  { href: "/pravidla-online-krouzku", label: "Pravidla kroužku", e: "🛡️" },
-  { href: "/odstoupeni-od-smlouvy", label: "Odstoupení od smlouvy", e: "↩️" },
-  { href: "/cookies", label: "Cookies", e: "🍪" },
+  { href: "/obchodni-podminky", label: "Obchodní podmínky" },
+  { href: "/ochrana-osobnich-udaju", label: "Ochrana údajů" },
+  { href: "/pravidla-online-krouzku", label: "Pravidla kroužku" },
+  { href: "/odstoupeni-od-smlouvy", label: "Odstoupení od smlouvy" },
+  { href: "/cookies", label: "Cookies" },
 ] as const;
 
 export function SiteFooter() {
@@ -36,14 +36,12 @@ export function SiteFooter() {
                 href={`mailto:${site.contactEmail}`}
                 className="inline-flex max-w-full items-center gap-2 break-words rounded-xl border border-violet-200 bg-white px-4 py-2.5 font-display text-sm font-bold text-violet-900 shadow-sm transition-colors hover:border-violet-300 hover:bg-violet-50"
               >
-                <span aria-hidden>✉️</span>
                 <span className="min-w-0 break-all">{site.contactEmail}</span>
               </a>
               <a
                 href={`tel:${site.company.phoneTel}`}
                 className="inline-flex items-center gap-2 rounded-xl border border-violet-200 bg-white px-4 py-2 font-display text-sm font-bold text-violet-900 shadow-sm transition-colors hover:border-violet-300 hover:bg-violet-50"
               >
-                <span aria-hidden>📞</span>
                 {site.company.phoneDisplay}
               </a>
             </div>
@@ -81,28 +79,24 @@ export function SiteFooter() {
               href="/aktualni-behy"
               className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
             >
-              <span aria-hidden>📅</span>
               Aktuální termíny
             </Link>
             <Link
               href="/test-urovne-ai"
               className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
             >
-              <span aria-hidden>🧠</span>
               AI test zdarma
             </Link>
             <Link
               href="/co-deti-tvori"
               className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
             >
-              <span aria-hidden>✨</span>
               Co děti tvoří
             </Link>
             <Link
               href="/rodic/prihlaseni"
               className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
             >
-              <span aria-hidden>📚</span>
               Přehled pro rodiče
             </Link>
             {legal.map((item) => (
@@ -111,12 +105,10 @@ export function SiteFooter() {
                 href={item.href}
                 className="flex items-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] hover:text-violet-600"
               >
-                <span aria-hidden>{item.e}</span>
                 {item.label}
               </Link>
             ))}
             <p className="flex flex-wrap items-center justify-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] md:justify-start">
-              <span aria-hidden>⚙️</span>
               <CookieSettingsButton />
             </p>
           </nav>

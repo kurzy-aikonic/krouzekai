@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   pilotCourseMeta,
@@ -64,22 +65,38 @@ export function RealOutcomesContent({ variant = "full" }: Props) {
         {projects.map((project) => (
           <li
             key={project.title}
-            className="card-playful flex h-full flex-col border-2 border-violet-100 bg-white p-5 sm:p-6"
+            className="card-playful flex h-full flex-col overflow-hidden border-2 border-violet-100 bg-white p-0"
           >
-            <span className="text-3xl" aria-hidden>
-              {project.emoji}
-            </span>
-            <h3 className="font-display mt-3 text-lg font-extrabold text-[var(--magic-ink)]">
-              {project.title}
-            </h3>
-            <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-800">
-              {project.summary}
-            </p>
-            {variant === "full" ? (
-              <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                {project.detail}
-              </p>
+            {project.imageSrc ? (
+              <div className="relative aspect-[3/2] w-full overflow-hidden bg-violet-50">
+                <Image
+                  src={project.imageSrc}
+                  alt={project.imageAlt ?? project.title}
+                  fill
+                  sizes="(min-width: 640px) 50vw, 100vw"
+                  className="object-cover"
+                />
+                <span className="absolute bottom-2 right-2 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600 shadow-sm">
+                  Ilustrační náhled
+                </span>
+              </div>
             ) : null}
+            <div className="flex h-full flex-col p-5 sm:p-6">
+              <span className="text-3xl" aria-hidden>
+                {project.emoji}
+              </span>
+              <h3 className="font-display mt-3 text-lg font-extrabold text-[var(--magic-ink)]">
+                {project.title}
+              </h3>
+              <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-800">
+                {project.summary}
+              </p>
+              {variant === "full" ? (
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                  {project.detail}
+                </p>
+              ) : null}
+            </div>
           </li>
         ))}
       </ul>

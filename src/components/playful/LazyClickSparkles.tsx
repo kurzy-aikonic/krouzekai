@@ -11,7 +11,9 @@ const ClickSparklesClient = dynamic(
 
 export function LazyClickSparkles() {
   const pathname = usePathname();
-  const disabled = pathname.startsWith("/admin");
+  // Klikací jiskřičky jen na homepage — na právních, platebních a portálových
+  // stránkách jen rušily a snižovaly důvěryhodnost pro rodiče.
+  const disabled = pathname !== "/";
   const [active, setActive] = useState(false);
 
   useEffect(() => {

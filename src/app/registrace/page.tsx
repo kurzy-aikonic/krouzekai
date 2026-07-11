@@ -13,6 +13,7 @@ export const metadata: Metadata = pageMetadata({
   title: "Registrace na AI kroužek",
   description: metaDescriptions.registrace,
   path: "/registrace",
+  keywords: ["přihláška AI kroužek", "registrace kurz AI děti"],
 });
 
 export const dynamic = "force-dynamic";
@@ -46,7 +47,7 @@ export default async function RegistracePage({
         ]}
       />
       <div className="mx-auto max-w-4xl px-6 py-12 sm:px-6 sm:py-16">
-        <h1 className="page-h1">Registrace 📝</h1>
+        <h1 className="page-h1">Registrace</h1>
         <p className="mt-4 text-slate-600 leading-relaxed">
           Vyplňte údaje o dítěti ({site.audience.ageMin}–{site.audience.ageMax}{" "}
           let) a zákonném zástupci.
