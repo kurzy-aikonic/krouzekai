@@ -283,7 +283,12 @@ export function AdminRegistrationDetailForm({
               OP: {record.consentTerms ? "ano" : "ne"} · GDPR:{" "}
               {record.consentPrivacy ? "ano" : "ne"} · AI nástroje:{" "}
               {record.consentAiTools ? "ano" : "ne"} · zahájení před 14 dny:{" "}
-              {record.consentEarlyServiceStart ? "ano" : "ne"}
+              {record.consentEarlyServiceStart ? "ano" : "ne"} · nahrávání:{" "}
+              {record.consentLessonRecording === undefined
+                ? "u starších přihlášek nebylo samostatně"
+                : record.consentLessonRecording
+                  ? "ano"
+                  : "ne"}
             </dd>
           </div>
           <div>

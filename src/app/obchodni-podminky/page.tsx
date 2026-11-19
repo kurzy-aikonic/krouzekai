@@ -137,11 +137,13 @@ export default async function ObchodniPodminkyPage() {
           od odstoupení, pokud zákon nestanoví jinak.
         </p>
         <p>
-          Při registraci vyžadujeme samostatné potvrzení, že jako spotřebitel
-          <strong> výslovně žádáte o zahájení poskytování služby před uplynutím
-          14 dnů</strong> od uzavření smlouvy. Pokud odstoupíte po zahájení plnění,
-          může být požadována úhrada poměrné části již poskytnutého plnění v
-          rozsahu dovoleném právními předpisy.
+          Žádost o zahájení poskytování služby před uplynutím 14denní lhůty pro
+          odstoupení při odeslání přihlášky nevyžadujeme. Smlouva vzniká až
+          potvrzením objednávky. Pokud budeme o dřívější zahájení žádat,
+          vyžádáme si ho samostatně až v potvrzení objednávky, před zahájením
+          lekcí. Pokud odstoupíte po zahájení plnění, může být požadována úhrada
+          poměrné části již poskytnutého plnění v rozsahu dovoleném právními
+          předpisy.
         </p>
         <p>
           Odstoupení můžete uplatnit jednoznačným projevem vůle zaslaným na{" "}

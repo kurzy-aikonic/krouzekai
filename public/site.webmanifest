@@ -1,12 +1,12 @@
 {
   "name": "Kroužek umělé inteligence",
   "short_name": "Kroužek AI",
-  "description": "Online kroužek AI pro děti 10–17 let.",
+  "description": "Online kroužek AI pro teenagery 13–18 let.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#c4b5fd",
+  "theme_color": "#12141c",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

@@ -23,11 +23,10 @@ export default function CoDetiTvoriPage() {
         ]}
       />
       <div className="mx-auto max-w-4xl px-6 py-12 sm:px-6 sm:py-16">
-        <h1 className="page-h1">Co děti reálně tvoří</h1>
-        <p className="mt-4 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">
-          Ne sliby z brožury — konkrétní výstupy z reálného kurzu. Hry, prompty,
-          učební materiály i vlastní projekt. A zpětná vazba absolventa, která
-          pomůže rodičům rozhodnout se s jistotou.
+        <h1 className="page-h1">Co v kroužku vzniká</h1>
+        <p className="mt-4 max-w-3xl text-base leading-relaxed text-slate-700 sm:text-lg">
+          Konkrétní výstupy z pilotního kurzu: hra, zadání pro AI, učební
+          materiály a vlastní web. Plus zpětná vazba absolventa.
         </p>
 
         <Section className="mt-10">
@@ -41,14 +40,14 @@ export default function CoDetiTvoriPage() {
             Chcete podobný výsledek pro své dítě?
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm font-medium text-violet-200 sm:text-base">
-            Přihláška je nezávazná. Po registraci domluvíme formát, termín i tempo
-            podle věku a úrovně dítěte.
+            Do potvrzení objednávky nic neplatíte. Formát, termín i tempo
+            domluvíme podle věku a úrovně dítěte.
           </p>
           <Link
             href="/registrace"
             className="btn-magic mt-6 inline-flex min-h-11 items-center justify-center px-8"
           >
-            Nezávazně přihlásit dítě
+            Přihlásit dítě
           </Link>
         </div>
       </div>

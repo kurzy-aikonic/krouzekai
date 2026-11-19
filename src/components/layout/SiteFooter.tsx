@@ -23,10 +23,10 @@ export function SiteFooter() {
             </p>
             <BrandSubtitle className="mt-1.5 text-sm sm:text-base" />
             <p className="mt-2 text-base font-semibold text-violet-900/80">
-              Online kroužek AI pro děti
+              Online kroužek AI pro teenagery
             </p>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate-700">
-              Pro děti {site.audience.ageMin}–{site.audience.ageMax} let.
+              Pro teenagery {site.audience.ageMin}–{site.audience.ageMax} let.
               Rodiče vidí přehledně, co dítě získá, jak výuka probíhá a jak
               zajišťujeme bezpečné prostředí.
             </p>
@@ -63,12 +63,14 @@ export function SiteFooter() {
               {" — "}
               {site.parentSite.tagline}
             </p>
-            <div className="mt-4 text-center md:text-left">
-              <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-800">
-                Sledujte nás
-              </p>
-              <SocialIcons className="mt-2 justify-center md:justify-start" />
-            </div>
+            {Object.values(site.social).some((href) => href.length > 0) ? (
+              <div className="mt-4 text-center md:text-left">
+                <p className="font-display text-sm font-extrabold text-violet-800">
+                  Sledujte nás
+                </p>
+                <SocialIcons className="mt-2 justify-center md:justify-start" />
+              </div>
+            ) : null}
           </div>
           <nav className="flex flex-col items-center gap-3 border-t border-violet-100 pt-6 text-center md:col-span-4 md:items-start md:border-t-0 md:border-l md:pt-0 md:pl-6 md:text-left" aria-label="Důležité odkazy">
             <p className="font-display text-sm font-extrabold uppercase tracking-wide text-violet-800">
@@ -113,9 +115,9 @@ export function SiteFooter() {
                 {item.label}
               </Link>
             ))}
-            <p className="flex flex-wrap items-center justify-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] md:justify-start">
+            <div className="flex flex-wrap items-center justify-center gap-2 font-display text-sm font-bold text-[var(--magic-ink)] md:justify-start">
               <CookieSettingsButton />
-            </p>
+            </div>
           </nav>
         </div>
       </div>

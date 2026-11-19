@@ -3,6 +3,7 @@ import { z } from "zod";
 import { apiJson } from "@/lib/api-response";
 import { getClientIp } from "@/lib/client-ip";
 import { spotsLeftEffective } from "@/data/course-runs";
+import { isUpcomingCourseRun } from "@/lib/course-run-visibility";
 import { countedOccupancyForRun } from "@/lib/course-run-registrations";
 import { getCourseRunById } from "@/lib/course-runs-store";
 import { sendRegistrationConfirmation } from "@/lib/email";
@@ -36,7 +37,10 @@ const bodySchema = z.object({
   consentTerms: z.literal(true),
   consentPrivacy: z.literal(true),
   consentAiTools: z.literal(true),
-  consentEarlyServiceStart: z.literal(true),
+  /** Dřívější zahájení se u návrhu smlouvy nevyžaduje. */
+  consentEarlyServiceStart: z.boolean().optional().default(false),
+  /** Dobrovolný souhlas s nahráváním lekcí. */
+  consentLessonRecording: z.boolean().optional().default(false),
   aiSkillLevel: z.enum(AI_SKILL_LEVELS).optional().nullable(),
   aiSkillLevelSource: z.enum(["self-test", "manual"]).optional().nullable(),
   /** Honeypot — musí zůstat prázdné (proti botům). Nepoužívat název „company“ / „Firma“ — autofill by ho vyplnil. */
@@ -98,9 +102,9 @@ export async function POST(request: Request) {
   ]);
 
   if (data.runId) {
-    if (!selectedRun || selectedRun.active === false) {
+    if (!selectedRun || !isUpcomingCourseRun(selectedRun)) {
       return apiJson(
-        { error: "Tento termín není v nabídce nebo byl zrušen." },
+        { error: "Tento termín už není v nabídce. Vyberte budoucí termín, nebo pošlete přihlášku bez termínu." },
         { status: 422 },
       );
     }
@@ -138,6 +142,7 @@ export async function POST(request: Request) {
     consentPrivacy: data.consentPrivacy,
     consentAiTools: data.consentAiTools,
     consentEarlyServiceStart: data.consentEarlyServiceStart,
+    consentLessonRecording: data.consentLessonRecording,
     aiSkillLevel: data.aiSkillLevel ?? undefined,
     aiSkillLevelSource: data.aiSkillLevelSource ?? undefined,
     paymentProduct,

@@ -1,4 +1,5 @@
 import type { CourseRun } from "@/data/course-runs";
+import { formatCzk } from "@/lib/format-czk";
 
 export type DefaultCoursePrices = {
   skupinaCourseCzk: number;
@@ -30,5 +31,5 @@ export function runPriceScopeLabel(run: CourseRun): string {
 }
 
 export function formatRunPriceCzk(amount: number): string {
-  return `${amount.toLocaleString("cs-CZ")} Kč`;
+  return formatCzk(amount);
 }

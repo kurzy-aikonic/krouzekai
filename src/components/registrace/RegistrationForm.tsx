@@ -12,6 +12,7 @@ import { CourseRunPublicMeta } from "@/components/course-run/CourseRunPublicMeta
 import type { AiSkillLevel } from "@/lib/ai-skill-test";
 import { AI_SKILL_LEVEL_LABELS, parseAiSkillLevel } from "@/lib/ai-skill-test";
 import { courseRunPublicStatus } from "@/lib/course-run-public-status";
+import { formatCzk } from "@/lib/format-czk";
 import { site } from "@/lib/site-config";
 
 const turnstileSiteKey =
@@ -87,14 +88,14 @@ export function RegistrationForm({
     initial.individualRunId,
   );
   const [childName, setChildName] = useState("");
-  const [childAge, setChildAge] = useState("12");
+  const [childAge, setChildAge] = useState("15");
   const [parentName, setParentName] = useState("");
   const [parentEmail, setParentEmail] = useState("");
   const [parentPhone, setParentPhone] = useState("");
   const [consentTerms, setConsentTerms] = useState(false);
   const [consentPrivacy, setConsentPrivacy] = useState(false);
   const [consentAiTools, setConsentAiTools] = useState(false);
-  const [consentEarlyServiceStart, setConsentEarlyServiceStart] = useState(false);
+  const [consentLessonRecording, setConsentLessonRecording] = useState(false);
   const [aiSkillLevel, setAiSkillLevel] = useState<AiSkillLevel | "">(
     initialAiSkillLevel ?? "",
   );
@@ -139,7 +140,8 @@ export function RegistrationForm({
         consentTerms,
         consentPrivacy,
         consentAiTools,
-        consentEarlyServiceStart,
+        consentEarlyServiceStart: false,
+        consentLessonRecording,
         aiSkillLevel: aiSkillLevel || null,
         aiSkillLevelSource: aiSkillLevel ? aiSkillLevelSource || "manual" : null,
         formHoney: hpCompany,
@@ -214,10 +216,10 @@ export function RegistrationForm({
               setGroupRunId("");
               setIndividualRunId("");
             }}
-            className="h-4 w-4 border-2 border-[var(--magic-ink)] text-violet-600"
+            className="h-6 w-6 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600"
           />
           Skupina (max. {site.pricing.groupMaxStudents}) —{" "}
-          {pricing.skupinaCourseCzk.toLocaleString("cs-CZ")} Kč /{" "}
+          {formatCzk(pricing.skupinaCourseCzk)} /{" "}
           {site.pricing.lessons} lekcí
         </label>
         <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-violet-200 bg-violet-50/60 px-3 py-2 text-base font-semibold text-slate-800 has-[:checked]:border-violet-400 has-[:checked]:bg-white sm:text-sm">
@@ -230,16 +232,16 @@ export function RegistrationForm({
               setGroupRunId("");
               setIndividualRunId("");
             }}
-            className="h-4 w-4 border-2 border-[var(--magic-ink)] text-violet-600"
+            className="h-6 w-6 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600"
           />
           Individuální 1:1 —{" "}
-          {pricing.individualCourseCzk.toLocaleString("cs-CZ")} Kč /{" "}
+          {formatCzk(pricing.individualCourseCzk)} /{" "}
           {site.pricing.lessons} lekcí
         </label>
-        <p className="text-xs font-medium leading-relaxed text-slate-600">
-          Skupinový kurz spouštíme až po naplnění kapacity termínu (100 % míst).
-          Do té doby je přihláška nezávazná. Individuál:{" "}
-          {pricing.individualPerLessonCzk} Kč / lekce.
+        <p className="text-sm font-medium leading-relaxed text-slate-700">
+          Skupinu otevřeme až po naplnění kapacity. Do potvrzení objednávky nic
+          neplatíte. Individuální lekce stojí{" "}
+          {formatCzk(pricing.individualPerLessonCzk)}.
         </p>
       </fieldset>
 
@@ -256,10 +258,14 @@ export function RegistrationForm({
             Spustit AI test zdarma 🧠
           </Link>
         </div>
-        <label className="block text-xs font-bold uppercase tracking-wide text-slate-600">
+        <label
+          htmlFor="ai-skill-level"
+          className="block text-sm font-bold text-slate-700"
+        >
           Výsledek úrovně (volitelné)
         </label>
         <select
+          id="ai-skill-level"
           value={aiSkillLevel}
           onChange={(e) => {
             const value = parseAiSkillLevel(e.target.value);
@@ -297,7 +303,7 @@ export function RegistrationForm({
               name="skupina-run"
               checked={groupRunId === ""}
               onChange={() => setGroupRunId("")}
-              className="mt-0.5 h-4 w-4 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600"
+              className="mt-0.5 h-6 w-6 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600"
             />
             <span>Zatím nevybráno — termín domluvíme</span>
           </label>
@@ -321,7 +327,7 @@ export function RegistrationForm({
                     checked={groupRunId === run.id}
                     onChange={() => setGroupRunId(run.id)}
                     disabled={full}
-                    className="mt-0.5 h-4 w-4 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600 disabled:opacity-40"
+                    className="mt-0.5 h-6 w-6 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600 disabled:opacity-40"
                   />
                   <span className="min-w-0 flex-1">
                     <span className="block font-bold">{run.label}</span>
@@ -353,12 +359,12 @@ export function RegistrationForm({
       ) : null}
       {format === "skupina" && groupRuns.length === 0 ? (
         <div className="rounded-2xl border-2 border-dashed border-violet-300 bg-violet-50/60 px-4 py-3">
-          <p className="text-sm font-semibold text-violet-900">
-            Konkrétní termíny zatím nejsou vypsané.
+          <p className="text-base font-semibold text-violet-950">
+            Skupinový termín na jaro 2027 zatím není vypsaný.
           </p>
-          <p className="mt-1 text-xs font-medium leading-relaxed text-slate-700">
-            Přihlášku můžete odeslat hned — konkrétní termín vám potvrdíme podle
-            zájmu a věkové skupiny.
+          <p className="mt-1 text-sm leading-relaxed text-slate-700">
+            Přihlášku můžete poslat i bez termínu. Až skupinu potvrdíme, ozveme
+            se vám.
           </p>
         </div>
       ) : null}
@@ -378,7 +384,7 @@ export function RegistrationForm({
               name="individual-run"
               checked={individualRunId === ""}
               onChange={() => setIndividualRunId("")}
-              className="mt-0.5 h-4 w-4 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600"
+              className="mt-0.5 h-6 w-6 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600"
             />
             <span>Zatím nevybráno — domluvíme čas</span>
           </label>
@@ -401,7 +407,7 @@ export function RegistrationForm({
                   checked={individualRunId === run.id}
                   onChange={() => setIndividualRunId(run.id)}
                   disabled={full}
-                  className="mt-0.5 h-4 w-4 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600 disabled:opacity-40"
+                  className="mt-0.5 h-6 w-6 shrink-0 border-2 border-[var(--magic-ink)] text-violet-600 disabled:opacity-40"
                 />
                 <span className="min-w-0 flex-1">
                   <span className="block font-bold">{run.label}</span>
@@ -428,11 +434,12 @@ export function RegistrationForm({
       ) : null}
       {format === "individual" && individualRuns.length === 0 ? (
         <div className="rounded-2xl border-2 border-dashed border-violet-300 bg-violet-50/60 px-4 py-3">
-          <p className="text-sm font-semibold text-violet-900">
-            Veřejné 1:1 sloty zatím nejsou vypsané.
+          <p className="text-base font-semibold text-violet-950">
+            Individuální termín zatím není vypsaný.
           </p>
-          <p className="mt-1 text-xs font-medium leading-relaxed text-slate-700">
-            Přihlášku můžete odeslat — konkrétní čas kurzu s vámi domluvíme.
+          <p className="mt-1 text-sm leading-relaxed text-slate-700">
+            Přihlášku můžete poslat i bez termínu a čas domluvíme, až objednávku
+            potvrdíme.
           </p>
         </div>
       ) : null}
@@ -443,7 +450,7 @@ export function RegistrationForm({
             htmlFor="childName"
             className="block font-display text-sm font-extrabold text-[var(--magic-ink)]"
           >
-            Jméno dítěte
+            Jméno účastníka
           </label>
           <input
             id="childName"
@@ -550,56 +557,55 @@ export function RegistrationForm({
         />
       </div>
 
-      <div className="space-y-3">
-        <label className="flex cursor-pointer items-start gap-2 text-sm font-medium text-slate-800">
+      <div className="space-y-4">
+        <label className="flex cursor-pointer items-start gap-3 text-base font-medium leading-relaxed text-slate-800">
           <input
             type="checkbox"
             required
             checked={consentTerms}
             onChange={(e) => setConsentTerms(e.target.checked)}
-            className="mt-0.5 h-5 w-5 rounded border-2 border-[var(--magic-ink)] text-violet-600"
+            className="mt-1 h-6 w-6 shrink-0 rounded border-2 border-[var(--magic-ink)] text-violet-600"
           />
           <span>
             Souhlasím s{" "}
             <a
               href="/obchodni-podminky"
-              className="font-bold text-violet-600 underline"
+              className="font-bold text-violet-700 underline"
             >
               obchodními podmínkami
-            </a>
-            , potvrzuji, že jsem zákonným zástupcem přihlašovaného dítěte a
-            uzavírám smlouvu jeho jménem.
+            </a>{" "}
+            a potvrzuji, že jsem zákonným zástupcem přihlašovaného dítěte.
+            Odesláním formuláře činím návrh smlouvy. Smlouva vzniká až
+            potvrzením objednávky ze strany poskytovatele.
           </span>
         </label>
-        <label className="flex cursor-pointer items-start gap-2 text-sm font-medium text-slate-800">
+        <label className="flex cursor-pointer items-start gap-3 text-base font-medium leading-relaxed text-slate-800">
           <input
             type="checkbox"
             required
             checked={consentPrivacy}
             onChange={(e) => setConsentPrivacy(e.target.checked)}
-            className="mt-0.5 h-5 w-5 rounded border-2 border-[var(--magic-ink)] text-violet-600"
+            className="mt-1 h-6 w-6 shrink-0 rounded border-2 border-[var(--magic-ink)] text-violet-600"
           />
           <span>
             Seznámil/a jsem se se{" "}
             <a
               href="/ochrana-osobnich-udaju"
-              className="font-bold text-violet-600 underline"
+              className="font-bold text-violet-700 underline"
             >
               zásadami ochrany osobních údajů
             </a>{" "}
-            a souhlasím se zpracováním údajů za účelem registrace a komunikace o
-            kurzu, včetně interního nahrávání online lekcí pro bezpečnost,
-            kontrolu kvality a případné řešení reklamací (bez veřejného šíření
-            či prodeje záznamů).
+            a beru na vědomí zpracování údajů za účelem registrace a komunikace
+            o kurzu.
           </span>
         </label>
-        <label className="flex cursor-pointer items-start gap-2 text-sm font-medium text-slate-800">
+        <label className="flex cursor-pointer items-start gap-3 text-base font-medium leading-relaxed text-slate-800">
           <input
             type="checkbox"
             required
             checked={consentAiTools}
             onChange={(e) => setConsentAiTools(e.target.checked)}
-            className="mt-0.5 h-5 w-5 rounded border-2 border-[var(--magic-ink)] text-violet-600"
+            className="mt-1 h-6 w-6 shrink-0 rounded border-2 border-[var(--magic-ink)] text-violet-600"
           />
           <span>
             Souhlasím s tím, aby mé dítě v rámci výuky používalo AI nástroje
@@ -607,17 +613,18 @@ export function RegistrationForm({
             věková pravidla a podmínky použití.
           </span>
         </label>
-        <label className="flex cursor-pointer items-start gap-2 text-sm font-medium text-slate-800">
+        <label className="flex cursor-pointer items-start gap-3 text-base font-medium leading-relaxed text-slate-800">
           <input
             type="checkbox"
-            required
-            checked={consentEarlyServiceStart}
-            onChange={(e) => setConsentEarlyServiceStart(e.target.checked)}
-            className="mt-0.5 h-5 w-5 rounded border-2 border-[var(--magic-ink)] text-violet-600"
+            checked={consentLessonRecording}
+            onChange={(e) => setConsentLessonRecording(e.target.checked)}
+            className="mt-1 h-6 w-6 shrink-0 rounded border-2 border-[var(--magic-ink)] text-violet-600"
           />
           <span>
-            Výslovně žádám o zahájení poskytování služby i před uplynutím
-            14denní lhůty pro odstoupení od smlouvy.
+            Souhlasím s interním nahráváním online lekcí pro bezpečnost,
+            kontrolu kvality a případné řešení reklamací (bez veřejného šíření
+            či prodeje záznamů). Souhlas je dobrovolný a mohu ho odvolat
+            e-mailem na {site.contactEmail}.
           </span>
         </label>
       </div>
@@ -654,9 +661,9 @@ export function RegistrationForm({
       >
         {status === "loading" ? "Odesílám…" : "Odeslat přihlášku"}
       </button>
-      <p className="text-center text-xs font-semibold text-slate-600">
-        Odeslání přihlášky je nezávazné. Po potvrzení otevřených termínů vám
-        pošleme dostupné varianty.
+      <p className="text-center text-sm leading-relaxed text-slate-600">
+        Odesláním formuláře činíte návrh smlouvy. Do potvrzení objednávky nic
+        neplatíte a přihlášku můžete zrušit e-mailem.
       </p>
 
       {status === "error" ? (

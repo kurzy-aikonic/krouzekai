@@ -4,6 +4,7 @@ import { cache } from "react";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import { defaultCourseRuns, type CourseRun } from "@/data/course-runs";
+import { filterUpcomingCourseRuns } from "@/lib/course-run-visibility";
 import { prepareRunsForSave } from "@/lib/course-runs-admin-utils";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
@@ -257,10 +258,18 @@ export async function getCourseRunById(id: string): Promise<CourseRun | undefine
   return (await listCourseRuns()).find((r) => r.id === t);
 }
 
-/** Termíny zobrazené na webu (registrace, veřejné API). */
+/** Aktivní termíny včetně těch, které už začaly. Administrace je pořád vidí. */
 export async function listOfferedCourseRuns(): Promise<CourseRun[]> {
   const all = await listCourseRuns();
   return all.filter((r) => r.active !== false);
+}
+
+/**
+ * Termíny pro rodiče: jen budoucí (nebo dnešní) start.
+ * Propadlé běhy zmizí samy a nový budoucí termín z administrace se zase ukáže.
+ */
+export async function listPublicCourseRuns(): Promise<CourseRun[]> {
+  return filterUpcomingCourseRuns(await listOfferedCourseRuns());
 }
 
 export async function replaceCourseRuns(runs: CourseRun[]): Promise<void> {

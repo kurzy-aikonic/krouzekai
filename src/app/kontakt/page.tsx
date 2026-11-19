@@ -86,10 +86,12 @@ export default function KontaktPage() {
               </span>
             </p>
           </div>
-          <div>
-            <p className="text-sm font-medium text-slate-500">Sociální sítě</p>
-            <SocialIcons className="mt-3" />
-          </div>
+          {Object.values(site.social).some((href) => href.length > 0) ? (
+            <div>
+              <p className="text-sm font-semibold text-slate-700">Sociální sítě</p>
+              <SocialIcons className="mt-3" />
+            </div>
+          ) : null}
         </div>
       </div>
     </>
