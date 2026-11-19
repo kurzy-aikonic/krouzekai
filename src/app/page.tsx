@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BuildPath } from "@/components/home/BuildPath";
 import { HomeCourseRunsSection } from "@/components/home/HomeCourseRunsSection";
 import { HomeFaq } from "@/components/home/HomeFaq";
 import { LecturerSection } from "@/components/home/LecturerSection";
@@ -59,10 +60,10 @@ export default async function HomePage() {
   return (
     <>
       <HomeJsonLd />
-      <div className="relative mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-14">
-        <HomeHero hasRuns={hasRuns} />
-
-        <section id="terminy" className="mt-14 scroll-mt-24" aria-label="Termíny a ceny">
+      <HomeHero hasRuns={hasRuns} />
+      <BuildPath />
+      <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+        <section id="terminy" className="scroll-mt-24" aria-label="Termíny a ceny">
           {hasRuns ? (
             <HomeCourseRunsSection
               runs={runs}

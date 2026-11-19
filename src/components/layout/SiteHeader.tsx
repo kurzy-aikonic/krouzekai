@@ -7,11 +7,10 @@ import { BrandSubtitle } from "@/components/layout/BrandSubtitle";
 import { site } from "@/lib/site-config";
 
 const nav = [
-  { href: "/aktualni-behy", label: "Termíny a ceny" },
   { href: "/jak-probiha", label: "O kroužku" },
-  { href: "/co-deti-tvori", label: "Projekty" },
+  { href: "/aktualni-behy", label: "Termíny a ceny" },
+  { href: "/co-deti-tvori", label: "Projekty studentů" },
   { href: "/faq", label: "Časté otázky" },
-  { href: "/kontakt", label: "Kontakt" },
 ] as const;
 
 export function SiteHeader() {
@@ -44,29 +43,29 @@ export function SiteHeader() {
   }, [menuOpen, closeMenu]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-violet-100 bg-white/90 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-white/80">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-[#07060f]/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-        <div className="flex min-w-0 flex-1 items-start gap-2 sm:gap-3">
+        <div className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3">
           <Link
             href="/"
-            className="group mt-0.5 shrink-0 rounded-2xl border border-transparent p-0.5 transition-transform hover:scale-[1.01] active:scale-[0.99]"
+            className="shrink-0 rounded-lg"
             aria-label={`${site.name} — úvod`}
           >
             <span
-              className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#12141c] text-sm font-bold tracking-tight text-white sm:h-11 sm:w-11"
+              className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg bg-violet-600 sm:h-10 sm:w-10"
               aria-hidden
             >
-              AI
+              <span className="absolute bottom-1 right-1 h-2.5 w-2.5 rounded-[3px] bg-orange-500" />
             </span>
           </Link>
-          <div className="min-w-0 pt-0.5">
+          <div className="min-w-0">
             <Link
               href="/"
-              className="group block font-display text-[0.95rem] font-extrabold leading-tight text-[var(--magic-ink)] transition-colors hover:text-violet-700 sm:text-lg"
+              className="block font-display text-[0.95rem] font-semibold leading-tight text-white sm:text-base"
             >
               {site.name}
             </Link>
-            <BrandSubtitle className="mt-0.5 sm:mt-0.5" />
+            <BrandSubtitle onDark className="mt-0.5" />
           </div>
         </div>
 
@@ -79,33 +78,33 @@ export function SiteHeader() {
               key={item.href}
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
-              className={`font-display relative flex min-h-11 items-center whitespace-nowrap rounded-xl px-2.5 py-2 text-sm font-bold transition-colors lg:px-3 ${
+              className={`font-display relative flex min-h-11 items-center whitespace-nowrap rounded-xl px-2.5 py-2 text-sm font-medium transition-colors lg:px-3 ${
                 isActive(item.href)
-                  ? "text-violet-900"
-                  : "text-slate-700 hover:text-violet-800"
+                  ? "text-white"
+                  : "text-white/70 hover:text-white"
               }`}
             >
               <span>{item.label}</span>
               {isActive(item.href) ? (
                 <span
-                  className="absolute inset-x-2.5 -bottom-[1px] h-[3px] rounded-full bg-violet-600 lg:inset-x-3"
+                  className="absolute inset-x-2.5 -bottom-[1px] h-0.5 rounded-full bg-orange-400 lg:inset-x-3"
                   aria-hidden
                 />
               ) : null}
             </Link>
           ))}
-          <Link href="/registrace" className="btn-magic ml-1 min-h-11 px-4 py-2 text-sm lg:px-5">
-            Přihlásit
+          <Link href="/registrace" className="btn-hero-outline ml-1 min-h-11 px-4 py-2 text-sm">
+            Přihláška
           </Link>
         </nav>
 
         <div className="flex shrink-0 items-center gap-2 md:hidden">
-          <Link href="/registrace" className="btn-magic min-h-11 px-3 text-sm sm:px-4">
-            Přihlásit
+          <Link href="/registrace" className="btn-hero-outline min-h-11 px-3 text-sm">
+            Přihláška
           </Link>
           <button
             type="button"
-            className="font-display flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-sm font-extrabold text-slate-700 shadow-sm"
+            className="font-display flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-sm font-semibold text-white"
             aria-expanded={menuOpen}
             aria-controls={menuId}
             aria-label={menuOpen ? "Zavřít menu" : "Otevřít menu"}
@@ -120,13 +119,13 @@ export function SiteHeader() {
         <>
           <button
             type="button"
-            className="fixed inset-0 z-40 bg-slate-900/35 md:hidden"
+            className="fixed inset-0 z-40 bg-black/60 md:hidden"
             aria-label="Zavřít menu"
             onClick={closeMenu}
           />
           <nav
             id={menuId}
-            className="absolute left-0 right-0 top-full z-50 max-h-[min(70vh,calc(100dvh-4rem))] overflow-y-auto overscroll-contain border-b border-violet-100 bg-white px-3 py-3 shadow-xl md:hidden"
+            className="absolute left-0 right-0 top-full z-50 max-h-[min(70vh,calc(100dvh-4rem))] overflow-y-auto overscroll-contain border-b border-white/10 bg-[#0c0a14] px-3 py-3 shadow-xl md:hidden"
             aria-label="Hlavní navigace"
           >
             <ul className="flex flex-col gap-1">
@@ -135,10 +134,10 @@ export function SiteHeader() {
                   <Link
                     href={item.href}
                     aria-current={isActive(item.href) ? "page" : undefined}
-                    className={`font-display flex min-h-12 items-center rounded-xl border px-4 py-3 text-base font-bold active:bg-violet-50 ${
+                    className={`font-display flex min-h-12 items-center rounded-xl border px-4 py-3 text-base font-medium ${
                       isActive(item.href)
-                        ? "border-violet-300 bg-violet-50 text-violet-900"
-                        : "border-slate-200 bg-white text-slate-700"
+                        ? "border-white/20 bg-white/10 text-white"
+                        : "border-white/10 bg-white/5 text-white/80"
                     }`}
                     onClick={closeMenu}
                   >
@@ -146,6 +145,15 @@ export function SiteHeader() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/kontakt"
+                  className="font-display flex min-h-12 items-center rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-base font-medium text-white/80"
+                  onClick={closeMenu}
+                >
+                  Kontakt
+                </Link>
+              </li>
             </ul>
           </nav>
         </>

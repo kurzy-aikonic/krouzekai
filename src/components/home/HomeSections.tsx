@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { HeroClient } from "@/components/home/HeroClient";
+import { HeroPlay } from "@/components/home/HeroPlay";
 import { Icon } from "@/components/icons/Icon";
 import { heroMedia } from "@/data/hero-media";
 import { pilotFeedbackQuotes } from "@/data/real-student-outcomes";
@@ -13,55 +15,94 @@ type Prices = {
   individualPerLessonCzk: number;
 };
 
+function studentsInGroup(count: number): string {
+  if (count === 1) return "Nejvýš 1 student ve skupině";
+  if (count >= 2 && count <= 4) return `Nejvýš ${count} studenti ve skupině`;
+  return `Nejvýš ${count} studentů ve skupině`;
+}
+
 export function HomeHero({ hasRuns }: { hasRuns: boolean }) {
+  const facts = [
+    studentsInGroup(site.pricing.groupMaxStudents),
+    `${site.pricing.lessons} lekcí po ${site.pricing.lessonMinutes} minutách`,
+    "Hotový projekt na konci kurzu",
+  ];
+
   return (
-    <header className="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr]">
-      <div>
-        <h1 className="font-display max-w-3xl text-[2rem] font-extrabold leading-[1.12] tracking-tight text-[var(--magic-ink)] sm:text-5xl lg:text-[3.15rem]">
-          Vlastní hra nebo web.{" "}
-          <span className="text-violet-700">Postavené s AI.</span>
-        </h1>
-        <p className="mt-4 max-w-2xl text-lg font-medium leading-relaxed text-slate-800 sm:text-xl">
-          Online kroužek pro teenagery od {site.audience.ageMin} do{" "}
-          {site.audience.ageMax} let. Skupina nejvýš {site.pricing.groupMaxStudents}{" "}
-          lidí, deset hodinových lekcí a na konci projekt, který jde ukázat doma
-          i ve škole.
-        </p>
-        <div className="mt-7 flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:flex-row sm:flex-wrap">
-          <Link
-            href={hasRuns ? "#terminy" : "#terminy"}
-            className="btn-magic w-full sm:w-auto"
-          >
-            {hasRuns ? "Vybrat termín" : "Chci vědět o termínech"}
-          </Link>
-          <Link href="/test-urovne-ai" className="btn-magic-outline w-full sm:w-auto">
-            Zjistit úroveň zdarma
-          </Link>
+    <section id="uvod" className="hero-shell relative overflow-hidden text-white">
+      <canvas id="hero-grid" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden />
+      <HeroClient />
+      <div className="relative mx-auto grid max-w-6xl items-center gap-6 px-4 pb-8 pt-6 sm:px-6 sm:pb-10 sm:pt-8 lg:min-h-[34rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-4 lg:pb-12 lg:pt-10">
+        <div className="relative z-10 max-w-xl">
+          {hasRuns ? null : (
+            <p className="hero-eyebrow mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-orange-400" aria-hidden />
+              Jaro 2027 · termíny připravujeme
+            </p>
+          )}
+          <h1 className="font-display text-[2.05rem] font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-[3.35rem]">
+            Postav si vlastní
+            <br />
+            hru, aplikaci
+            <br />
+            <span className="hero-gradient">nebo AI projekt</span>
+          </h1>
+          <p className="hero-terminal mt-4" aria-label="Ukázka zadání">
+            <span className="hero-terminal-prompt" aria-hidden>› </span>
+            <span className="hero-type">Udělej mi hru, kde uhýbám asteroidům</span>
+          </p>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg">
+            Online kroužek pro studenty od {site.audience.ageMin} do{" "}
+            {site.audience.ageMax} let. V malé skupině s lektorem si studenti
+            navrhnou a postaví vlastní projekt a naučí se s umělou inteligencí
+            pracovat tak, aby jim opravdu pomáhala.
+          </p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <Link href="#terminy" className="btn-hero-primary w-full sm:w-auto">
+              {hasRuns ? "Vybrat termín" : "Chci informace o jarních termínech"}
+              <span aria-hidden> →</span>
+            </Link>
+            <Link href="/jak-probiha" className="btn-hero-outline w-full sm:w-auto">
+              Jak kroužek probíhá
+            </Link>
+          </div>
+          <div className="mt-4">
+            <HeroPlay />
+          </div>
+          <ul className="mt-5 flex flex-col gap-1.5 text-sm text-white/70 sm:flex-row sm:flex-wrap sm:gap-x-4 sm:gap-y-1">
+            {facts.map((fact) => (
+              <li key={fact} className="flex items-center gap-2">
+                <span className="h-1 w-1 shrink-0 rounded-full bg-violet-300" aria-hidden />
+                {fact}
+              </li>
+            ))}
+          </ul>
         </div>
-        <p className="mt-5 max-w-2xl text-sm font-semibold leading-relaxed text-slate-700 sm:text-base">
-          Provozuje {site.company.legalName}
-          {" · "}Skupiny podle věku
-          {" · "}AI pod vedením lektora
-          {" · "}Platba až po potvrzení skupiny
-        </p>
-      </div>
-      <div className="mx-auto w-full max-w-md lg:mx-0 lg:max-w-none">
-        <div className="overflow-hidden rounded-3xl border border-violet-200 bg-white shadow-[0_20px_45px_-18px_rgba(109,40,217,0.45)]">
-          <Image
-            src={heroMedia.src}
-            alt={heroMedia.alt}
-            width={heroMedia.width}
-            height={heroMedia.height}
-            sizes="(min-width: 1024px) 40vw, 100vw"
-            className="h-auto w-full"
-            priority
-          />
+        <div className="hero-visual relative z-0 lg:absolute lg:inset-y-0 lg:right-0 lg:w-[58%]">
+          <picture>
+            <source
+              type="image/avif"
+              srcSet={heroMedia.avifSrcSet}
+              sizes={heroMedia.sizes}
+            />
+            <source
+              type="image/webp"
+              srcSet={heroMedia.webpSrcSet}
+              sizes={heroMedia.sizes}
+            />
+            <img
+              src={heroMedia.src}
+              alt={heroMedia.alt}
+              width={heroMedia.width}
+              height={heroMedia.height}
+              fetchPriority="high"
+              decoding="async"
+              className="hero-assemble h-auto max-h-[200px] w-full object-contain object-right sm:max-h-[240px] lg:absolute lg:inset-0 lg:h-full lg:max-h-none lg:object-cover lg:object-[72%_center]"
+            />
+          </picture>
         </div>
-        <p className="mt-2 text-sm text-slate-600">
-          Ilustrační náhled. Takhle může vypadat hra z kroužku.
-        </p>
       </div>
-    </header>
+    </section>
   );
 }
 

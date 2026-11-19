@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Space_Grotesk } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { CookieBannerHost } from "@/components/cookies/CookieBannerHost";
 import { DeferredCourseSignupToast } from "@/components/layout/DeferredChrome";
@@ -10,18 +10,26 @@ import { GlobalJsonLd } from "@/components/seo/GlobalJsonLd";
 import { rootMetadata } from "@/lib/seo";
 import "./globals.css";
 
-const display = Space_Grotesk({
+const display = Geist({
   variable: "--font-display",
   subsets: ["latin", "latin-ext"],
-  weight: ["500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
   adjustFontFallback: true,
 });
 
-const body = DM_Sans({
+const body = Geist({
   variable: "--font-body",
   subsets: ["latin", "latin-ext"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
+  adjustFontFallback: true,
+});
+
+const mono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin", "latin-ext"],
+  weight: ["500"],
   display: "swap",
   adjustFontFallback: true,
 });
@@ -44,7 +52,7 @@ export default function RootLayout({
   return (
     <html
       lang="cs"
-      className={`${display.variable} ${body.variable} h-full antialiased`}
+      className={`${display.variable} ${body.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col overflow-x-clip text-[var(--magic-ink)]">
         <GoogleAnalytics />

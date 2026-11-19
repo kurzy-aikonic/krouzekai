@@ -1,11 +1,20 @@
 /**
- * Úvodní obrázek. Až bude hotová nová ilustrace, nahraďte soubor
- * `public/hero/hero.png` (nebo změňte `src` na novou cestu).
- * Rozměry v `width` a `height` držte u skutečného souboru, ať se neskáče layout.
+ * Hero ilustrace B2. Soubory vznikají skriptem `scripts/export-hero.mjs`
+ * z originálu 1280×720, po zvětšení na 2560 px.
+ * Výměna: nahraďte zdroj a spusťte skript znovu.
  */
+const widths = [640, 960, 1280, 1920, 2560] as const;
+
+function srcSet(ext: "avif" | "webp"): string {
+  return widths.map((width) => `/hero/hero-${width}.${ext} ${width}w`).join(", ");
+}
+
 export const heroMedia = {
-  src: "/hero/hero.png",
-  alt: "Ukázka hry v prohlížeči, jakou si účastník kroužku může postavit s AI",
-  width: 900,
-  height: 600,
+  src: "/hero/hero-1280.webp",
+  avifSrcSet: srcSet("avif"),
+  webpSrcSet: srcSet("webp"),
+  sizes: "(min-width: 1024px) 58vw, 100vw",
+  width: 2560,
+  height: 1440,
+  alt: "Tmavá ilustrace pracovního stolu: monitor s kódem, klávesnice a vznášející se ostrov z kroužku",
 } as const;
