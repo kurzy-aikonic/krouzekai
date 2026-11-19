@@ -1,5 +1,6 @@
 "use client";
 
+import { Gamepad2 } from "lucide-react";
 import type { ReactNode } from "react";
 import {
   useCallback,
@@ -244,38 +245,35 @@ export function SnakePlayground() {
     <details
       ref={detailsRef}
       onToggle={onDetailsToggle}
-      className="snake-details card-playful mt-16 overflow-hidden bg-gradient-to-b from-emerald-50 via-white to-violet-50"
+      className="snake-details mt-16 overflow-hidden rounded-3xl border border-white/10 bg-[#100d18] shadow-sm"
     >
       <summary className="snake-summary flex cursor-pointer list-none flex-col gap-2 p-5 pr-12 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div className="flex items-start gap-4">
-          <span
-            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-[3px] border-[var(--magic-ink)] bg-gradient-to-br from-lime-300 to-emerald-400 text-3xl shadow-[3px_3px_0_#312e81]"
-            aria-hidden
-          >
-            🐍
+          <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.06] text-orange-400">
+            <Gamepad2 strokeWidth={1.75} className="h-5 w-5" aria-hidden />
           </span>
           <div>
-            <p className="font-display text-xl font-extrabold text-[var(--magic-ink)] sm:text-2xl">
+            <p className="font-display text-xl font-extrabold text-white sm:text-2xl">
               Mini hra: had
             </p>
-            <p className="mt-1 max-w-xl text-sm font-semibold leading-relaxed text-slate-700 sm:text-base">
+            <p className="mt-1 max-w-xl text-sm font-semibold leading-relaxed text-white/75 sm:text-base">
               Klikni a rozbal — zahraj si klasiku přímo na webu. Na kroužku se
               naučíš podobné věci stavět s AI: pravidla hry, pohyb, skóre, grafika
               i celá stránka kolem.
             </p>
           </div>
         </div>
-        <span className="font-display snake-closed-hint inline-flex items-center rounded-xl border-2 border-violet-300 bg-violet-100 px-3 py-1.5 text-sm font-bold text-violet-700 transition-transform duration-200 hover:-translate-y-1 hover:scale-[1.02] sm:mt-0 sm:text-right">
-          Rozbal a hraj ▼
+        <span className="font-display snake-closed-hint inline-flex items-center rounded-xl border border-orange-400/40 bg-orange-400/10 px-3 py-1.5 text-sm font-bold text-orange-300 sm:mt-0 sm:text-right">
+          Rozbal a hraj
         </span>
-        <span className="snake-open-hint font-display inline-flex items-center rounded-xl border-2 border-emerald-300 bg-emerald-100 px-3 py-1.5 text-sm font-bold text-emerald-700 transition-transform duration-200 hover:-translate-y-1 hover:scale-[1.02] sm:text-right">
-          Zavři ▲
+        <span className="snake-open-hint font-display inline-flex items-center rounded-xl border border-white/15 bg-white/[0.06] px-3 py-1.5 text-sm font-bold text-white/80 sm:text-right">
+          Zavři
         </span>
       </summary>
 
-      <div className="border-t-[3px] border-dashed border-violet-200 px-5 pb-6 pt-4 sm:px-6">
+      <div className="border-t border-white/10 px-5 pb-6 pt-4 sm:px-6">
         <div className="flex flex-col items-center gap-4 lg:flex-row lg:items-start lg:justify-center lg:gap-10">
-          <div className="relative rounded-2xl border-[3px] border-[var(--magic-ink)] bg-white p-2 shadow-[4px_4px_0_#312e81]">
+          <div className="relative rounded-2xl border border-white/10 bg-[#07060f] p-2">
             <canvas
               ref={canvasRef}
               width={CANVAS_W}
@@ -285,22 +283,22 @@ export function SnakePlayground() {
             />
             {gameOver ? (
               <div className="absolute inset-2 flex flex-col items-center justify-center rounded-xl bg-[var(--magic-ink)]/85 text-center text-white backdrop-blur-[2px]">
-                <p className="font-display text-2xl font-extrabold">Koniec! 💥</p>
+                <p className="font-display text-2xl font-extrabold">Koniec!</p>
                 <p className="mt-1 text-sm font-semibold">Skóre: {score}</p>
               </div>
             ) : null}
           </div>
 
           <div className="flex w-full max-w-xs flex-col gap-4">
-            <div className="rounded-2xl border-2 border-violet-200 bg-violet-50/80 px-4 py-3 text-center">
-              <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-800">
+            <div className="rounded-2xl border border-violet-400/30 bg-violet-400/10 px-4 py-3 text-center">
+              <p className="font-display text-xs font-extrabold uppercase tracking-wide text-violet-300">
                 Skóre
               </p>
-              <p className="font-display text-3xl font-extrabold text-[var(--magic-ink)]">
+              <p className="font-display text-3xl font-extrabold text-white">
                 {score}
               </p>
               {highScore > 0 ? (
-                <p className="text-xs font-bold text-violet-700">
+                <p className="text-xs font-bold text-violet-200">
                   Rekord: {highScore}
                 </p>
               ) : null}
@@ -313,7 +311,7 @@ export function SnakePlayground() {
                   onClick={resetAndStart}
                   className="btn-magic px-6 py-2.5 text-sm"
                 >
-                  Start 🎮
+                  Start
                 </button>
               ) : null}
               {gameOver ? (
@@ -336,7 +334,7 @@ export function SnakePlayground() {
               ) : null}
             </div>
 
-            <p className="text-center text-xs font-semibold text-slate-600">
+            <p className="text-center text-xs font-semibold text-white/60">
               Šipky na klávesnici — nebo tlačítka ↓
             </p>
 
@@ -362,8 +360,8 @@ export function SnakePlayground() {
           </div>
         </div>
 
-        <p className="mx-auto mt-6 max-w-2xl text-center text-sm font-medium leading-relaxed text-slate-700">
-          <span className="font-display font-extrabold text-violet-700">
+        <p className="mx-auto mt-6 max-w-2xl text-center text-sm font-medium leading-relaxed text-white/70">
+          <span className="font-display font-extrabold text-orange-300">
             Tip pro rodiče:
           </span>{" "}
           Tohle je záměrně jednoduchá ukázka — na kurzu děti řeší vlastní nápady
@@ -389,7 +387,7 @@ function DirButton({
       type="button"
       aria-label={label}
       onClick={onClick}
-      className="flex h-11 items-center justify-center rounded-xl border-2 border-[var(--magic-ink)] bg-white font-display text-lg font-extrabold text-[var(--magic-ink)] shadow-[2px_2px_0_#312e81] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+      className="flex h-11 items-center justify-center rounded-xl border border-white/15 bg-white/[0.06] font-display text-lg font-extrabold text-white"
     >
       {children}
     </button>

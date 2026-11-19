@@ -263,6 +263,7 @@ body {
   align-items: flex-start;
   font-family: var(--font-logo), sans-serif;
   font-size: 1.9rem;
+  font-synthesis: none;
   line-height: 1;
   text-decoration: none;
 }
@@ -279,6 +280,7 @@ body {
 }
 .logo-word {
   font-weight: 800;
+  font-synthesis: none;
   line-height: 0.9;
   letter-spacing: -0.045em;
   white-space: nowrap;
@@ -288,17 +290,14 @@ body {
   box-sizing: border-box;
   width: 0.54em;
   height: 0.54em;
-  margin: 0 0.035em 0.08em 0.02em;
-  vertical-align: -0.02em;
+  margin: 0 0.035em 0 0.02em;
+  border: 0.105em solid #f97316;
   border-radius: 50%;
-}
-.logo-dark .logo-o {
-  background: linear-gradient(140deg, #f97316 10%, #c4b5fd 100%);
-  -webkit-mask: radial-gradient(circle, transparent 58%, #000 61%);
-  mask: radial-gradient(circle, transparent 58%, #000 61%);
+  background: none;
+  vertical-align: baseline;
 }
 .logo-light .logo-o {
-  border: 0.105em solid #ea580c;
+  border-color: #ea580c;
 }
 .logo-cursor {
   display: inline-block;

@@ -1,3 +1,4 @@
+import { Gamepad2, Globe, Map, PenLine, Search, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import {
   pilotCourseMeta,
@@ -5,7 +6,29 @@ import {
   pilotFeedbackRatings,
   pilotFeedbackSummary,
   realOutcomeProjects,
+  type OutcomeIcon,
 } from "@/data/real-student-outcomes";
+
+const outcomeIcons: Record<OutcomeIcon, LucideIcon> = {
+  "gamepad-2": Gamepad2,
+  "pen-line": PenLine,
+  map: Map,
+  globe: Globe,
+  search: Search,
+};
+
+function OutcomeIconChip({ name, accent }: { name: OutcomeIcon; accent: "orange" | "violet" }) {
+  const Icon = outcomeIcons[name];
+  return (
+    <span
+      className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.06] ${
+        accent === "orange" ? "text-orange-400" : "text-violet-300"
+      }`}
+    >
+      <Icon strokeWidth={1.75} className="h-5 w-5" aria-hidden />
+    </span>
+  );
+}
 
 type Props = {
   /** Kratší verze pro homepage; plná stránka zobrazí i hodnocení a citace. */
@@ -17,17 +40,17 @@ function RatingBar({ label, score, max = 5 }: { label: string; score: number; ma
   return (
     <div>
       <div className="flex items-center justify-between gap-3 text-sm">
-        <span className="font-medium text-slate-700">{label}</span>
-        <span className="shrink-0 font-display text-sm font-extrabold text-violet-800">
+        <span className="font-medium text-white/80">{label}</span>
+        <span className="shrink-0 font-display text-sm font-extrabold text-orange-400">
           {score}/{max}
         </span>
       </div>
       <div
-        className="mt-2 h-2.5 overflow-hidden rounded-full bg-slate-100"
+        className="mt-2 h-2.5 overflow-hidden rounded-full bg-white/10"
         role="presentation"
       >
         <div
-          className="h-full rounded-full bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all"
+          className="h-full rounded-full bg-gradient-to-r from-orange-400 to-violet-400 transition-all"
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -41,37 +64,32 @@ export function RealOutcomesContent({ variant = "full" }: Props) {
 
   return (
     <div className="space-y-12">
-      <div className="rounded-3xl border border-sky-200 bg-gradient-to-br from-sky-50/80 via-white to-violet-50/60 p-6 sm:p-8">
-        <p className="font-display text-xs font-extrabold uppercase tracking-wide text-sky-800">
+      <div className="rounded-3xl border border-white/10 bg-[#100d18] p-6 sm:p-8">
+        <p className="font-display text-xs font-extrabold uppercase tracking-wide text-orange-400">
           Z pilotního kurzu
         </p>
-        <p className="mt-3 max-w-3xl text-base leading-relaxed text-slate-800 sm:text-lg">
+        <p className="mt-3 max-w-3xl text-base leading-relaxed text-white/85 sm:text-lg">
           Níže je reálný přehled z individuálního kurzu ({pilotCourseMeta.lessons}{" "}
           lekcí, {pilotCourseMeta.period}). Bez jmen — jen to, co dítě skutečně
           vytvořilo, naučilo se a jak kurz hodnotilo.
         </p>
-        <ul className="mt-5 flex flex-wrap gap-3 text-sm font-semibold text-slate-700">
-          <li className="rounded-full border border-sky-200 bg-white px-3 py-1.5">
+        <ul className="mt-5 flex flex-wrap gap-3 text-sm font-semibold text-white/80">
+          <li className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5">
             {pilotCourseMeta.format}
           </li>
-          <li className="rounded-full border border-sky-200 bg-white px-3 py-1.5">
+          <li className="rounded-full border border-violet-400/30 bg-violet-400/10 px-3 py-1.5 text-violet-200">
             {pilotCourseMeta.participantLabel}
           </li>
         </ul>
       </div>
 
       <ul className="grid items-start gap-5 sm:grid-cols-2">
-        {projects.map((project) => {
-          const dark = Boolean(project.imageSrc);
+        {projects.map((project, index) => {
           const avif = project.imageSrc?.replace(/\.webp$/, ".avif");
           return (
           <li
             key={project.title}
-            className={
-              dark
-                ? "flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#100d18] shadow-sm"
-                : "flex h-full flex-col overflow-hidden rounded-3xl border-2 border-violet-100 bg-white shadow-sm"
-            }
+            className="flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#100d18] shadow-sm"
           >
             {project.imageSrc ? (
               <div className="relative aspect-[3/2] w-full overflow-hidden bg-[#07060f]">
@@ -94,21 +112,15 @@ export function RealOutcomesContent({ variant = "full" }: Props) {
               </div>
             ) : null}
             <div className="flex h-full flex-col p-5 sm:p-6">
-              <span className="text-3xl" aria-hidden>
-                {project.emoji}
-              </span>
-              <h3
-                className={`font-display mt-3 text-lg font-extrabold ${dark ? "text-white" : "text-[var(--magic-ink)]"}`}
-              >
+              <OutcomeIconChip name={project.icon} accent={index % 2 === 0 ? "orange" : "violet"} />
+              <h3 className="font-display mt-3 text-lg font-extrabold text-white">
                 {project.title}
               </h3>
-              <p
-                className={`mt-2 text-sm font-semibold leading-relaxed ${dark ? "text-white/85" : "text-slate-800"}`}
-              >
+              <p className="mt-2 text-sm font-semibold leading-relaxed text-white/85">
                 {project.summary}
               </p>
               {variant === "full" ? (
-                <p className={`mt-3 text-sm leading-relaxed ${dark ? "text-white/65" : "text-slate-600"}`}>
+                <p className="mt-3 text-sm leading-relaxed text-white/70">
                   {project.detail}
                 </p>
               ) : null}
@@ -129,41 +141,41 @@ export function RealOutcomesContent({ variant = "full" }: Props) {
       {variant === "full" ? (
         <section
           aria-labelledby="feedback-heading"
-          className="rounded-[2rem] border border-violet-200 bg-white p-6 shadow-sm sm:p-8"
+          className="rounded-[2rem] border border-white/10 bg-[#100d18] p-6 shadow-sm sm:p-8"
         >
           <h2
             id="feedback-heading"
-            className="font-display text-2xl font-extrabold text-[var(--magic-ink)]"
+            className="font-display text-2xl font-extrabold text-white"
           >
             Hodnocení absolventa kurzu
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
             Anonymní zpětná vazba po absolvování kurzu. Škála 1–5, kde 5 znamená
             nejvyšší spokojenost.
           </p>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border-2 border-emerald-200 bg-emerald-50/70 p-5 text-center">
-              <p className="text-xs font-extrabold uppercase tracking-wide text-emerald-800">
+            <div className="rounded-2xl border border-orange-400/30 bg-orange-400/10 p-5 text-center">
+              <p className="text-xs font-extrabold uppercase tracking-wide text-orange-300">
                 Celková spokojenost
               </p>
-              <p className="font-display mt-2 text-4xl font-extrabold text-emerald-900">
+              <p className="font-display mt-2 text-4xl font-extrabold text-white">
                 {pilotFeedbackSummary.overallScore}/5
               </p>
             </div>
-            <div className="rounded-2xl border-2 border-violet-200 bg-violet-50/70 p-5 text-center">
-              <p className="text-xs font-extrabold uppercase tracking-wide text-violet-800">
+            <div className="rounded-2xl border border-violet-400/30 bg-violet-400/10 p-5 text-center">
+              <p className="text-xs font-extrabold uppercase tracking-wide text-violet-300">
                 Průměr hodnocení
               </p>
-              <p className="font-display mt-2 text-4xl font-extrabold text-violet-900">
+              <p className="font-display mt-2 text-4xl font-extrabold text-white">
                 {pilotFeedbackSummary.averageScore}/5
               </p>
             </div>
-            <div className="rounded-2xl border-2 border-sky-200 bg-sky-50/70 p-5 text-center">
-              <p className="text-xs font-extrabold uppercase tracking-wide text-sky-800">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-center">
+              <p className="text-xs font-extrabold uppercase tracking-wide text-violet-300">
                 Doporučil by kurz
               </p>
-              <p className="font-display mt-2 text-2xl font-extrabold text-sky-900 sm:text-3xl">
+              <p className="font-display mt-2 text-2xl font-extrabold text-white sm:text-3xl">
                 {pilotFeedbackSummary.wouldRecommend ? "Ano" : "Ne"}
               </p>
             </div>
@@ -176,27 +188,27 @@ export function RealOutcomesContent({ variant = "full" }: Props) {
               ))}
             </div>
             <div className="space-y-4">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-                <p className="text-xs font-extrabold uppercase tracking-wide text-slate-500">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-xs font-extrabold uppercase tracking-wide text-white/55">
                   Tempo kurzu
                 </p>
-                <p className="mt-1 font-display text-lg font-extrabold text-slate-900">
+                <p className="mt-1 font-display text-lg font-extrabold text-white">
                   {pilotFeedbackSummary.pace}
                 </p>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-                <p className="text-xs font-extrabold uppercase tracking-wide text-slate-500">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                <p className="text-xs font-extrabold uppercase tracking-wide text-white/55">
                   Počet a délka lekcí
                 </p>
-                <p className="mt-1 font-display text-lg font-extrabold text-slate-900">
+                <p className="mt-1 font-display text-lg font-extrabold text-white">
                   {pilotFeedbackSummary.lessonLength}
                 </p>
               </div>
-              <div className="rounded-2xl border border-violet-200 bg-violet-50/80 p-4">
-                <p className="text-xs font-extrabold uppercase tracking-wide text-violet-700">
+              <div className="rounded-2xl border border-violet-400/30 bg-violet-400/10 p-4">
+                <p className="text-xs font-extrabold uppercase tracking-wide text-violet-300">
                   Nejpřínosnější téma
                 </p>
-                <p className="mt-1 font-display text-lg font-extrabold text-violet-950">
+                <p className="mt-1 font-display text-lg font-extrabold text-white">
                   {pilotFeedbackSummary.topTopic}
                 </p>
               </div>
@@ -207,12 +219,12 @@ export function RealOutcomesContent({ variant = "full" }: Props) {
             {pilotFeedbackQuotes.map((q) => (
               <li
                 key={q.question}
-                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-5"
               >
-                <p className="text-xs font-extrabold uppercase tracking-wide text-slate-500">
+                <p className="text-xs font-extrabold uppercase tracking-wide text-orange-300">
                   {q.question}
                 </p>
-                <p className="mt-2 text-sm font-medium leading-relaxed text-slate-800 sm:text-base">
+                <p className="mt-2 text-sm font-medium leading-relaxed text-white/85 sm:text-base">
                   {'„'}
                   {q.answer}
                   {'“'}
