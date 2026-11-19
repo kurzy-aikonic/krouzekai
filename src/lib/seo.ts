@@ -19,27 +19,27 @@ export function absoluteUrl(path: string): string {
 
 /** Krátký popis služby pro schema.org (Organization / WebSite / Course). */
 export function rootSchemaDescription(): string {
-  return `Online kroužek pro děti ${site.audience.ageMin}–${site.audience.ageMax} let: ${site.pricing.lessonMinutes} min jednou za 14 dní, ${site.pricing.lessons} lekcí. Skupiny skládáme podle věku — tempo i témata sedí danému segmentu. Děti tvoří vlastní hru, appku nebo web s AI — bez klasického programování.`;
+  return `Online kroužek pro teenagery ${site.audience.ageMin}–${site.audience.ageMax} let: ${site.pricing.lessonMinutes} minut jednou za 14 dní, ${site.pricing.lessons} lekcí. Vlastní hra, aplikace nebo web s AI, bez klasického programování.`;
 }
 
 export const seoKeywords = [
   "Kroužek umělé inteligence",
   "kroužek umělé inteligence online",
   "kroužek AI",
-  "AI kroužek pro děti",
+  "AI kroužek pro teenagery",
   "kurz AI pro děti",
-  "ChatGPT pro děti",
+  "ChatGPT pro teenagery",
   "vibecoding",
   "promptování",
   "online kurz",
   "tvorba her",
   "programování bez kódu",
-  `děti ${site.audience.ageMin}–${site.audience.ageMax} let`,
+  `teenageři ${site.audience.ageMin}–${site.audience.ageMax} let`,
   "Aikonic",
 ] as const;
 
 const ogImageFromEnv = process.env.NEXT_PUBLIC_OG_IMAGE;
-const ogImageFallback = "/og-image.png";
+const ogImageFallback = "/og-image.jpg";
 const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 /** Ověřovací kód ze Seznam Webmaster Tools (seznam-wmt meta tag). Nastav v .env po registraci webu. */
 const seznamSiteVerification = process.env.NEXT_PUBLIC_SEZNAM_SITE_VERIFICATION;
@@ -48,7 +48,7 @@ function openGraphImages(): NonNullable<Metadata["openGraph"]>["images"] {
   const candidate = ogImageFromEnv?.trim() || ogImageFallback;
   try {
     const url = new URL(candidate, getSiteUrl());
-    // Vlastní OG obrázek (og-image.png) i env override mají standardní rozměr 1200×630.
+    // Vlastní OG obrázek (og-image.jpg) i env override mají standardní rozměr 1200×630.
     return [{ url: url.toString(), width: 1200, height: 630, alt: site.name }];
   } catch {
     return undefined;

@@ -72,7 +72,34 @@ export function withScheduleDefaults(run: CourseRun): Required<
   return { ...run, weekday, lessonTime, recurrence };
 }
 
+const MONTHS_GENITIVE = [
+  "ledna",
+  "února",
+  "března",
+  "dubna",
+  "května",
+  "června",
+  "července",
+  "srpna",
+  "září",
+  "října",
+  "listopadu",
+  "prosince",
+] as const;
+
+/** Datum bez Intl, aby se server a prohlížeč nelišily. Například „6. dubna 2027“. */
+export function formatIsoDateLongCs(iso: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!match) return iso;
+  const month = MONTHS_GENITIVE[Number(match[2]) - 1];
+  const day = Number(match[3]);
+  if (!month || day < 1 || day > 31) return iso;
+  return `${day}. ${month} ${match[1]}`;
+}
+
 export function formatStartDateCs(iso: string): string {
+  const stable = formatIsoDateLongCs(iso);
+  if (stable !== iso) return stable;
   return new Date(`${iso}T12:00:00`).toLocaleDateString("cs-CZ", {
     day: "numeric",
     month: "long",

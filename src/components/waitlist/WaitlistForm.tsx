@@ -19,9 +19,16 @@ type Props = {
   format: "skupina" | "individual";
   runId?: string;
   runLabel?: string;
+  /** Krátký formulář, když ještě nejsou vypsané budoucí termíny. */
+  variant?: "default" | "notify";
 };
 
-export function WaitlistForm({ format, runId, runLabel }: Props) {
+export function WaitlistForm({
+  format,
+  runId,
+  runLabel,
+  variant = "default",
+}: Props) {
   const [childName, setChildName] = useState("");
   const [parentName, setParentName] = useState("");
   const [parentEmail, setParentEmail] = useState("");
@@ -57,7 +64,12 @@ export function WaitlistForm({ format, runId, runLabel }: Props) {
           parentName,
           parentEmail,
           parentPhone,
-          note,
+          note:
+            variant === "notify"
+              ? note.trim()
+                ? `Upozornění na jarní termíny 2027. ${note.trim()}`
+                : "Upozornění na jarní termíny 2027."
+              : note,
           consentPrivacy,
           formHoney: hpCompany,
           turnstileToken: turnstileEnabled ? turnstileToken : "",
@@ -82,11 +94,12 @@ export function WaitlistForm({ format, runId, runLabel }: Props) {
     return (
       <div className="card-playful border-emerald-200 bg-emerald-50/70 p-6 text-center">
         <p className="font-display text-lg font-extrabold text-emerald-900">
-          Zapsáno do čekací listiny ✅
+          {variant === "notify" ? "Kontakt máme" : "Zapsáno do čekací listiny"}
         </p>
-        <p className="mt-2 text-sm leading-relaxed text-emerald-900/80">
-          Na e-mail jsme poslali potvrzení. Ozveme se, jakmile se uvolní místo
-          nebo otevřeme nový termín stejného formátu.
+        <p className="mt-2 text-base leading-relaxed text-emerald-950">
+          {variant === "notify"
+            ? "Ozveme se vám, až budeme mít jarní termíny 2027, ještě než je zveřejníme."
+            : "Na e-mail jsme poslali potvrzení. Ozveme se, jakmile se uvolní místo nebo otevřeme nový termín stejného formátu."}
         </p>
       </div>
     );
@@ -94,13 +107,15 @@ export function WaitlistForm({ format, runId, runLabel }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="relative space-y-5">
-      <div className="rounded-2xl border-2 border-dashed border-violet-300 bg-violet-50/60 px-4 py-3 text-sm font-semibold text-violet-900">
-        {runLabel
-          ? `Čekací listina na termín: ${runLabel}`
-          : format === "skupina"
-            ? "Čekací listina — skupinový kurz"
-            : "Čekací listina — individuální 1:1"}
-      </div>
+      {variant === "notify" ? null : (
+        <div className="rounded-2xl border border-violet-200 bg-violet-50/70 px-4 py-3 text-sm font-semibold text-violet-950">
+          {runLabel
+            ? `Čekací listina na termín: ${runLabel}`
+            : format === "skupina"
+              ? "Čekací listina na skupinový kurz"
+              : "Čekací listina na individuální kurz 1:1"}
+        </div>
+      )}
 
       <div>
         <label
@@ -215,7 +230,7 @@ export function WaitlistForm({ format, runId, runLabel }: Props) {
           required
           checked={consentPrivacy}
           onChange={(e) => setConsentPrivacy(e.target.checked)}
-          className="mt-0.5 h-5 w-5 rounded border-2 border-[var(--magic-ink)] text-violet-600"
+            className="mt-0.5 h-6 w-6 shrink-0 rounded border-2 border-[var(--magic-ink)] text-violet-600"
         />
         <span>
           Seznámil/a jsem se se{" "}
@@ -251,11 +266,17 @@ export function WaitlistForm({ format, runId, runLabel }: Props) {
         disabled={submitting}
         className="btn-magic w-full justify-center disabled:opacity-60"
       >
-        {submitting ? "Odesíláme…" : "Zapsat do čekací listiny"}
+        {submitting
+          ? "Odesíláme…"
+          : variant === "notify"
+            ? "Chci vědět o termínech"
+            : "Zapsat do čekací listiny"}
       </button>
 
-      <p className="text-xs text-slate-500">
-        Zápis do čekací listiny nic nestojí a nezavazuje k platbě. Dotazy na{" "}
+      <p className="text-sm leading-relaxed text-slate-600">
+        {variant === "notify"
+          ? "Kontakt nic nestojí a k ničemu vás nezavazuje. Dotazy na "
+          : "Zápis do čekací listiny nic nestojí a nezavazuje k platbě. Dotazy na "}
         <a href={`mailto:${site.contactEmail}`} className="font-semibold underline">
           {site.contactEmail}
         </a>

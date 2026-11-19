@@ -51,17 +51,17 @@ export function RealOutcomesContent({ variant = "full" }: Props) {
           lekcí, {pilotCourseMeta.period}). Bez jmen — jen to, co dítě skutečně
           vytvořilo, naučilo se a jak kurz hodnotilo.
         </p>
-        <dl className="mt-5 flex flex-wrap gap-3 text-xs font-semibold text-slate-700">
-          <div className="rounded-full border border-sky-200 bg-white px-3 py-1.5">
+        <ul className="mt-5 flex flex-wrap gap-3 text-sm font-semibold text-slate-700">
+          <li className="rounded-full border border-sky-200 bg-white px-3 py-1.5">
             {pilotCourseMeta.format}
-          </div>
-          <div className="rounded-full border border-sky-200 bg-white px-3 py-1.5">
+          </li>
+          <li className="rounded-full border border-sky-200 bg-white px-3 py-1.5">
             {pilotCourseMeta.participantLabel}
-          </div>
-        </dl>
+          </li>
+        </ul>
       </div>
 
-      <ul className="grid gap-5 sm:grid-cols-2">
+      <ul className="grid items-start gap-5 sm:grid-cols-2">
         {projects.map((project) => (
           <li
             key={project.title}

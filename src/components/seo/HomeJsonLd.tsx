@@ -1,6 +1,6 @@
 import { site } from "@/lib/site-config";
 import { coursePriceCzk } from "@/lib/course-pricing-store";
-import { listOfferedCourseRuns } from "@/lib/course-runs-store";
+import { listPublicCourseRuns } from "@/lib/course-runs-store";
 import { productFromFormat } from "@/lib/payment";
 import { absoluteUrl, getSiteUrl, rootSchemaDescription } from "@/lib/seo";
 
@@ -27,7 +27,8 @@ export async function HomeJsonLd() {
   const registraceUrl = absoluteUrl("/registrace");
   const validUntil = priceValidUntil();
 
-  const runs = await listOfferedCourseRuns();
+  const runs = await listPublicCourseRuns();
+  const hasUpcomingRuns = runs.length > 0;
   const hasCourseInstance = runs
     .filter((run) => {
       const parsed = new Date(run.startsOn);
@@ -57,7 +58,7 @@ export async function HomeJsonLd() {
         name: site.name,
         description: rootSchemaDescription(),
         provider: { "@id": orgId },
-        educationalLevel: `děti ${site.audience.ageMin}–${site.audience.ageMax} let`,
+        educationalLevel: `teenageři ${site.audience.ageMin}–${site.audience.ageMax} let`,
         teaches: [
           "vibecoding",
           "prompt engineering",
@@ -87,7 +88,9 @@ export async function HomeJsonLd() {
             priceCurrency: "CZK",
             category: "Paid",
             priceValidUntil: validUntil,
-            availability: "https://schema.org/InStock",
+            availability: hasUpcomingRuns
+              ? "https://schema.org/InStock"
+              : "https://schema.org/PreOrder",
             url: registraceUrl,
           },
           {
@@ -97,7 +100,9 @@ export async function HomeJsonLd() {
             priceCurrency: "CZK",
             category: "Paid",
             priceValidUntil: validUntil,
-            availability: "https://schema.org/InStock",
+            availability: hasUpcomingRuns
+              ? "https://schema.org/InStock"
+              : "https://schema.org/PreOrder",
             url: registraceUrl,
           },
         ],

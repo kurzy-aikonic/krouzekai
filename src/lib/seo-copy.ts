@@ -1,30 +1,32 @@
 import { site } from "@/lib/site-config";
 
+const name = site.nameInflected;
+
 /** Sjednocené meta popisy (cca 150–165 znaků) pro výsledky ve vyhledávání a sdílení. */
 export const metaDescriptions = {
-  home: `Online kroužek umělé inteligence pro děti ${site.audience.ageMin}–${site.audience.ageMax} let: ${site.pricing.lessons} lekcí po ${site.pricing.lessonMinutes} min, vibecoding s AI, skupiny podle věku a formát skupina nebo 1:1.`,
+  home: `Online kroužek pro teenagery ${site.audience.ageMin}–${site.audience.ageMax} let. Vlastní hra nebo web s AI, malá skupina, ${site.pricing.lessons} lekcí. Platba až po potvrzení skupiny.`,
 
-  registrace: `Registrace na ${site.name}: online kurz pro děti ${site.audience.ageMin}–${site.audience.ageMax} let, formát skupina nebo 1:1. Po přihlášce domlouváme termín i detaily individuálně.`,
+  registrace: `Přihláška do ${name} pro teenagery ${site.audience.ageMin}–${site.audience.ageMax} let. Odesláním vzniká návrh smlouvy a do potvrzení objednávky nic neplatíte.`,
 
-  jakProbiha: `Jak probíhá ${site.name}: ${site.pricing.lessonMinutes} minut jednou za 14 dní, celkem ${site.pricing.lessons} lekcí. Přehled průběhu, technických požadavků i role rodiče.`,
+  jakProbiha: `Jak probíhá ${site.name}: ${site.pricing.lessonMinutes} minut jednou za 14 dní, celkem ${site.pricing.lessons} lekcí. Průběh, technické požadavky a role rodiče.`,
 
-  faq: `Časté otázky ke ${site.name}: věk ${site.audience.ageMin}–${site.audience.ageMax} let, průběh lekcí, ceny, platba, bezpečnost práce s AI i organizace prvních termínů.`,
+  faq: `Časté otázky ke ${name}: věk ${site.audience.ageMin}–${site.audience.ageMax} let, průběh lekcí, ceny, platba a bezpečnost práce s AI.`,
 
-  kontakt: `Kontakt na ${site.name}: e-mail ${site.contactEmail}, telefon ${site.company.phoneDisplay}. Provozovatel ${site.company.legalName} (IČO ${site.company.ic}).`,
+  kontakt: `Kontakt ke ${name}: e-mail ${site.contactEmail}, telefon ${site.company.phoneDisplay}. Provozovatel ${site.company.legalName}, IČO ${site.company.ic}.`,
 
-  obchodniPodminky: `Obchodní podmínky ${site.name}: objednávka kurzu, cena, platební podmínky, odstoupení a další práva a povinnosti účastníků i poskytovatele.`,
+  obchodniPodminky: `Obchodní podmínky ${name}: objednávka kurzu, cena, platba, odstoupení od smlouvy a práva účastníků i poskytovatele.`,
 
-  ochrana: `Zásady ochrany osobních údajů (GDPR) pro ${site.name}: jaké údaje zpracováváme, proč, jak dlouho je uchováváme a jak můžete uplatnit svá práva.`,
+  ochrana: `Zásady ochrany osobních údajů ${name}: jaké údaje zpracováváme, proč, jak dlouho je uchováváme a jak uplatníte svá práva.`,
 
-  cookies: `Informace o cookies na webu ${site.name}: nezbytné technologie, analytika po souhlasu a možnosti nastavení cookies v prohlížeči.`,
+  cookies: `Informace o cookies na webu ${name}: nezbytné technologie, analytika po souhlasu a možnosti nastavení cookies v prohlížeči.`,
 
-  pravidlaOnlineKrouzku: `Pravidla online kroužku ${site.name}: bezpečné chování v lekcích, zákaz šikany, pravidla pro nahrávání a používání AI nástrojů.`,
+  pravidlaOnlineKrouzku: `Pravidla ${name}: bezpečné chování v lekcích, zákaz šikany, nahrávání a používání AI nástrojů.`,
 
-  odstoupeni: `Vzorový formulář odstoupení od smlouvy pro ${site.name}: postup, kontaktní údaje a praktické pokyny pro spotřebitele.`,
+  odstoupeni: `Vzorový formulář odstoupení od smlouvy ke ${name}: postup, kontaktní údaje a pokyny pro spotřebitele.`,
 
-  platba: `Orientační přehled platby po registraci do ${site.name}: převod, variabilní symbol a další platební údaje. Finální pokyny posíláme po individuální domluvě.`,
+  platba: `Platba po přihlášce do ${name}: převod, variabilní symbol a další údaje. Finální pokyny posíláme po potvrzení objednávky.`,
 
-  aktualniBehy: `Aktuální termíny ${site.name}: přehled skupinových i individuálních kurzů, kapacit a dostupnosti míst. Registrace probíhá online.`,
+  aktualniBehy: `Termíny ${name}: přehled skupinových a individuálních kurzů, kapacity a volných míst. Když termín není, necháte nám kontakt.`,
 
-  coDetiTvori: `Co děti reálně tvoří v ${site.name}: hry, prompty, projekty a zpětná vazba z pilotního kurzu. Konkrétní výstupy místo obecných slibů.`,
+  coDetiTvori: `Co děti reálně tvoří v ${name}: hra v prohlížeči, vlastní web a zpětná vazba z pilotního kurzu.`,
 } as const;

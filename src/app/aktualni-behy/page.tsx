@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CourseRunPublicCard } from "@/components/course-run/CourseRunPublicCard";
+import { SpringTermsPanel } from "@/components/home/SpringTermsPanel";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { countedOccupancyForRun } from "@/lib/course-run-registrations";
 import { getPublicCoursePricing } from "@/lib/course-pricing-store";
-import { listOfferedCourseRuns } from "@/lib/course-runs-store";
+import { listPublicCourseRuns } from "@/lib/course-runs-store";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { listRegistrationsMerged } from "@/lib/registrations-store";
 import { site } from "@/lib/site-config";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Termíny AI kroužku pro děti — aktuální běhy",
+  title: "Termíny AI kroužku — aktuální běhy",
   description: metaDescriptions.aktualniBehy,
   path: "/aktualni-behy",
   keywords: ["termíny AI kroužku", "AI kroužek zápis 2026"],
@@ -20,7 +21,7 @@ export const revalidate = 300;
 
 export default async function AktualniBehyPage() {
   const [runs, merged, pricing] = await Promise.all([
-    listOfferedCourseRuns(),
+    listPublicCourseRuns(),
     listRegistrationsMerged(),
     getPublicCoursePricing(),
   ]);
@@ -45,40 +46,26 @@ export default async function AktualniBehyPage() {
       />
       <div className="mx-auto max-w-4xl px-6 py-12 sm:px-6 sm:py-16">
         <h1 className="page-h1">Aktuální termíny</h1>
-        <p className="mt-4 text-slate-600 leading-relaxed">
-          Všechny termíny, které právě nabízíme — skupinové i individuální 1:1.
-          Skupinový kurz startuje až po naplnění kapacity (100 % míst) — do té
-          doby sbíráme nezávazné přihlášky a u každého termínu vidíte průběh
-          obsazenosti.
+        <p className="mt-4 text-base leading-relaxed text-slate-700">
+          Tady jsou jen termíny, které ještě nezačaly. Skupinu otevřeme, jakmile
+          se naplní její kapacita. Do potvrzení objednávky nic neplatíte a
+          přihlášku můžete zrušit.
         </p>
         {runs.length === 0 ? (
-          <div className="card-playful mt-10 p-6 text-sm leading-relaxed text-slate-700">
-            <p>
-              Momentálně nemáme vypsané konkrétní termíny — přihlášku ale můžete
-              poslat kdykoli, domluvíme se individuálně.
-            </p>
-            <Link
-              href="/registrace"
-              className="btn-magic-outline mt-6 inline-flex text-sm"
-            >
-              Nezávazně přihlásit dítě
-            </Link>
+          <div className="mt-10">
+            <SpringTermsPanel />
           </div>
         ) : (
           <div className="mt-10 space-y-10">
             {groupRuns.length > 0 ? (
               <section aria-labelledby="group-runs-heading">
-                {individualRuns.length > 0 ? (
-                  <h2
-                    id="group-runs-heading"
-                    className="font-display text-lg font-extrabold text-[var(--magic-ink)]"
-                  >
-                    Skupinové termíny
-                  </h2>
-                ) : null}
-                <ul
-                  className={`grid gap-4 ${individualRuns.length > 0 ? "mt-4" : ""} sm:grid-cols-2`}
+                <h2
+                  id="group-runs-heading"
+                  className="font-display text-lg font-extrabold text-[var(--magic-ink)]"
                 >
+                  Skupinové termíny
+                </h2>
+                <ul className="mt-4 grid gap-4 sm:grid-cols-2">
                   {groupRuns.map((run) => (
                     <li key={run.id}>
                       <CourseRunPublicCard
@@ -125,9 +112,9 @@ export default async function AktualniBehyPage() {
         </p>
         <Link
           href="/registrace"
-          className="btn-magic mt-8 inline-flex w-full max-w-md justify-center text-sm sm:w-auto"
+          className="btn-magic mt-8 inline-flex w-full max-w-md justify-center sm:w-auto"
         >
-          Nezávazně přihlásit dítě
+          Přihlásit dítě
         </Link>
       </div>
     </>

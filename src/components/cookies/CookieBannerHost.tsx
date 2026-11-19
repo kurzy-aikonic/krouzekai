@@ -14,10 +14,10 @@ const CookieBannerClient = dynamic(
 );
 
 export function CookieBannerHost() {
-  const [ready, setReady] = useState(false);
+  const [mode, setMode] = useState<null | "choice" | "details">(null);
 
   useEffect(() => {
-    const onOpenSettings = () => setReady(true);
+    const onOpenSettings = () => setMode("details");
     window.addEventListener(COOKIE_SETTINGS_OPEN_EVENT, onOpenSettings);
 
     if (hasCookieDecision()) {
@@ -26,13 +26,12 @@ export function CookieBannerHost() {
       };
     }
 
-    // Při první návštěvě chceme lištu zobrazit rychle, ale neblokovat první paint.
-    const timeoutId = window.setTimeout(() => setReady(true), 1000);
+    const timeoutId = window.setTimeout(() => setMode("choice"), 1000);
     return () => {
       window.removeEventListener(COOKIE_SETTINGS_OPEN_EVENT, onOpenSettings);
       window.clearTimeout(timeoutId);
     };
   }, []);
 
-  return ready ? <CookieBannerClient /> : null;
+  return mode ? <CookieBannerClient initialStep={mode} /> : null;
 }

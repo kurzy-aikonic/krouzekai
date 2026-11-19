@@ -7,10 +7,9 @@ import { BrandSubtitle } from "@/components/layout/BrandSubtitle";
 import { site } from "@/lib/site-config";
 
 const nav = [
-  { href: "/", label: "O kurzu" },
-  { href: "/test-urovne-ai", label: "AI test" },
-  { href: "/co-deti-tvori", label: "Co děti tvoří" },
-  { href: "/jak-probiha", label: "Jak kroužek probíhá" },
+  { href: "/aktualni-behy", label: "Termíny a ceny" },
+  { href: "/jak-probiha", label: "O kroužku" },
+  { href: "/co-deti-tvori", label: "Projekty" },
   { href: "/faq", label: "Časté otázky" },
   { href: "/kontakt", label: "Kontakt" },
 ] as const;
@@ -54,10 +53,10 @@ export function SiteHeader() {
             aria-label={`${site.name} — úvod`}
           >
             <span
-              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-fuchsia-100 text-lg shadow-sm transition-transform group-hover:rotate-3 sm:h-11 sm:w-11 sm:text-xl"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#12141c] text-sm font-bold tracking-tight text-white sm:h-11 sm:w-11"
               aria-hidden
             >
-              ✨
+              AI
             </span>
           </Link>
           <div className="min-w-0 pt-0.5">
@@ -80,7 +79,7 @@ export function SiteHeader() {
               key={item.href}
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
-              className={`font-display relative flex min-h-10 items-center whitespace-nowrap rounded-xl px-2.5 py-2 text-[11px] font-bold transition-colors lg:px-3 lg:text-sm ${
+              className={`font-display relative flex min-h-11 items-center whitespace-nowrap rounded-xl px-2.5 py-2 text-sm font-bold transition-colors lg:px-3 ${
                 isActive(item.href)
                   ? "text-violet-900"
                   : "text-slate-700 hover:text-violet-800"
@@ -95,14 +94,14 @@ export function SiteHeader() {
               ) : null}
             </Link>
           ))}
-          <Link href="/registrace" className="btn-magic ml-1 min-h-10 px-4 py-2 text-[11px] lg:px-5 lg:text-sm">
-            Registrace
+          <Link href="/registrace" className="btn-magic ml-1 min-h-11 px-4 py-2 text-sm lg:px-5">
+            Přihlásit
           </Link>
         </nav>
 
         <div className="flex shrink-0 items-center gap-2 md:hidden">
-          <Link href="/registrace" className="btn-magic min-h-11 px-4 text-sm">
-            Registrace
+          <Link href="/registrace" className="btn-magic min-h-11 px-3 text-sm sm:px-4">
+            Přihlásit
           </Link>
           <button
             type="button"

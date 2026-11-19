@@ -71,6 +71,8 @@ export type RegistrationRecord = {
   consentPrivacy: boolean;
   consentAiTools: boolean;
   consentEarlyServiceStart: boolean;
+  /** Dobrovolný souhlas s nahráváním. U starších záznamů chybí. */
+  consentLessonRecording?: boolean;
   aiSkillLevel?: AiSkillLevel;
   aiSkillLevelSource?: "self-test" | "manual";
   paymentProduct: PaymentProduct;

@@ -30,6 +30,16 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "krouzekumeleinteligence.cz" }],
+        destination: "https://www.krouzekumeleinteligence.cz/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [{ source: "/:path*", headers: [...securityHeaders] }];
   },

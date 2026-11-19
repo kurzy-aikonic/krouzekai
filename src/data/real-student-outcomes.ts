@@ -38,7 +38,7 @@ export const realOutcomeProjects: OutcomeProject[] = [
     emoji: "📝",
     title: "Prompty, které dávají smysl",
     summary:
-      "Naučil se skládat zadání podle metody RKUFO a postupně zužovat obecné nápady na konkrétní plán.",
+      "Naučil se skládat zadání tak, aby z obecného nápadu vznikl konkrétní plán.",
     detail:
       "Od obecného „chci vlastní GTA“ až po krok za krokem návod s realistickým rozsahem. Dítě pochopilo, že kvalita zadání rozhoduje o kvalitě výstupu — a že iterace je normální součást práce s AI.",
   },

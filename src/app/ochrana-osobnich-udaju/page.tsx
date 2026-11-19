@@ -193,8 +193,14 @@ export default function OchranaOsobnichUdajuPage() {
           </p>
           <ul>
             <li>
-              <strong>Provoz webu a hosting</strong> (poskytovatel cloudové
-              infrastruktury, např. platforma pro nasazení aplikace).
+              <strong>Provoz webu a hosting</strong> — společnost{" "}
+              <strong>Vercel Inc.</strong>, platforma, na které web běží.
+            </li>
+            <li>
+              <strong>Měření návštěvnosti</strong> — Google Analytics 4,
+              poskytovatel Google Ireland Limited a Google LLC. Měření se
+              spouští jen po souhlasu s analytickými cookies a před souhlasem
+              se skript nenačítá.
             </li>
             <li>
               <strong>Odesílání e-mailů</strong> — služba{" "}
@@ -203,8 +209,8 @@ export default function OchranaOsobnichUdajuPage() {
             </li>
             <li>
               <strong>Ochrana formuláře před spamem</strong> —{" "}
-              <strong>Cloudflare Turnstile</strong> při odeslání registrace
-              (ověření, že za odesláním stojí člověk).
+              <strong>Cloudflare Turnstile</strong>, pokud je na formuláři
+              zobrazené ověření. Bez nastavených klíčů se widget nenačítá.
             </li>
             <li>
               <strong>Omezení zneužití rozhraní (rate limiting)</strong> — např.

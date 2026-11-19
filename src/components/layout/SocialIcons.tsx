@@ -35,15 +35,6 @@ function IconYoutube() {
   );
 }
 
-function IconGlobe() {
-  return (
-    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-      <circle cx="12" cy="12" r="10" />
-      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    </svg>
-  );
-}
-
 export function SocialIcons({ className = "" }: { className?: string }) {
   const entries: Entry[] = [];
 
@@ -76,11 +67,7 @@ export function SocialIcons({ className = "" }: { className?: string }) {
     });
   }
 
-  entries.push({
-    href: site.parentSite.url,
-    label: `${site.parentSite.name} — hlavní web`,
-    children: <IconGlobe />,
-  });
+  if (entries.length === 0) return null;
 
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`}>

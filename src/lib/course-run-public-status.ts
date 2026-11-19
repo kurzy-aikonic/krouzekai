@@ -110,7 +110,7 @@ export function courseRunPublicStatus(
       badgeLabel: "Sbíráme přihlášky",
       badgeClassName: "border-amber-300 bg-amber-50 text-amber-950",
       statusLine: `Obsazeno ${occupied} z ${capacity} míst — kurz startuje až po naplnění kapacity.`,
-      detailLine: `Skupinový kurz spouštíme jen při plné obsazenosti (${capacity}/${capacity}). Přihláška je nezávazná, dokud kapacitu nedoplníme.`,
+      detailLine: `Skupinový kurz spouštíme jen při plné obsazenosti (${capacity}/${capacity}). Do potvrzení objednávky nic neplatíte.`,
       progressPercent,
     };
   }
@@ -127,7 +127,7 @@ export function courseRunPublicStatus(
     badgeLabel: "Hledáme účastníky",
     badgeClassName: "border-violet-300 bg-violet-50 text-violet-900",
     statusLine: `Zatím ${occupied} z ${capacity} míst — kurz startuje až po naplnění kapacity.`,
-    detailLine: `Potřebujeme ${capacity} dětí na termín. Přihlaste se nezávazně — o spuštění kurzu vás informujeme, až bude skupina kompletní.`,
+    detailLine: `Potřebujeme ${capacity} dětí na termín. Do potvrzení objednávky nic neplatíte.`,
     progressPercent: 0,
   };
 }

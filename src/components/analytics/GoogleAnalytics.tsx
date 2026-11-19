@@ -1,55 +1,35 @@
 "use client";
 
 import Script from "next/script";
-import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import { analyticsConsentGranted } from "@/lib/cookie-consent";
+import { gaMeasurementId, trackPageView } from "@/lib/ga-events";
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim() ?? "";
+const GA_ID = gaMeasurementId();
 
-function getGtag(): ((...args: unknown[]) => void) | undefined {
-  return (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
-}
-
-function sendPageView() {
-  const gtag = getGtag();
-  if (typeof gtag !== "function") return;
-  gtag("event", "page_view", {
-    page_path: window.location.pathname + window.location.search,
-    page_location: window.location.href,
-  });
-}
-
-/**
- * GA4 (gtag) — jen při `NEXT_PUBLIC_GA_MEASUREMENT_ID` a souhlasu s analytikou (cookies).
- * `afterInteractive` kvůli spolehlivějšímu načtení; při navigaci v App Router doplňujeme page_view.
- */
-export function GoogleAnalytics() {
+function GoogleAnalyticsInner() {
   const [enabled, setEnabled] = useState(false);
   const pathname = usePathname();
-  const lastReportedPath = useRef<string | null>(null);
+  const searchParams = useSearchParams();
+  const search = searchParams.toString();
 
   useEffect(() => {
     const sync = () => {
       if (!GA_ID) return;
-      setEnabled((prev) => {
-        const next = analyticsConsentGranted();
-        return prev === next ? prev : next;
-      });
+      setEnabled(analyticsConsentGranted());
     };
-    queueMicrotask(sync);
+    sync();
     window.addEventListener("krouzek-cookie-consent", sync);
     return () => window.removeEventListener("krouzek-cookie-consent", sync);
   }, []);
 
   useEffect(() => {
-    if (!GA_ID || !enabled) return;
-    if (typeof getGtag() !== "function") return;
-    if (lastReportedPath.current === null) return;
-    if (lastReportedPath.current === pathname) return;
-    lastReportedPath.current = pathname;
-    sendPageView();
-  }, [enabled, pathname]);
+    if (!GA_ID) return;
+    (window as unknown as Record<string, boolean>)[`ga-disable-${GA_ID}`] = !enabled;
+    if (!enabled) return;
+    trackPageView();
+  }, [enabled, pathname, search]);
 
   if (!GA_ID || !enabled) return null;
 
@@ -57,13 +37,19 @@ export function GoogleAnalytics() {
     <Script
       src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_ID)}`}
       strategy="afterInteractive"
-      onLoad={() => {
-        const gtag = getGtag();
-        if (typeof gtag !== "function") return;
-        // `config` with `send_page_view: true` logs the first pageview for initial load.
-        gtag("config", GA_ID, { send_page_view: true });
-        lastReportedPath.current = pathname;
-      }}
     />
+  );
+}
+
+/**
+ * GA4 se načte až po souhlasu s analytikou. Před souhlasem v HTML žádný skript není.
+ * `useSearchParams` je v Suspense, aby nerozbilo statické vykreslení.
+ */
+export function GoogleAnalytics() {
+  if (!GA_ID) return null;
+  return (
+    <Suspense fallback={null}>
+      <GoogleAnalyticsInner />
+    </Suspense>
   );
 }

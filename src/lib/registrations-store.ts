@@ -149,6 +149,12 @@ function normalizeRecord(
     consentPrivacy: bool(parsed.consentPrivacy),
     consentAiTools: bool(parsed.consentAiTools),
     consentEarlyServiceStart: bool(parsed.consentEarlyServiceStart),
+    consentLessonRecording:
+      parsed.consentLessonRecording === true
+        ? true
+        : parsed.consentLessonRecording === false
+          ? false
+          : undefined,
     aiSkillLevel: parseAiSkillLevel(parsed.aiSkillLevel) ?? undefined,
     aiSkillLevelSource:
       parsed.aiSkillLevelSource === "self-test" ||

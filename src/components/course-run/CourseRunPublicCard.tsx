@@ -1,71 +1,91 @@
 import Link from "next/link";
 import type { CourseRun } from "@/data/course-runs";
-import { CourseRunCapacityStatus } from "@/components/course-run/CourseRunCapacityStatus";
-import { CourseRunPriceLabel } from "@/components/course-run/CourseRunPriceLabel";
-import { CourseRunPublicMeta } from "@/components/course-run/CourseRunPublicMeta";
-import { formatScheduleSummary } from "@/lib/course-run-schedule";
+import { spotsLeftEffective } from "@/data/course-runs";
+import {
+  effectiveRunPriceCzk,
+  formatRunPriceCzk,
+  type DefaultCoursePrices,
+} from "@/lib/course-run-pricing";
+import {
+  formatIsoDateLongCs,
+  weekdayLabel,
+  withScheduleDefaults,
+} from "@/lib/course-run-schedule";
 import { courseRunPublicStatus } from "@/lib/course-run-public-status";
-import type { DefaultCoursePrices } from "@/lib/course-run-pricing";
 
 type Props = {
   run: CourseRun;
   registrationCount: number;
   priceDefaults: DefaultCoursePrices;
-  compact?: boolean;
 };
+
+function spotsPhrase(free: number, capacity: number): string {
+  if (free <= 0) return "Termín je plný.";
+  if (free === 1) return `Zbývá 1 místo z ${capacity}.`;
+  if (free >= 2 && free <= 4) return `Zbývají ${free} místa z ${capacity}.`;
+  return `Zbývá ${free} míst z ${capacity}.`;
+}
 
 export function CourseRunPublicCard({
   run,
   registrationCount,
   priceDefaults,
-  compact = false,
 }: Props) {
+  const schedule = withScheduleDefaults(run);
+  const day = weekdayLabel(schedule.weekday);
+  const when = day ? `${day} ${schedule.lessonTime}` : schedule.lessonTime;
   const status = courseRunPublicStatus(run, registrationCount);
-  const TitleTag = compact ? "h3" : "h2";
+  const free = spotsLeftEffective(run, registrationCount);
+  const price = formatRunPriceCzk(effectiveRunPriceCzk(run, priceDefaults));
+  const priceNote =
+    run.format === "individual" ? "za celý kurz" : "za dítě, celý kurz";
 
   return (
-    <article
-      className={`card-playful relative overflow-hidden border-2 p-5 sm:p-6 ${
-        status.isGroupLaunchReady
-          ? "border-emerald-200 bg-emerald-50/40"
-          : "border-violet-100 bg-white"
-      }`}
-    >
-      <span
-        className={`absolute right-4 top-4 rounded-full border-2 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide ${status.badgeClassName}`}
-      >
-        {status.badgeLabel}
-      </span>
-      <TitleTag className="font-display pr-28 text-lg font-extrabold leading-snug text-[var(--magic-ink)]">
-        {run.label}
-      </TitleTag>
-      <p className="mt-1 text-[10px] font-extrabold uppercase tracking-wide text-violet-700">
-        {run.format === "skupina" ? "Skupinový kurz" : "Individuální 1:1"}
+    <article className="flex h-full flex-col rounded-3xl border border-violet-200 bg-white p-5 shadow-sm sm:p-6">
+      <p className="text-sm font-semibold text-violet-800">
+        {run.format === "skupina" ? "Skupina" : "Individuálně 1:1"}
       </p>
-      <p className="mt-2 text-sm leading-relaxed text-slate-700">{run.description}</p>
-      <CourseRunPublicMeta run={run} />
-      <CourseRunPriceLabel run={run} defaults={priceDefaults} compact={compact} />
-      <p className="mt-3 text-xs font-medium text-slate-600">
-        {formatScheduleSummary(run)}
-      </p>
-      <div className="mt-4">
-        <CourseRunCapacityStatus run={run} registrationCount={registrationCount} />
-      </div>
+      <h3 className="font-display mt-1 text-2xl font-extrabold text-[var(--magic-ink)]">
+        {when}
+      </h3>
+      <dl className="mt-4 grid grid-cols-1 gap-3 text-base sm:grid-cols-2">
+        <div>
+          <dt className="text-sm font-semibold text-slate-600">Den a čas</dt>
+          <dd className="font-bold text-slate-900">{when}</dd>
+        </div>
+        <div>
+          <dt className="text-sm font-semibold text-slate-600">První lekce</dt>
+          <dd className="font-bold text-slate-900">
+            {formatIsoDateLongCs(run.startsOn)}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-sm font-semibold text-slate-600">Cena</dt>
+          <dd className="font-bold text-slate-900">
+            {price}{" "}
+            <span className="font-semibold text-slate-600">{priceNote}</span>
+          </dd>
+        </div>
+        <div>
+          <dt className="text-sm font-semibold text-slate-600">Volná místa</dt>
+          <dd className="font-bold text-slate-900">
+            {spotsPhrase(free, run.capacity)}
+          </dd>
+        </div>
+      </dl>
       {status.acceptsRegistration ? (
         <Link
           href={`/registrace?run=${encodeURIComponent(run.id)}`}
-          className="mt-5 inline-flex w-full justify-center rounded-xl border border-violet-600 bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2.5 text-sm font-extrabold text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:w-auto"
+          className="btn-magic mt-5 w-full"
         >
-          Přihlásit na tento termín →
+          Přihlásit na tento termín
         </Link>
       ) : (
         <Link
           href={`/cekaci-listina?run=${encodeURIComponent(run.id)}`}
-          className="mt-5 inline-flex w-full justify-center rounded-xl border-2 border-slate-200 bg-slate-100 px-4 py-2.5 text-sm font-extrabold text-slate-600 sm:w-auto"
+          className="btn-magic-outline mt-5 w-full"
         >
-          {run.format === "skupina"
-            ? "Kapacita naplněna — čekací listina"
-            : "Termín obsazen — čekací listina"}
+          Termín je plný, chci vědět o dalším
         </Link>
       )}
     </article>

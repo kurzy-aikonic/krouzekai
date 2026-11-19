@@ -130,7 +130,9 @@ export function saveEssentialOnly(): void {
   saveCookiePreferences({ analytics: false, marketing: false });
 }
 
-/** Souhlas se všemi volitelnými kategoriemi. */
+/**
+ * Zapne analytiku. Marketing na webu žádný nástroj nemá, proto ho „Přijmout vše“ nezapíná.
+ */
 export function saveAcceptAll(): void {
-  saveCookiePreferences({ analytics: true, marketing: true });
+  saveCookiePreferences({ analytics: true, marketing: false });
 }

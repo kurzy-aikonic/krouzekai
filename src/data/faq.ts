@@ -10,13 +10,13 @@ export function buildFaqItems(
 
   return [
   {
-    q: "Musí dítě umět programovat?",
-    a: "Vůbec ne. Používáme vibecoding, kde kód píše AI podle instrukcí dítěte.",
+    q: "Potřebuje dítě umět programovat?",
+    a: "Nepotřebuje. Dítě popisuje, co chce vytvořit, a kód podle jeho zadání píše AI. Stačí základní práce s počítačem.",
     relatedLink: { label: "Co je vibecoding a jak funguje", href: "/pruvodce/co-je-vibecoding" },
   },
   {
     q: "Jaký je vhodný věk?",
-    a: `Kurz cílí na děti ${site.audience.ageMin}–${site.audience.ageMax} let. Záleží na zvídavosti a základní práci s počítačem — individuálně lze domluvit výjimku.`,
+    a: `Kurz je pro teenagery od ${site.audience.ageMin} do ${site.audience.ageMax} let. Rozhoduje zájem o technologie a běžná práce s počítačem. Výjimku domluvíme individuálně.`,
   },
   {
     q: "Jaké vybavení potřebujeme?",
@@ -41,11 +41,25 @@ export function buildFaqItems(
   },
   {
     q: "Kdy se skupinový kurz skutečně rozběhne?",
-    a: "Skupinový termín spouštíme až po naplnění kapacity — tedy když jsou obsazena všechna místa daného termínu (např. 5 z 5). Do té doby sbíráme nezávazné přihlášky a u každého termínu vidíte průběh obsazenosti. Po naplnění kapacity vás kontaktujeme s fakturací a organizací startu.",
+    a: "Skupinu otevřeme, jakmile se naplní její kapacita, nejvýš šest dětí. Do potvrzení objednávky a vystavení faktury nic neplatíte a přihlášku můžete zrušit. Pak vám pošleme fakturu a informace k první lekci.",
   },
   {
     q: "Proč ještě nemůžeme platit, i když jsme přihlášení?",
-    a: "Dokud není skupina plně obsazená, kurz ještě není potvrzen ke spuštění. Fakturu a platební instrukce posíláme až po naplnění kapacity termínu — předtím je přihláška nezávazná.",
+    a: "Dokud skupinu nepotvrdíme, kurz ještě neběží. Fakturu posíláme až po naplnění kapacity. Do té doby je odeslaná přihláška návrh smlouvy a nic se neplatí.",
+  },
+  {
+    q: "Co když dítě lekci zmešká?",
+    a: "Když lekci zrušíme my, nabídneme náhradní termín. Když se dítě bez omluvy nedostaví, náhradní termín sám od sebe nevzniká. Napište nám předem na e-mail a domluvíme se.",
+  },
+  {
+    q: "Jaké AI nástroje děti používají a jsou pro jejich věk vhodné?",
+    a: "Účastníci pracují například s ChatGPT a Claude, vždy s lektorem. Tyto nástroje mají vlastní podmínky, obvykle od 13 let, a do 18 let potřebují souhlas zákonného zástupce. Ten dáváte v přihlášce. Na lekcích se probírá, co do nástroje nepatří.",
+    relatedLink: { label: "Je ChatGPT bezpečný pro děti? Celý průvodce", href: "/pruvodce/je-chatgpt-bezpecny-pro-deti" },
+  },
+  {
+    q: "Můžu přihlášku zrušit?",
+    a: "Dokud objednávku nepotvrdíme a nepošleme fakturu, nic neplatíte. Přihlášku v té době zrušíte e-mailem. Po uzavření smlouvy můžete odstoupit do 14 dnů, jak popisují obchodní podmínky.",
+    relatedLink: { label: "Obchodní podmínky", href: "/obchodni-podminky" },
   },
   {
     q: "Kde vidím vypsané termíny skupin?",
@@ -54,7 +68,7 @@ export function buildFaqItems(
   },
   {
     q: "Co když je termín už plný?",
-    a: "U plného termínu se na stránce s aktuálními běhy zobrazí tlačítko „Čekací listina“ — zapíšeme si váš kontakt a ozveme se, jakmile se uvolní místo nebo otevřeme nový termín stejného formátu.",
+    a: "U plného termínu je na stránce s termíny odkaz, přes který nám necháte kontakt. Ozveme se, jakmile se uvolní místo nebo otevřeme nový termín stejného formátu.",
     relatedLink: { label: "Zobrazit aktuální termíny", href: "/aktualni-behy" },
   },
   {

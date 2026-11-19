@@ -7,7 +7,7 @@ import { getCoursePricing } from "@/lib/course-pricing-store";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Časté otázky — AI kroužek pro děti",
+  title: "Časté otázky — AI kroužek pro teenagery",
   description: metaDescriptions.faq,
   path: "/faq",
   keywords: ["AI kroužek otázky", "bezpečnost AI pro děti", "cena AI kroužku"],
@@ -42,15 +42,20 @@ export default async function FaqPage() {
           {faqItems.map((item) => (
             <div key={item.q} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <dt className="font-display text-lg font-extrabold text-slate-900">{item.q}</dt>
-              <dd className="mt-2 text-slate-600 leading-relaxed">{item.a}</dd>
-              {item.relatedLink ? (
-                <Link
-                  href={item.relatedLink.href}
-                  className="mt-2 inline-block text-sm font-semibold text-violet-700 underline hover:text-violet-900"
-                >
-                  {item.relatedLink.label} →
-                </Link>
-              ) : null}
+              <dd className="mt-2 text-base leading-relaxed text-slate-700">
+                {item.a}
+                {item.relatedLink ? (
+                  <>
+                    {" "}
+                    <Link
+                      href={item.relatedLink.href}
+                      className="font-semibold text-violet-800 underline decoration-violet-300 underline-offset-4"
+                    >
+                      {item.relatedLink.label}
+                    </Link>
+                  </>
+                ) : null}
+              </dd>
             </div>
           ))}
         </dl>

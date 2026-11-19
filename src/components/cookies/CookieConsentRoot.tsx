@@ -13,13 +13,19 @@ import {
 
 type Step = "choice" | "details";
 
-export function CookieConsentRoot() {
-  const [visible, setVisible] = useState(() =>
-    typeof window !== "undefined" ? !hasCookieDecision() : false,
+export function CookieConsentRoot({
+  initialStep = "choice",
+}: {
+  initialStep?: Step;
+}) {
+  const [visible, setVisible] = useState(true);
+  const [step, setStep] = useState<Step>(initialStep);
+  const [analytics, setAnalytics] = useState(
+    () => readCookiePreferences()?.analytics ?? false,
   );
-  const [step, setStep] = useState<Step>("choice");
-  const [analytics, setAnalytics] = useState(false);
-  const [marketing, setMarketing] = useState(false);
+  const [marketing, setMarketing] = useState(
+    () => readCookiePreferences()?.marketing ?? false,
+  );
 
   useEffect(() => {
     const onOpen = () => {
@@ -97,8 +103,9 @@ export function CookieConsentRoot() {
                 o soukromí v elektronických komunikacích a s GDPR.{" "}
                 <strong>Nezbytné</strong> technologie jsou nutné k provozu webu
                 (včetně zapamatování této volby a doby jejího udělení).{" "}
-                <strong>Analytiku a marketing</strong> zapneme jen s vaším
-                výslovným souhlasem; souhlas můžete kdykoli odvolat v{" "}
+                <strong>Analytiku</strong> zapneme jen s vaším výslovným
+                souhlasem. Marketingový nástroj na webu není, proto ho tlačítko
+                Přijmout vše nezapíná. Souhlas můžete kdykoli odvolat v{" "}
                 <button
                   type="button"
                   className="font-bold text-violet-700 underline decoration-2 underline-offset-2 hover:text-violet-900"

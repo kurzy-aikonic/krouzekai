@@ -7,7 +7,7 @@ Postup je seřazený tak, aby každý krok navazoval na předchozí. Zaškrtáve
 ## Fáze 0 — Prostředí a nasazení
 
 1. **Produkční `.env` na hostingu** (Vercel / jiný) nastav stejně jako v `.env.example`, zejména:
-   - `NEXT_PUBLIC_SITE_URL` = kanonická URL **včetně** `https://`, **bez** koncového lomítka (např. `https://krouzekumeleinteligence.cz`).
+   - `NEXT_PUBLIC_SITE_URL` = kanonická URL **včetně** `https://`, **bez** koncového lomítka. Živý web je na **www**: `https://www.krouzekumeleinteligence.cz`. Adresu bez www kód sám přepíše na www.
    - `NEXT_PUBLIC_CONTACT_EMAIL` = reálný kontaktní e-mail.
 2. **Build a nasazení**  
    - Lokálně ověř: `npm run lint` a `npm run build`.  

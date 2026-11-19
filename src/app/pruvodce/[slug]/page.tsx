@@ -93,14 +93,14 @@ export default async function GuideArticlePage({ params }: Props) {
             Chcete dítě přihlásit na kroužek AI?
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-sm text-violet-100">
-            Přihláška je nezávazná. Po registraci domluvíme formát, termín i
-            tempo podle věku a úrovně dítěte.
+            Do potvrzení objednávky nic neplatíte. Formát, termín i tempo
+            domluvíme podle věku a úrovně dítěte.
           </p>
           <Link
             href="/registrace"
             className="btn-magic mt-5 inline-flex min-h-11 items-center justify-center px-8"
           >
-            Nezávazně přihlásit dítě
+            Přihlásit dítě
           </Link>
         </div>
 

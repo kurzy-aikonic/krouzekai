@@ -1,3 +1,34 @@
+const CANONICAL_ORIGIN = "https://www.krouzekumeleinteligence.cz";
+
+/**
+ * Kanonická adresa webu. Apex bez www se přepíše na www, protože tam web žije.
+ * Náhled na Vercelu si nechá vlastní hostitele, pokud v prostředí není nastavená produkční adresa.
+ */
+export function resolveSiteBaseUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ?? "";
+  if (!raw) {
+    if (process.env.VERCEL_ENV === "production") return CANONICAL_ORIGIN;
+    const vercelHost = process.env.VERCEL_URL?.trim().replace(/^https?:\/\//, "");
+    if (vercelHost) return `https://${vercelHost}`;
+    return "http://localhost:3000";
+  }
+  try {
+    const url = new URL(raw.includes("://") ? raw : `https://${raw}`);
+    if (url.hostname === "krouzekumeleinteligence.cz") {
+      url.hostname = "www.krouzekumeleinteligence.cz";
+    }
+    return url.origin;
+  } catch {
+    return CANONICAL_ORIGIN;
+  }
+}
+
+/**
+ * Firemní reference na webu (věta o 2 500 proškolených a jména Česká spořitelna, ČEZ, Škoda Auto).
+ * Až bude souhlas a doklad, nechte `true`. Hodnota `false` je z webu odstraní.
+ */
+export const showCorporateReferences: boolean = true;
+
 /** Veřejné odkazy na sociální sítě — doplň v .env nebo zde. */
 function socialUrl(key: `NEXT_PUBLIC_SOCIAL_${string}`): string {
   const v = process.env[key];
@@ -7,6 +38,8 @@ function socialUrl(key: `NEXT_PUBLIC_SOCIAL_${string}`): string {
 export const site = {
   /** Hlavní nadpis značky (shodně s doménou krouzekumeleinteligence.cz). */
   name: "Kroužek umělé inteligence",
+  /** 2. a 6. pád: „v Kroužku…“, „ke Kroužku…“, „podmínky Kroužku…“. */
+  nameInflected: "Kroužku umělé inteligence",
   /** Krátký název do šablony záložky a e-mailů. */
   shortName: "Kroužek umělé inteligence",
   /** Podnadpis s odkazem na mateřský web. */
@@ -14,8 +47,8 @@ export const site = {
     prefix: "od ",
     linkLabel: "Aikonic training",
   },
-  /** Nastav v produkci přes NEXT_PUBLIC_SITE_URL */
-  baseUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  /** Produkce je vždy www, i když v prostředí zůstane adresa bez www. */
+  baseUrl: resolveSiteBaseUrl(),
   contactEmail:
     process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "kurzy@aikonic.cz",
 
@@ -56,16 +89,15 @@ export const site = {
   },
 
   lektor: {
-    name: "Lektorský tým AIKONIC",
+    /** Autor v metadatech. Jméno konkrétního lektora se vyplňuje v `src/data/lecturer.ts`. */
+    name: "Aikonic training",
     role: "Lektorský tým AIKONIC",
-    bioShort:
-      "Kroužek vedou lektoři z týmu AIKONIC, který má za sebou přes 2 500 proškolených lidí v Česku a spolupráci s firmami jako Česká spořitelna, ČEZ nebo Škoda Auto. Na kroužku učíme stejným praktickým způsobem — bez zbytečné teorie, s důrazem na to, aby dítě odešlo s hotovým výsledkem.",
   },
 
   /** Cílová skupina — jednotný zdroj pro copy, validaci přihlášky a SEO. */
   audience: {
-    ageMin: 10,
-    ageMax: 17,
+    ageMin: 13,
+    ageMax: 18,
   },
 
   pricing: {
