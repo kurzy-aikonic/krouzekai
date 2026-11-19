@@ -22,6 +22,8 @@ function studentsInGroup(count: number): string {
 }
 
 export function HomeHero({ hasRuns }: { hasRuns: boolean }) {
+  // Čísla jsou v site.pricing a v popisech termínů už na hlavní větvi
+  // (skupina max. 6, 10 lekcí, 60 minut). „Hotový projekt“ je cíl kurzu v datech výstupů.
   const facts = [
     studentsInGroup(site.pricing.groupMaxStudents),
     `${site.pricing.lessons} lekcí po ${site.pricing.lessonMinutes} minutách`,
@@ -92,6 +94,8 @@ export function HomeHero({ hasRuns }: { hasRuns: boolean }) {
             />
             <img
               src={heroMedia.src}
+              srcSet={heroMedia.jpgSrcSet}
+              sizes={heroMedia.sizes}
               alt={heroMedia.alt}
               width={heroMedia.width}
               height={heroMedia.height}
