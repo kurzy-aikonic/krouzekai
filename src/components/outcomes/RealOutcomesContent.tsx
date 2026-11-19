@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   pilotCourseMeta,
@@ -62,21 +61,34 @@ export function RealOutcomesContent({ variant = "full" }: Props) {
       </div>
 
       <ul className="grid items-start gap-5 sm:grid-cols-2">
-        {projects.map((project) => (
+        {projects.map((project) => {
+          const dark = Boolean(project.imageSrc);
+          const avif = project.imageSrc?.replace(/\.webp$/, ".avif");
+          return (
           <li
             key={project.title}
-            className="card-playful flex h-full flex-col overflow-hidden border-2 border-violet-100 bg-white p-0"
+            className={
+              dark
+                ? "flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#100d18] shadow-sm"
+                : "flex h-full flex-col overflow-hidden rounded-3xl border-2 border-violet-100 bg-white shadow-sm"
+            }
           >
             {project.imageSrc ? (
-              <div className="relative aspect-[3/2] w-full overflow-hidden bg-violet-50">
-                <Image
-                  src={project.imageSrc}
-                  alt={project.imageAlt ?? project.title}
-                  fill
-                  sizes="(min-width: 640px) 50vw, 100vw"
-                  className="object-cover"
-                />
-                <span className="absolute bottom-2 right-2 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-600 shadow-sm">
+              <div className="relative aspect-[3/2] w-full overflow-hidden bg-[#07060f]">
+                <picture>
+                  {avif ? <source type="image/avif" srcSet={avif} /> : null}
+                  <source type="image/webp" srcSet={project.imageSrc} />
+                  <img
+                    src={project.imageSrc}
+                    alt={project.imageAlt ?? project.title}
+                    width={1152}
+                    height={864}
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                </picture>
+                <span className="absolute bottom-2 right-2 rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white/80">
                   Ilustrační náhled
                 </span>
               </div>
@@ -85,20 +97,25 @@ export function RealOutcomesContent({ variant = "full" }: Props) {
               <span className="text-3xl" aria-hidden>
                 {project.emoji}
               </span>
-              <h3 className="font-display mt-3 text-lg font-extrabold text-[var(--magic-ink)]">
+              <h3
+                className={`font-display mt-3 text-lg font-extrabold ${dark ? "text-white" : "text-[var(--magic-ink)]"}`}
+              >
                 {project.title}
               </h3>
-              <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-800">
+              <p
+                className={`mt-2 text-sm font-semibold leading-relaxed ${dark ? "text-white/85" : "text-slate-800"}`}
+              >
                 {project.summary}
               </p>
               {variant === "full" ? (
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                <p className={`mt-3 text-sm leading-relaxed ${dark ? "text-white/65" : "text-slate-600"}`}>
                   {project.detail}
                 </p>
               ) : null}
             </div>
           </li>
-        ))}
+          );
+        })}
       </ul>
 
       {variant === "compact" ? (

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 /**
- * Jemná mřížka a parallax. Načte se až po vykreslení hero, na mobilu se nespouští.
+ * Jemná mřížka. Obrázek se za kurzorem nehýbe. Načte se až po vykreslení hero.
  * Samotný nadpis a obrázek jsou v HTML, ať LCP nečeká na JavaScript.
  */
 export function HeroFx() {
@@ -36,8 +36,6 @@ export function HeroFx() {
       if (!running) return;
       pointer.x += (pointer.tx - pointer.x) * 0.08;
       pointer.y += (pointer.ty - pointer.y) * 0.08;
-      root.style.setProperty("--hx", ((pointer.x - 0.5) * 2).toFixed(3));
-      root.style.setProperty("--hy", ((pointer.y - 0.5) * 2).toFixed(3));
 
       const w = canvas.width;
       const h = canvas.height;

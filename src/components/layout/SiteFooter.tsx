@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CookieSettingsButton } from "@/components/cookies/CookieSettingsButton";
-import { BrandSubtitle } from "@/components/layout/BrandSubtitle";
+import { Logo } from "@/components/layout/Logo";
 import { SocialIcons } from "@/components/layout/SocialIcons";
 import { site } from "@/lib/site-config";
 
@@ -18,10 +18,7 @@ export function SiteFooter() {
       <div className="relative mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div className="grid gap-10 text-center md:grid-cols-12 md:items-start md:gap-8 md:text-left">
           <div className="md:col-span-8 md:max-w-none">
-            <p className="font-display text-2xl font-extrabold text-[var(--magic-ink)]">
-              {site.name}
-            </p>
-            <BrandSubtitle className="mt-1.5 text-sm sm:text-base" />
+            <Logo tone="light" className="mx-auto md:mx-0" />
             <p className="mt-2 text-base font-semibold text-violet-900/80">
               Online kroužek AI pro teenagery
             </p>

@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useState } from "react";
-import { BrandSubtitle } from "@/components/layout/BrandSubtitle";
-import { site } from "@/lib/site-config";
+import { Logo } from "@/components/layout/Logo";
 
 const nav = [
   { href: "/jak-probiha", label: "O kroužku" },
@@ -45,28 +44,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-[#07060f]/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-        <div className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3">
-          <Link
-            href="/"
-            className="shrink-0 rounded-lg"
-            aria-label={`${site.name} — úvod`}
-          >
-            <span
-              className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg bg-violet-600 sm:h-10 sm:w-10"
-              aria-hidden
-            >
-              <span className="absolute bottom-1 right-1 h-2.5 w-2.5 rounded-[3px] bg-orange-500" />
-            </span>
-          </Link>
-          <div className="min-w-0">
-            <Link
-              href="/"
-              className="block font-display text-[0.95rem] font-semibold leading-tight text-white sm:text-base"
-            >
-              {site.name}
-            </Link>
-            <BrandSubtitle onDark className="mt-0.5" />
-          </div>
+        <div className="flex min-w-0 flex-1 items-center">
+          <Logo tone="dark" />
         </div>
 
         <nav
