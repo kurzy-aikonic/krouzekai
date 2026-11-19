@@ -1,7 +1,9 @@
 /** Anonymizovaná data z pilotního individuálního kurzu (duben–červen 2026). */
 
+export type OutcomeIcon = "gamepad-2" | "pen-line" | "map" | "globe" | "search";
+
 export type OutcomeProject = {
-  emoji: string;
+  icon: OutcomeIcon;
   title: string;
   summary: string;
   detail: string;
@@ -24,7 +26,7 @@ export const pilotCourseMeta = {
 
 export const realOutcomeProjects: OutcomeProject[] = [
   {
-    emoji: "🕹️",
+    icon: "gamepad-2",
     title: "Funkční mini hra v prohlížeči",
     summary:
       "Během první lekce dítě s AI vytvořilo jednoduchou arkádovou hru v HTML — včetně opravy chyby a spuštění.",
@@ -35,7 +37,7 @@ export const realOutcomeProjects: OutcomeProject[] = [
       "Tmavý herní stůl s monitorem, na kterém běží vesmírná mini hra, a s podsvícenou klávesnicí",
   },
   {
-    emoji: "📝",
+    icon: "pen-line",
     title: "Prompty, které dávají smysl",
     summary:
       "Naučil se skládat zadání tak, aby z obecného nápadu vznikl konkrétní plán.",
@@ -43,7 +45,7 @@ export const realOutcomeProjects: OutcomeProject[] = [
       "Od obecného „chci vlastní GTA“ až po krok za krokem návod s realistickým rozsahem. Dítě pochopilo, že kvalita zadání rozhoduje o kvalitě výstupu — a že iterace je normální součást práce s AI.",
   },
   {
-    emoji: "🗺️",
+    icon: "map",
     title: "Myšlenkové mapy a učební materiály",
     summary:
       "V NotebookLM zpracoval vlastní zdroje do map, přehledů, kvízů a kartiček pro opakování.",
@@ -51,7 +53,7 @@ export const realOutcomeProjects: OutcomeProject[] = [
       "Práce jen s ověřenými podklady, citace ke každé odpovědi a minimum halucinací. Ideální pro školní projekty, přípravu na zkoušky nebo pochopení složitého tématu.",
   },
   {
-    emoji: "🌐",
+    icon: "globe",
     title: "Vlastní web nebo aplikace",
     summary:
       "Cíl kurzu: do desáté lekce mít funkční prototyp — web, mini aplikaci nebo projekt připravený k publikování.",
@@ -62,7 +64,7 @@ export const realOutcomeProjects: OutcomeProject[] = [
       "Tmavý notebook s webem v portfoliu a s vznášejícími se holografickými panely",
   },
   {
-    emoji: "🔍",
+    icon: "search",
     title: "Kritické myšlení u AI",
     summary:
       "Halucinace, bias, ověřování zdrojů a bezpečnost dat — ne teorie, ale praktické návyky.",
