@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Archivo, Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { CookieBannerHost } from "@/components/cookies/CookieBannerHost";
 import { DeferredCourseSignupToast } from "@/components/layout/DeferredChrome";
@@ -26,6 +26,14 @@ const body = Geist({
   adjustFontFallback: true,
 });
 
+const logo = Archivo({
+  variable: "--font-logo",
+  subsets: ["latin", "latin-ext"],
+  weight: ["600", "800"],
+  display: "swap",
+  adjustFontFallback: true,
+});
+
 const mono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin", "latin-ext"],
@@ -40,7 +48,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#12141c",
+  themeColor: "#07060f",
   colorScheme: "light",
 };
 
@@ -52,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="cs"
-      className={`${display.variable} ${body.variable} ${mono.variable} h-full antialiased`}
+      className={`${display.variable} ${body.variable} ${mono.variable} ${logo.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col overflow-x-clip text-[var(--magic-ink)]">
         <GoogleAnalytics />

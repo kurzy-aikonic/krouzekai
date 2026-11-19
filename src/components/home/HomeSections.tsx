@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { HeroClient } from "@/components/home/HeroClient";
 import { HeroPlay } from "@/components/home/HeroPlay";
+import { ReferenceScene } from "@/components/home/ReferenceScene";
 import { Icon } from "@/components/icons/Icon";
 import { heroMedia } from "@/data/hero-media";
 import { pilotFeedbackQuotes } from "@/data/real-student-outcomes";
@@ -101,9 +101,20 @@ export function HomeHero({ hasRuns }: { hasRuns: boolean }) {
               height={heroMedia.height}
               fetchPriority="high"
               decoding="async"
-              className="hero-assemble h-auto max-h-[200px] w-full object-contain object-right sm:max-h-[240px] lg:absolute lg:inset-0 lg:h-full lg:max-h-none lg:object-cover lg:object-[72%_center]"
+              className="hero-photo hero-assemble h-auto max-h-[200px] w-full object-contain object-right sm:max-h-[240px] lg:absolute lg:inset-0 lg:h-full lg:max-h-none lg:object-cover lg:object-[72%_center]"
             />
           </picture>
+          <img
+            src={heroMedia.islandSrc}
+            srcSet={heroMedia.islandSrcSet}
+            sizes={heroMedia.sizes}
+            alt=""
+            aria-hidden
+            width={heroMedia.width}
+            height={heroMedia.height}
+            decoding="async"
+            className="hero-island hero-assemble object-contain object-right lg:object-cover lg:object-[72%_center]"
+          />
         </div>
       </div>
     </section>
@@ -269,34 +280,26 @@ export function PilotStory() {
         lekce měl hotovou jednoduchou hru v prohlížeči a do konce kurzu si
         postavil vlastní web.
       </p>
-      <div className="mt-6 grid items-start gap-6 rounded-3xl border border-violet-200 bg-white p-5 shadow-sm lg:grid-cols-[0.9fr_1.1fr] lg:p-7">
-        <div className="overflow-hidden rounded-2xl border border-violet-100 bg-violet-50">
-          <Image
-            src="/projects/project-vlastni-web.png"
-            alt="Ilustrace webové stránky, jakou si účastník v kurzu postavil"
-            width={900}
-            height={600}
-            className="h-auto w-full"
-          />
-        </div>
+      <div className="ref-card mt-6 grid items-start gap-6 rounded-3xl border border-white/10 bg-[#100d18] p-5 shadow-sm lg:grid-cols-[0.9fr_1.1fr] lg:p-7">
+        <ReferenceScene />
         <div>
-          <ul className="space-y-3 text-base leading-relaxed text-slate-800">
+          <ul className="space-y-3 text-base leading-relaxed text-white/80">
             <li>
-              <span className="font-bold text-slate-950">Co vytvořil. </span>
+              <span className="font-bold text-white">Co vytvořil. </span>
               Jednoduchou hru v prohlížeči hned na první lekci a do konce kurzu vlastní web.
             </li>
             <li>
-              <span className="font-bold text-slate-950">Co se naučil. </span>
+              <span className="font-bold text-white">Co se naučil. </span>
               Skládat zadání tak, aby z obecného nápadu vznikl konkrétní plán, a ověřovat, jestli odpověď AI dává smysl.
             </li>
             <li>
-              <span className="font-bold text-slate-950">Co řekl. </span>
+              <span className="font-bold text-white">Co řekl. </span>
               „{quote.answer}“
             </li>
           </ul>
-          <p className="mt-4 text-sm text-slate-600">
+          <p className="mt-4 text-sm text-white/60">
             Anonymní zpětná vazba absolventa pilotu, 15 let.{" "}
-            <Link href="/co-deti-tvori" className="font-bold text-violet-800 underline decoration-violet-300 underline-offset-4">
+            <Link href="/co-deti-tvori" className="font-bold text-orange-300 underline decoration-orange-400/40 underline-offset-4">
               Celý příběh kurzu
             </Link>
           </p>
