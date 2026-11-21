@@ -36,12 +36,12 @@ export function HomeHero({ hasRuns }: { hasRuns: boolean }) {
       <HeroClient />
       <div className="relative mx-auto grid max-w-6xl items-center gap-6 px-4 pb-8 pt-6 sm:px-6 sm:pb-10 sm:pt-8 lg:min-h-[34rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-4 lg:pb-12 lg:pt-10">
         <div className="relative z-10 max-w-xl">
-          {hasRuns ? null : (
-            <p className="hero-eyebrow mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-orange-400" aria-hidden />
-              Jaro 2027 · termíny připravujeme
-            </p>
-          )}
+          <p className="hero-eyebrow mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-orange-400" aria-hidden />
+            {hasRuns
+              ? "Jaro 2027 · úterý nebo čtvrtek, 16:00–17:00"
+              : "Jaro 2027 · termíny připravujeme"}
+          </p>
           <h1 className="font-display text-[2.05rem] font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-[3.35rem]">
             Postav si vlastní
             <br />

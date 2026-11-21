@@ -1,21 +1,15 @@
 /**
- * Lektor na veřejném webu.
- *
- * Sem doplní Radek údaje, až je bude mít. Sekce se na webu ukáže až ve chvíli,
- * kdy jsou vyplněné `name` i `bio`. Prázdná pole návštěvník nevidí.
- *
- * Fotku uložte do `public/lecturer/` (třeba `public/lecturer/portret.jpg`)
- * a do `photoSrc` dejte cestu `/lecturer/portret.jpg`.
- * `photoAlt` je krátký popis fotky pro čtečky, například „Portrét lektora Radka Nováka“.
- * `profileUrl` je volitelný odkaz (https://…). Prázdný řetězec znamená bez odkazu.
+ * Lektor na veřejném webu. Sekce se ukáže, když jsou vyplněné `name` i `bio`.
+ * Bez telefonu, e-mailu, IČO a adresy — ty na kroužek nepatří.
  */
 export const lecturerProfile = {
-  name: "",
-  role: "Lektor",
-  photoSrc: "",
-  photoAlt: "",
-  bio: "",
-  profileUrl: "",
+  name: "Pavol Stuchlik",
+  role: "Lektor kroužku",
+  photoSrc: "/lecturer/pavol-stuchlik.webp",
+  photoAvif: "/lecturer/pavol-stuchlik.avif",
+  photoAlt: "Portrét lektora Pavola Stuchlika",
+  bio: "Pavol vede kroužek a už učil jeho předchozí běh. Víc než dvacet let řídil týmy, provozy, technické projekty a firmy — jako projektový manažer, ředitel instalací, ředitel pro strategii a rozvoj, obchodní ředitel, technický ředitel i CEO. Poslední tři roky se umělé inteligenci věnuje každý den a pracuje s ChatGPT, Claude, Gemini a automatizacemi. Se studenty staví skutečné projekty a mluví k věci: co AI umí a kde je potřeba vlastní úsudek. Působí v Praze a domluví se česky, slovensky, německy i anglicky.",
+  profileUrl: "https://elevaition.cz/",
 };
 
 export function hasPublicLecturer(

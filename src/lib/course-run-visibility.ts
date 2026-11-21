@@ -28,3 +28,27 @@ export function filterUpcomingCourseRuns<
 >(runs: T[], todayIso = pragueTodayIso()): T[] {
   return runs.filter((run) => isUpcomingCourseRun(run, todayIso));
 }
+
+/**
+ * První zdroj, ve kterém je aspoň jeden budoucí termín.
+ * Propadlé záznamy v databázi tak neschovají jarní běhy ze souboru nebo z kódu.
+ */
+export function pickCourseRunSource<T extends Pick<CourseRun, "active" | "startsOn">>(
+  candidates: { source: string; runs: T[] | null }[],
+  todayIso: string,
+): { source: string; runs: T[] } {
+  for (const candidate of candidates) {
+    if (
+      candidate.runs &&
+      filterUpcomingCourseRuns(candidate.runs, todayIso).length > 0
+    ) {
+      return { source: candidate.source, runs: candidate.runs };
+    }
+  }
+  for (const candidate of candidates) {
+    if (candidate.runs && candidate.runs.length > 0) {
+      return { source: candidate.source, runs: candidate.runs };
+    }
+  }
+  return { source: "defaults", runs: [] };
+}

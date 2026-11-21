@@ -62,8 +62,13 @@ export function buildFaqItems(
     relatedLink: { label: "Obchodní podmínky", href: "/obchodni-podminky" },
   },
   {
+    q: "Kdy jsou jarní termíny 2027?",
+    a: `Skupiny běží každý týden online, ${site.pricing.lessons} lekcí po ${site.pricing.lessonMinutes} minutách. Úterý 16:00–17:00 začíná 12. ledna 2027, čtvrtek 16:00–17:00 začíná 14. ledna 2027. Týdny jarních prázdnin a Velikonoc vynecháváme a přesná data lekcí potvrdíme po registraci.`,
+    relatedLink: { label: "Vybrat úterý nebo čtvrtek", href: "/registrace" },
+  },
+  {
     q: "Kde vidím vypsané termíny skupin?",
-    a: `Na stránce „Aktuální termíny“ je přehled toho, co právě nabízíme. Při registraci můžete (pokud to dává smysl) vybrat konkrétní termín — nebo nechat výběr na pozdější domluvě.`,
+    a: "Na stránce „Aktuální termíny“ jsou jarní skupiny: úterý a čtvrtek od 16:00. Při registraci si jednu z nich vyberete, nebo necháte výběr na pozdější domluvě.",
     relatedLink: { label: "Zobrazit aktuální termíny", href: "/aktualni-behy" },
   },
   {

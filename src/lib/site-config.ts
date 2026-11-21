@@ -89,9 +89,8 @@ export const site = {
   },
 
   lektor: {
-    /** Autor v metadatech. Jméno konkrétního lektora se vyplňuje v `src/data/lecturer.ts`. */
-    name: "Aikonic training",
-    role: "Lektorský tým AIKONIC",
+    name: "Pavol Stuchlik",
+    role: "Lektor kroužku",
   },
 
   /** Cílová skupina — jednotný zdroj pro copy, validaci přihlášky a SEO. */
