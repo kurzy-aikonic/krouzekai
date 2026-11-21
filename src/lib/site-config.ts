@@ -24,10 +24,13 @@ export function resolveSiteBaseUrl(): string {
 }
 
 /**
- * Firemní reference na webu (věta o 2 500 proškolených a jména Česká spořitelna, ČEZ, Škoda Auto).
- * Až bude souhlas a doklad, nechte `true`. Hodnota `false` je z webu odstraní.
+ * Věta o počtu proškolených a jménech firem. Vypnuto, dokud k tomu není podklad.
  */
-export const showCorporateReferences: boolean = true;
+export const showCorporateReferences: boolean = false;
+
+/** Veřejné hodnocení Aikonic na Google. */
+export const aikonicGoogleReviewsUrl =
+  "https://share.google/KbWbpReYdmU6pEFCV";
 
 /** Veřejné odkazy na sociální sítě — doplň v .env nebo zde. */
 function socialUrl(key: `NEXT_PUBLIC_SOCIAL_${string}`): string {
@@ -95,9 +98,17 @@ export const site = {
 
   /** Cílová skupina — jednotný zdroj pro copy, validaci přihlášky a SEO. */
   audience: {
+    /** Doporučený věk, ne tvrdý limit přihlášky. */
     ageMin: 13,
     ageMax: 18,
+    /** Rozumné rozmezí, které formulář ještě přijme. */
+    acceptedAgeMin: 6,
+    acceptedAgeMax: 99,
+    /** Od tohoto věku se účastník může přihlásit sám. */
+    adultAge: 18,
   },
+  equipment:
+    "Stačí notebook nebo počítač s internetem. Mikrofon je doporučený.",
 
   pricing: {
     skupinaPerLesson: 500,

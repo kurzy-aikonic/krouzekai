@@ -89,6 +89,9 @@ export function RegistrationForm({
   );
   const [childName, setChildName] = useState("");
   const [childAge, setChildAge] = useState("15");
+  const [registrantRole, setRegistrantRole] = useState<"guardian" | "self">(
+    "guardian",
+  );
   const [parentName, setParentName] = useState("");
   const [parentEmail, setParentEmail] = useState("");
   const [parentPhone, setParentPhone] = useState("");
@@ -118,6 +121,25 @@ export function RegistrationForm({
       setMessage("Dokončete prosím ověření „Nejsem robot“.");
       return;
     }
+    const age = Number(childAge);
+    if (
+      !Number.isInteger(age) ||
+      age < site.audience.acceptedAgeMin ||
+      age > site.audience.acceptedAgeMax
+    ) {
+      setStatus("error");
+      setMessage(
+        `Věk zadejte jako celé číslo od ${site.audience.acceptedAgeMin} do ${site.audience.acceptedAgeMax}.`,
+      );
+      return;
+    }
+    if (registrantRole === "self" && age < site.audience.adultAge) {
+      setStatus("error");
+      setMessage(
+        "Nezletilého účastníka přihlašuje zákonný zástupce. Vyberte tu možnost, nebo zadejte věk 18 a víc.",
+      );
+      return;
+    }
     setStatus("loading");
     setMessage("");
 
@@ -134,6 +156,7 @@ export function RegistrationForm({
               : null,
         childName,
         childAge: Number(childAge),
+        registrantRole,
         parentName,
         parentEmail,
         parentPhone,
@@ -255,7 +278,7 @@ export function RegistrationForm({
         </p>
         <div className="flex flex-wrap gap-2">
           <Link href="/test-urovne-ai" className="btn-magic-outline text-sm">
-            Spustit AI test zdarma 🧠
+            Spustit AI test zdarma
           </Link>
         </div>
         <label
@@ -293,10 +316,11 @@ export function RegistrationForm({
             Termín skupiny (volitelně)
           </legend>
           <p className="text-xs font-medium leading-relaxed text-slate-600">
-            Vyberte úterní, nebo čtvrteční skupinu. Kurz v daném termínu startuje
-            až po naplnění všech míst — u každého vidíte, kolik míst už je
-            obsazeno. Přihláška je do té doby nezávazná. Týdny jarních prázdnin
-            a Velikonoc vynecháváme a přesná data lekcí potvrdíme po registraci.
+            Vyberte úterní, nebo čtvrteční skupinu. Skupinu otevřeme, až se
+            naplní kapacita 6 míst. Když se nenaplní, navrhneme nový termín.
+            Odesláním vzniká návrh smlouvy, který lze do potvrzení objednávky
+            zrušit. Týdny jarních prázdnin (upřesníme podle rozvrhu skupiny) a
+            Velikonoc vynecháváme. Harmonogram 10 lekcí pošleme v potvrzení.
           </p>
           <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-violet-400 sm:text-sm">
             <input
@@ -467,24 +491,56 @@ export function RegistrationForm({
             htmlFor="childAge"
             className="block font-display text-sm font-extrabold text-[var(--magic-ink)]"
           >
-            Věk ({site.audience.ageMin}–{site.audience.ageMax})
+            Věk
           </label>
           <input
             id="childAge"
             type="number"
             required
-            min={site.audience.ageMin}
-            max={site.audience.ageMax}
+            min={site.audience.acceptedAgeMin}
+            max={site.audience.acceptedAgeMax}
             value={childAge}
             onChange={(e) => setChildAge(e.target.value)}
             className="input-playful"
           />
+          <p className="mt-1 text-xs font-medium leading-relaxed text-slate-600">
+            Doporučený věk je {site.audience.ageMin}–{site.audience.ageMax} let.
+            Jiný věk domluvíme.
+          </p>
         </div>
       </div>
 
+      <fieldset className="space-y-3">
+        <legend className="font-display text-base font-extrabold text-[var(--magic-ink)]">
+          Kdo přihlášku podává
+        </legend>
+        <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-violet-200 bg-white/90 px-3 py-2.5 text-sm font-semibold text-slate-800 has-[:checked]:border-violet-400">
+          <input
+            type="radio"
+            name="registrant-role"
+            checked={registrantRole === "guardian"}
+            onChange={() => setRegistrantRole("guardian")}
+            className="mt-0.5 h-6 w-6 shrink-0"
+          />
+          <span>Jsem zákonný zástupce nezletilého účastníka</span>
+        </label>
+        <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-violet-200 bg-white/90 px-3 py-2.5 text-sm font-semibold text-slate-800 has-[:checked]:border-violet-400">
+          <input
+            type="radio"
+            name="registrant-role"
+            checked={registrantRole === "self"}
+            onChange={() => setRegistrantRole("self")}
+            className="mt-0.5 h-6 w-6 shrink-0"
+          />
+          <span>Jsem zletilý účastník a přihlašuji se sám</span>
+        </label>
+      </fieldset>
+
       <div className="space-y-4 border-t border-dashed border-violet-200 pt-6">
         <p className="font-display text-base font-extrabold text-[var(--magic-ink)]">
-          Zákonný zástupce
+          {registrantRole === "guardian"
+            ? "Zákonný zástupce"
+            : "Kontakt na účastníka"}
         </p>
         <div>
           <label
@@ -575,9 +631,13 @@ export function RegistrationForm({
             >
               obchodními podmínkami
             </a>{" "}
-            a potvrzuji, že jsem zákonným zástupcem přihlašovaného dítěte.
-            Odesláním formuláře činím návrh smlouvy. Smlouva vzniká až
-            potvrzením objednávky ze strany poskytovatele.
+            a potvrzuji, že{" "}
+            {registrantRole === "guardian"
+              ? "jsem zákonným zástupcem nezletilého účastníka."
+              : "jsem zletilý účastník a smlouvu uzavírám sám."}{" "}
+            Odesláním formuláře činím návrh smlouvy, který lze do potvrzení
+            objednávky zrušit. Smlouva vzniká až potvrzením objednávky ze strany
+            poskytovatele.
           </span>
         </label>
         <label className="flex cursor-pointer items-start gap-3 text-base font-medium leading-relaxed text-slate-800">
@@ -609,9 +669,9 @@ export function RegistrationForm({
             className="mt-1 h-6 w-6 shrink-0 rounded border-2 border-[var(--magic-ink)] text-violet-600"
           />
           <span>
-            Souhlasím s tím, aby mé dítě v rámci výuky používalo AI nástroje
-            třetích stran (např. ChatGPT, Claude), a beru na vědomí jejich
-            věková pravidla a podmínky použití.
+            {registrantRole === "guardian"
+              ? "Souhlasím s tím, aby účastník v rámci výuky používal AI nástroje třetích stran (například ChatGPT, Claude), a beru na vědomí jejich věková pravidla a podmínky použití."
+              : "Souhlasím s tím, že v rámci výuky budu používat AI nástroje třetích stran (například ChatGPT, Claude), a beru na vědomí jejich podmínky použití."}
           </span>
         </label>
         <label className="flex cursor-pointer items-start gap-3 text-base font-medium leading-relaxed text-slate-800">

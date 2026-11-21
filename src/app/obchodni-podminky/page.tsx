@@ -30,11 +30,11 @@ export default async function ObchodniPodminkyPage() {
         <p>
           Tyto obchodní podmínky (dále jen &bdquo;OP&ldquo;) upravují smluvní
           vztah mezi poskytovatelem online kurzu &bdquo;{site.name}&ldquo; a
-          zákazníkem. <strong>Zákazníkem</strong> se rozumí fyzická osoba —
-          zákonný zástupce dítěte, který v jeho prospěch objednává kurz.
-          <strong>Účastníkem</strong> kurzu se rozumí dítě ve věku{" "}
-          {site.audience.ageMin} až {site.audience.ageMax} let, které se kurzu
-          účastní. Je-li zákazník spotřebitel ve smyslu zákona č. 89/2012 Sb.,
+          zákazníkem. <strong>Zákazníkem</strong> se rozumí zákonný zástupce
+          nezletilého účastníka, nebo zletilý účastník, který uzavírá smlouvu
+          sám. <strong>Účastníkem</strong> je osoba, která se kurzu účastní.
+          Doporučený věk je {site.audience.ageMin} až {site.audience.ageMax}{" "}
+          let; jiný věk lze domluvit. Je-li zákazník spotřebitel ve smyslu zákona č. 89/2012 Sb.,
           občanský zákoník, ve znění pozdějších předpisů (dále jen &bdquo;OZ&ldquo;),
           a zákona č. 634/1992 Sb., o ochraně spotřebitele, ve znění pozdějších
           předpisů, použijí se na něj i zvláštní ustanovení těchto předpisů;
@@ -82,8 +82,8 @@ export default async function ObchodniPodminkyPage() {
         <p>
           Objednávka vzniká vyplněním a odesláním registračního formuláře na
           tomto webu se souhlasem s těmito OP a se zásadami ochrany osobních
-          údajů (GDPR). Účastník kurzu je ve věku {site.audience.ageMin} až{" "}
-          {site.audience.ageMax} let; objednávku proto činí výhradně jeho zákonný
+          údajů (GDPR). U účastníka mladšího {site.audience.adultAge} let
+          objednávku činí jeho zákonný
           zástupce, který odpovídá za správnost údajů, souhlasy udělované při
           registraci a za účast účastníka v kurzu.
         </p>
@@ -110,14 +110,12 @@ export default async function ObchodniPodminkyPage() {
         </p>
         <h2>5. Platba</h2>
         <p>
-          Způsob platby a splatnost vám sdělíme v potvrzení objednávky a v
-          následné komunikaci. Obvykle probíhá platba{" "}
-          <strong>bankovním převodem</strong> na účet uvedený na stránce{" "}
-          <a href="/platba">Platba</a> (s variabilním symbolem podle pokynů).
-          Fakturace probíhá v souladu s účetními předpisy; konkrétní fakturační
-          údaje domlouváme individuálně. Pokud bude na webu dostupná online
-          platební brána, platí pro ni totéž potvrzení objednávky a tyto OP,
-          včetně informací uvedených u platby.
+          Fakturu posíláme až tehdy, když je skupina plná a objednávku
+          potvrdíme. U individuální výuky až po potvrzení objednávky. Číslo
+          účtu a variabilní symbol jsou na faktuře a v e-mailu. Platba probíhá{" "}
+          <strong>bankovním převodem</strong>. {site.pricing.vatNote} Pokud
+          bude na webu dostupná online platební brána, platí pro ni totéž
+          potvrzení objednávky a tyto OP.
         </p>
         <h2>6. Právo spotřebitele odstoupit od smlouvy (smlouva uzavřená na dálku)</h2>
         <p>
@@ -200,8 +198,10 @@ export default async function ObchodniPodminkyPage() {
           Za účelem ochrany dítěte, lektora a poskytovatele, zajištění kvality
           výuky a doložení průběhu při řešení reklamací nebo sporných situací
           může poskytovatel pořizovat <strong>audio/video záznam online lekcí</strong>.
-          Právním základem je <strong>souhlas zákonného zástupce</strong>, který
-          je udělován při registraci.
+          Právním základem je souhlas zákonného zástupce (u zletilého účastníka
+          jeho vlastní souhlas), pokud ho při registraci nebo později udělí.
+          Souhlas je dobrovolný a lze ho odvolat. Bez souhlasu lekci
+          nenahráváme.
         </p>
         <p>
           Záznamy slouží výhradně pro <strong>interní účely</strong> poskytovatele
@@ -238,24 +238,17 @@ export default async function ObchodniPodminkyPage() {
         </p>
         <h2>14. Mimosoudní řešení sporů</h2>
         <p>
-          Spotřebitel má právo obrátit se na Českou obchodní inspekci (
+          Evropská platforma ODR byla k 20. červenci 2025 ukončena. Mimosoudní
+          řešení spotřebitelského sporu můžete navrhnout u České obchodní
+          inspekce (
           <a
-            href="https://www.adr.coi.cz/"
+            href="https://coi.gov.cz/informace-o-adr"
             target="_blank"
             rel="noopener noreferrer"
           >
-            adr.coi.cz
+            coi.gov.cz/informace-o-adr
           </a>
-          ) s návrhem na zahájení mimosoudního řešení spotřebitelského sporu.
-          Platformu pro řešení sporů on-line v rámci EU najdete na{" "}
-          <a
-            href="https://ec.europa.eu/consumers/odr/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            ec.europa.eu/consumers/odr
-          </a>
-          .
+          ).
         </p>
         <h2>15. Závěrečná ustanovení</h2>
         <p>

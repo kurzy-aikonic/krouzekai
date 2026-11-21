@@ -4,7 +4,7 @@ import { CheckoutButton } from "@/components/platba/CheckoutButton";
 import { getPublicCoursePricing } from "@/lib/course-pricing-store";
 import { metaDescriptions, pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site-config";
-import { variableSymbolFromRegistrationId } from "@/lib/payment";
+import { onlineCheckoutEnabled, variableSymbolFromRegistrationId } from "@/lib/payment";
 import {
   getPublicRegistrationCode,
   isRegistrationUuidLookup,
@@ -32,7 +32,7 @@ export default async function PlatbaPage({ searchParams }: PageProps) {
   if (!rawId) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-12 sm:px-6 sm:py-16">
-        <h1 className="page-h1">Platba 💳</h1>
+        <h1 className="page-h1">Platba</h1>
         <p className="mt-4 font-medium leading-relaxed text-slate-700">
           Orientační přehled platby se zobrazí z odkazu v potvrzovacím e-mailu po
           přihlášce. Pokud jste odkaz ztratili, napište nám na{" "}
@@ -60,18 +60,41 @@ export default async function PlatbaPage({ searchParams }: PageProps) {
   ) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-12 sm:px-6 sm:py-16">
-        <h1 className="page-h1">Neplatný odkaz 😕</h1>
+        <h1 className="page-h1">Platba</h1>
         <p className="mt-4 font-medium text-slate-700">
-          Odkaz na platbu je poškozený. Kontaktujte nás e-mailem.
+          Tento odkaz není platný, napište nám na{" "}
+          <a
+            href={`mailto:${site.contactEmail}`}
+            className="font-bold text-violet-700 underline"
+          >
+            {site.contactEmail}
+          </a>
+          .
         </p>
       </div>
     );
   }
 
-  const [record, prices] = await Promise.all([
-    findRegistrationById(rawId),
-    getPublicCoursePricing(),
-  ]);
+  const record = await findRegistrationById(rawId);
+  if (!record) {
+    return (
+      <div className="mx-auto max-w-2xl px-6 py-12 sm:px-6 sm:py-16">
+        <h1 className="page-h1">Platba</h1>
+        <p className="mt-4 font-medium text-slate-700">
+          Tento odkaz není platný, napište nám na{" "}
+          <a
+            href={`mailto:${site.contactEmail}`}
+            className="font-bold text-violet-700 underline"
+          >
+            {site.contactEmail}
+          </a>
+          .
+        </p>
+      </div>
+    );
+  }
+
+  const prices = await getPublicCoursePricing();
   const vs = variableSymbolFromRegistrationId(
     record?.id ?? (isRegistrationUuidLookup(rawId) ? rawId : ""),
   );
@@ -85,12 +108,11 @@ export default async function PlatbaPage({ searchParams }: PageProps) {
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-12 sm:px-6 sm:py-16">
-      <h1 className="page-h1">Platba kurzovného 💰</h1>
+      <h1 className="page-h1">Platba kurzovného</h1>
       <p className="mt-3 text-sm font-medium leading-relaxed text-slate-700">
-        Faktury zatím řešíme <strong>individuálně</strong> (bez automatické
-        fakturace z webu): po registraci vás kontaktujeme, domluvíme podmínky a
-        teprve potom vystavíme fakturu. Tato stránka je orientační přehled —
-        údaje k platbě použijte podle pokynů, které vám pošleme.
+        Fakturu posíláme až tehdy, když je skupina plná a objednávku potvrdíme.
+        U individuální výuky až po potvrzení objednávky. Číslo účtu a variabilní
+        symbol jsou na faktuře a v e-mailu. {site.pricing.vatNote}
       </p>
       <div
         className="portal-card mt-4 border-l-4 border-violet-500 p-4 sm:p-5"
@@ -143,9 +165,8 @@ export default async function PlatbaPage({ searchParams }: PageProps) {
             Bankovní převod
           </h2>
           <p className="mt-3 text-sm text-slate-600 leading-relaxed">
-            Číslo účtu a příjemce budou vždy uvedeni na faktuře, kterou vám
-            zašleme po domluvě. Údaje níže slouží jen jako náhled z webu (z env),
-            dokud je nepotvrdíme mailem.
+            Číslo účtu je veřejné. Variabilní symbol k vaší přihlášce je na
+            faktuře a v e-mailu, tady ho ukazujeme pro kontrolu.
           </p>
           <dl className="mt-4 space-y-2 rounded-xl bg-slate-50 p-4 text-sm">
             <div className="flex justify-between gap-4">
@@ -167,18 +188,16 @@ export default async function PlatbaPage({ searchParams }: PageProps) {
           </dl>
         </div>
 
-        <div>
-          <h2 className="font-display text-sm font-extrabold uppercase tracking-wide text-violet-800">
-            Online platba
-          </h2>
-          <p className="mt-3 text-sm text-slate-600 leading-relaxed">
-            Primárně platíte podle faktury. Po napojení platební brány může
-            tlačítko sloužit jako alternativa k převodu.
-          </p>
-          <div className="mt-4">
-            <CheckoutButton registrationId={rawId} />
+        {onlineCheckoutEnabled ? (
+          <div>
+            <h2 className="font-display text-sm font-extrabold uppercase tracking-wide text-violet-800">
+              Online platba
+            </h2>
+            <div className="mt-4">
+              <CheckoutButton registrationId={rawId} />
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
 
       <p className="mt-8 text-sm text-slate-500">

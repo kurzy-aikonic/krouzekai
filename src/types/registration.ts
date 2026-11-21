@@ -64,6 +64,8 @@ export type RegistrationRecord = {
   runId: string | null;
   childName: string;
   childAge: number;
+  /** guardian = zákonný zástupce, self = zletilý účastník. U starších záznamů chybí. */
+  registrantRole?: "guardian" | "self";
   parentName: string;
   parentEmail: string;
   parentPhone: string;

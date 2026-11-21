@@ -47,7 +47,7 @@ export function CheckoutButton({ registrationId }: Props) {
         disabled={loading}
         className="btn-magic w-full sm:w-auto disabled:translate-y-0 disabled:opacity-60"
       >
-        {loading ? "Otevírám platbu…" : "Zaplatit online ✨"}
+        {loading ? "Otevírám platbu…" : "Zaplatit online"}
       </button>
       {error ? (
         <p className="rounded-2xl border-2 border-amber-400 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-950">

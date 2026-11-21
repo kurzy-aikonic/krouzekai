@@ -16,11 +16,11 @@ export function buildFaqItems(
   },
   {
     q: "Jaký je vhodný věk?",
-    a: `Kurz je pro teenagery od ${site.audience.ageMin} do ${site.audience.ageMax} let. Rozhoduje zájem o technologie a běžná práce s počítačem. Výjimku domluvíme individuálně.`,
+    a: `Doporučený věk je ${site.audience.ageMin} až ${site.audience.ageMax} let. Jiný věk domluvíme. Účastníka mladšího ${site.audience.adultAge} let přihlašuje zákonný zástupce a ten dává souhlasy. Zletilý účastník se přihlašuje sám.`,
   },
   {
     q: "Jaké vybavení potřebujeme?",
-    a: "Stačí PC nebo notebook s přístupem na internet a běžný webový prohlížeč.",
+    a: site.equipment,
   },
   {
     q: "Potřebujeme placené AI nástroje?",
@@ -33,7 +33,7 @@ export function buildFaqItems(
   },
   {
     q: "Jak probíhá platba?",
-    a: "Po registraci vás kontaktujeme a domluvíme podmínky. Fakturu vystavujeme a posíláme individuálně, nikoli automaticky z webu. Po obdržení faktury platíte podle uvedených údajů.",
+    a: "Fakturu posíláme až tehdy, když je skupina plná a objednávku potvrdíme. U individuální výuky až po potvrzení objednávky. Číslo účtu a variabilní symbol jsou na faktuře a v e-mailu. Do té doby nic neplatíte.",
   },
   {
     q: "Kolik to stojí?",
@@ -41,11 +41,11 @@ export function buildFaqItems(
   },
   {
     q: "Kdy se skupinový kurz skutečně rozběhne?",
-    a: "Skupinu otevřeme, jakmile se naplní její kapacita, nejvýš šest dětí. Do potvrzení objednávky a vystavení faktury nic neplatíte a přihlášku můžete zrušit. Pak vám pošleme fakturu a informace k první lekci.",
+    a: `Skupinu otevřeme, až se naplní kapacita ${site.pricing.groupMaxStudents} míst. Když se do té doby nenaplní, navrhneme nový termín. Fakturu posíláme až po naplnění a po potvrzení objednávky. Odeslaná přihláška je návrh smlouvy, který lze do potvrzení zrušit.`,
   },
   {
     q: "Proč ještě nemůžeme platit, i když jsme přihlášení?",
-    a: "Dokud skupinu nepotvrdíme, kurz ještě neběží. Fakturu posíláme až po naplnění kapacity. Do té doby je odeslaná přihláška návrh smlouvy a nic se neplatí.",
+    a: "Dokud skupina není plná a objednávku nepotvrdíme, fakturu neposíláme. Odeslaná přihláška je návrh smlouvy a do potvrzení objednávky nic neplatíte.",
   },
   {
     q: "Co když dítě lekci zmešká?",
@@ -58,12 +58,12 @@ export function buildFaqItems(
   },
   {
     q: "Můžu přihlášku zrušit?",
-    a: "Dokud objednávku nepotvrdíme a nepošleme fakturu, nic neplatíte. Přihlášku v té době zrušíte e-mailem. Po uzavření smlouvy můžete odstoupit do 14 dnů, jak popisují obchodní podmínky.",
+    a: "Odesláním vzniká návrh smlouvy. Do potvrzení objednávky ho můžete zrušit e-mailem a nic neplatíte. Po uzavření smlouvy můžete odstoupit do 14 dnů, jak popisují obchodní podmínky.",
     relatedLink: { label: "Obchodní podmínky", href: "/obchodni-podminky" },
   },
   {
     q: "Kdy jsou jarní termíny 2027?",
-    a: `Skupiny běží každý týden online, ${site.pricing.lessons} lekcí po ${site.pricing.lessonMinutes} minutách. Úterý 16:00–17:00 začíná 12. ledna 2027, čtvrtek 16:00–17:00 začíná 14. ledna 2027. Týdny jarních prázdnin a Velikonoc vynecháváme a přesná data lekcí potvrdíme po registraci.`,
+    a: `Skupiny běží každý týden online, ${site.pricing.lessons} lekcí po ${site.pricing.lessonMinutes} minutách. Plánovaný start je v úterý 12. ledna 2027 nebo ve čtvrtek 14. ledna 2027, vždy 16:00–17:00. Skupinu otevřeme, až se naplní kapacita ${site.pricing.groupMaxStudents} míst. Když se nenaplní, navrhneme nový termín. Týdny jarních prázdnin (upřesníme podle rozvrhu skupiny) a Velikonoc vynecháváme. Harmonogram lekcí pošleme v potvrzení.`,
     relatedLink: { label: "Vybrat úterý nebo čtvrtek", href: "/registrace" },
   },
   {
@@ -78,7 +78,8 @@ export function buildFaqItems(
   },
   {
     q: "Jak zjistím stav přihlášky a platby?",
-    a: `Po přihlášce vás budeme kontaktovat e-mailem. Stav i platební přehled najdete v přehledu pro rodiče na adrese /rodic/prihlaseni (přihlášení stejným e-mailem jako u přihlášky).`,
+    a: "Po přihlášce vás budeme kontaktovat e-mailem. Stav i platební přehled najdete v přehledu pro rodiče. Přihlásíte se stejným e-mailem jako u přihlášky.",
+    relatedLink: { label: "Přehled pro rodiče", href: "/rodic/prihlaseni" },
   },
   ];
 }

@@ -1,7 +1,6 @@
 import { springHolidayNote, type CourseRun } from "@/data/course-runs";
 import { CourseRunPublicCard } from "@/components/course-run/CourseRunPublicCard";
 import type { DefaultCoursePrices } from "@/lib/course-run-pricing";
-import { site } from "@/lib/site-config";
 
 type Props = {
   runs: CourseRun[];
@@ -22,9 +21,9 @@ export function HomeCourseRunsSection({
         Termíny, které právě nabízíme
       </h2>
       <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-800 sm:text-lg">
-        Skupinu otevřeme, jakmile se naplní její kapacita, nejvýš{" "}
-        {site.pricing.groupMaxStudents} studentů. Do té doby za nic neplatíte a
-        přihlášku můžete zrušit. {springHolidayNote}
+        {springHolidayNote} Odesláním přihlášky vzniká návrh smlouvy, který
+        lze do potvrzení objednávky zrušit. Fakturu posíláme až ve chvíli, kdy
+        je skupina plná a objednávku potvrdíme.
       </p>
       <ul className="mt-6 grid gap-4 sm:grid-cols-2">
         {runs.map((run) => (

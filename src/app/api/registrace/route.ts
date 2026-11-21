@@ -29,8 +29,9 @@ const bodySchema = z.object({
   childAge: z.coerce
     .number()
     .int()
-    .min(site.audience.ageMin)
-    .max(site.audience.ageMax),
+    .min(site.audience.acceptedAgeMin)
+    .max(site.audience.acceptedAgeMax),
+  registrantRole: z.enum(["guardian", "self"]),
   parentName: z.string().min(1).max(200),
   parentEmail: z.string().email().max(320),
   parentPhone: z.string().min(9).max(40),
@@ -81,6 +82,16 @@ export async function POST(request: Request) {
 
   const { formHoney: _formHoney, turnstileToken, ...data } = parsed.data;
   void _formHoney;
+
+  if (data.registrantRole === "self" && data.childAge < site.audience.adultAge) {
+    return apiJson(
+      {
+        error:
+          "Nezletilého účastníka přihlašuje zákonný zástupce. Vyberte tu možnost, nebo zadejte věk 18 a víc.",
+      },
+      { status: 422 },
+    );
+  }
 
   if (turnstileVerificationRequired()) {
     const ip = getClientIp(request);
@@ -135,6 +146,7 @@ export async function POST(request: Request) {
     runId: data.runId ?? null,
     childName: data.childName,
     childAge: data.childAge,
+    registrantRole: data.registrantRole,
     parentName: data.parentName,
     parentEmail: data.parentEmail,
     parentPhone: data.parentPhone,
@@ -175,7 +187,7 @@ export async function POST(request: Request) {
       ? "Potvrzovací e-mail se teď nepodařilo odeslat, ale přihláška je uložená. Ozveme se vám ručně."
       : emailStatus === "skipped"
         ? "Přihláška je uložená. Potvrzení e-mailem je dočasně mimo provoz."
-        : "Děkujeme za přihlášku. Ozveme se vám, domluvíme detaily a pak zašleme fakturu. V e-mailu najdete i odkaz na orientační přehled k platbě.";
+        : "Děkujeme za přihlášku. Ozveme se do 24 hodin. Fakturu pošleme až po potvrzení objednávky, u skupiny až když je plná.";
 
   return apiJson(
     {

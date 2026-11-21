@@ -23,9 +23,9 @@ export function SiteFooter() {
               Online kroužek AI pro teenagery
             </p>
             <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate-700">
-              Pro teenagery {site.audience.ageMin}–{site.audience.ageMax} let.
-              Rodiče vidí přehledně, co dítě získá, jak výuka probíhá a jak
-              zajišťujeme bezpečné prostředí.
+              Doporučený věk je {site.audience.ageMin}–{site.audience.ageMax}{" "}
+              let, jiný věk po domluvě. Nezletilého přihlašuje zákonný zástupce,
+              zletilý účastník se přihlašuje sám.
             </p>
             <div className="mt-5 flex flex-col items-center gap-2 md:items-start">
               <a

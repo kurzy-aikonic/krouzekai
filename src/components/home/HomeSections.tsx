@@ -54,8 +54,8 @@ export function HomeHero({ hasRuns }: { hasRuns: boolean }) {
             <span className="hero-type">Udělej mi hru, kde uhýbám asteroidům</span>
           </p>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg">
-            Online kroužek pro studenty od {site.audience.ageMin} do{" "}
-            {site.audience.ageMax} let. V malé skupině s lektorem si studenti
+            Online kroužek. Doporučený věk je {site.audience.ageMin} až{" "}
+            {site.audience.ageMax} let, jiný věk domluvíme. V malé skupině s lektorem si studenti
             navrhnou a postaví vlastní projekt a naučí se s umělou inteligencí
             pracovat tak, aby jim opravdu pomáhala.
           </p>

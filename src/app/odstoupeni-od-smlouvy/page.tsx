@@ -50,13 +50,13 @@ ${site.name}
 
 Datum objednání / uzavření smlouvy:
 
-Jméno a příjmení zákonného zástupce (spotřebitele):
+Jméno a příjmení zákazníka (zákonný zástupce nezletilého účastníka, nebo zletilý účastník):
 
 E-mail použitý při registraci:
 
 Telefon:
 
-Jméno dítěte (účastníka kurzu):
+Jméno účastníka kurzu:
 
 Číslo přihlášky (pokud máte):
 

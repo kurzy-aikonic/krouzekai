@@ -8,10 +8,18 @@ import { COOKIE_SETTINGS_OPEN_EVENT } from "@/lib/cookie-consent";
 
 const TOAST_DISMISSED_KEY = "krouzekai.signupToastDismissed";
 
+function termsAreAboveTheFold(): boolean {
+  const terms = document.getElementById("terminy");
+  if (!terms) return false;
+  const box = terms.getBoundingClientRect();
+  return box.bottom > 80 && box.top < window.innerHeight - 40;
+}
+
 function scrolledFarEnough(): boolean {
+  if (termsAreAboveTheFold()) return false;
   if (window.scrollY < 80) return false;
   const doc = document.documentElement.scrollHeight;
-  return window.scrollY > doc / 2 || window.scrollY > window.innerHeight * 0.85;
+  return window.scrollY > doc / 2 || window.scrollY > window.innerHeight * 1.4;
 }
 
 export function CourseSignupToast() {
@@ -38,6 +46,10 @@ export function CourseSignupToast() {
 
     const show = () => {
       if (cancelled || !hasCookieDecision()) return;
+      if (termsAreAboveTheFold()) {
+        setVisible(false);
+        return;
+      }
       setVisible(true);
     };
 
@@ -72,7 +84,7 @@ export function CourseSignupToast() {
   if (!visible || hiddenOnPath) return null;
 
   return (
-    <div className="fixed inset-x-3 bottom-3 z-[70] sm:inset-x-auto sm:right-4 sm:max-w-sm">
+    <div className="fixed inset-x-3 bottom-3 z-[70] sm:inset-x-auto sm:bottom-4 sm:left-4 sm:right-auto sm:max-w-sm">
       <div className="rounded-2xl border border-violet-200 bg-white p-3 shadow-xl sm:p-4">
         <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">

@@ -29,7 +29,7 @@ export const DEFAULT_EMAIL_TEMPLATES: Record<
   <h2 style="font-size: 18px; margin: 24px 0 8px;">Co bude následovat</h2>
   <ol style="padding-left: 20px; margin: 0 0 14px;">
     <li>Ozveme se vám, projdeme detaily a domluvíme termín podle zájmu a věkové skupiny.</li>
-    <li>Po domluvě vám zašleme <strong>fakturu</strong> (papírově / poštou dle vaší domluvy) a upřesníme platbu.</li>
+    <li>Fakturu pošleme až tehdy, když je skupina plná a objednávku potvrdíme. U individuální výuky až po potvrzení objednávky. Číslo účtu a variabilní symbol budou na faktuře a v e-mailu.</li>
     <li>Až bude platba uhrazena, potvrdíme místo v kurzu a pošleme organizační info k první lekci.</li>
   </ol>
   <p>
