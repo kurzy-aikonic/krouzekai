@@ -14,7 +14,7 @@ export const metadata: Metadata = pageMetadata({
 const blocks = [
   {
     title: "Délka a režim",
-    body: `Každá lekce trvá ${site.pricing.lessonMinutes} minut, probíhá jednou za 14 dní a vždy online. Kurz má ${site.pricing.lessons} lekcí (cca ${site.pricing.lessons * 2} týdnů). Odkaz na hovor dostanete před začátkem.`,
+    body: `Každá lekce trvá ${site.pricing.lessonMinutes} minut a probíhá online. Jarní skupiny 2027 se scházejí každý týden, v úterý nebo ve čtvrtek od 16:00. Kurz má ${site.pricing.lessons} lekcí. Týdny jarních prázdnin a Velikonoc vynecháváme. Odkaz na hovor dostanete před začátkem.`,
   },
   {
     title: "Co dítě potřebuje u sebe",

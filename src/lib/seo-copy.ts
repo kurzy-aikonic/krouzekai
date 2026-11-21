@@ -8,7 +8,7 @@ export const metaDescriptions = {
 
   registrace: `Přihláška do ${name} pro teenagery ${site.audience.ageMin}–${site.audience.ageMax} let. Odesláním vzniká návrh smlouvy a do potvrzení objednávky nic neplatíte.`,
 
-  jakProbiha: `Jak probíhá ${site.name}: ${site.pricing.lessonMinutes} minut jednou za 14 dní, celkem ${site.pricing.lessons} lekcí. Průběh, technické požadavky a role rodiče.`,
+  jakProbiha: `Jak probíhá ${site.name}: ${site.pricing.lessonMinutes} minut každý týden, celkem ${site.pricing.lessons} lekcí. Průběh, technické požadavky a role rodiče.`,
 
   faq: `Časté otázky ke ${name}: věk ${site.audience.ageMin}–${site.audience.ageMax} let, průběh lekcí, ceny, platba a bezpečnost práce s AI.`,
 

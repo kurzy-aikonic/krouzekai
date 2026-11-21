@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   filterUpcomingCourseRuns,
   isUpcomingCourseRun,
+  pickCourseRunSource,
 } from "./course-run-visibility.ts";
 
 const today = "2026-11-19";
@@ -48,4 +49,22 @@ test("filtr nechá jen budoucí běhy, takže se web sám přepne", () => {
     runs.map((run) => run.id),
     ["spring"],
   );
+});
+
+test("propadlá databáze ustoupí jarnímu běhu ze souboru", () => {
+  const picked = pickCourseRunSource(
+    [
+      {
+        source: "supabase",
+        runs: [{ id: "old", active: true, startsOn: "2026-09-29" }],
+      },
+      {
+        source: "file",
+        runs: [{ id: "run-2027-01-ut", active: true, startsOn: "2027-01-12" }],
+      },
+    ],
+    today,
+  );
+  assert.equal(picked.source, "file");
+  assert.equal(picked.runs[0]?.id, "run-2027-01-ut");
 });

@@ -38,6 +38,7 @@ const homeFaqQuestions = [
   "Potřebuje dítě umět programovat?",
   "Co když dítě lekci zmešká?",
   "Jaké AI nástroje děti používají a jsou pro jejich věk vhodné?",
+  "Kdy jsou jarní termíny 2027?",
   "Můžu přihlášku zrušit?",
 ];
 

@@ -43,7 +43,7 @@ function emptyGroupRun(): CourseRun {
     startsOn,
     weekday,
     lessonTime: "16:00",
-    recurrence: "biweekly",
+    recurrence: "weekly",
     active: true,
   };
   return { ...base, ...buildAutoCopyFromSchedule(base) };
@@ -63,7 +63,7 @@ function emptyIndividualRun(): CourseRun {
     startsOn,
     weekday,
     lessonTime: "16:00",
-    recurrence: "biweekly",
+    recurrence: "weekly",
     active: true,
   };
   return { ...base, ...buildAutoCopyFromSchedule(base) };

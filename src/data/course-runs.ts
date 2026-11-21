@@ -1,3 +1,5 @@
+import { site } from "@/lib/site-config";
+
 export type CourseFormat = "skupina" | "individual";
 
 /** Náročnost / úroveň termínu pro rodiče. */
@@ -39,34 +41,39 @@ export type CourseRun = {
   active?: boolean;
 };
 
+/** Platí pro jarní skupiny 2027. Přesný kalendář lekcí se posílá až po registraci. */
+export const springHolidayNote =
+  "Týdny jarních prázdnin a Velikonoc vynecháváme. Přesná data lekcí potvrdíme po registraci.";
+
+const springGroupDescription = `Online, každý týden, ${site.pricing.lessonMinutes} minut, ${site.pricing.lessons} lekcí. Skupina nejvýš ${site.pricing.groupMaxStudents} studentů. ${springHolidayNote}`;
+
 /**
- * Výchozí běhy, pokud soubor `data/course-runs.json` ještě neexistuje.
- * Po uložení termínů v adminu se používá jen JSON (může být i prázdné pole).
+ * Výchozí běhy, pokud v databázi ani v souboru není žádný budoucí termín.
  */
 export const defaultCourseRuns: CourseRun[] = [
   {
-    id: "run-2026-04-ut",
-    label: "Úterý 16:00 — start duben 2026",
-    description: "Online, 60 minut, 10 lekcí. Skupina max. 6 dětí.",
+    id: "run-2027-01-ut",
+    label: "Úterý 16:00–17:00 — start 12. ledna 2027",
+    description: springGroupDescription,
     format: "skupina",
     capacity: 6,
     filled: 0,
-    startsOn: "2026-04-07",
+    startsOn: "2027-01-12",
     weekday: 2,
     lessonTime: "16:00",
-    recurrence: "biweekly",
+    recurrence: "weekly",
   },
   {
-    id: "run-2026-04-ct",
-    label: "Čtvrtek 16:00 — start duben 2026",
-    description: "Online, 60 minut, 10 lekcí. Skupina max. 6 dětí.",
+    id: "run-2027-01-ct",
+    label: "Čtvrtek 16:00–17:00 — start 14. ledna 2027",
+    description: springGroupDescription,
     format: "skupina",
     capacity: 6,
     filled: 0,
-    startsOn: "2026-04-09",
+    startsOn: "2027-01-14",
     weekday: 4,
     lessonTime: "16:00",
-    recurrence: "biweekly",
+    recurrence: "weekly",
   },
 ];
 

@@ -1,13 +1,30 @@
 {
   "runs": [
     {
-      "id": "run-2026-04-ut",
-      "label": "Úterý 16:00 — start duben 2026",
-      "description": "Online, 60 minut, 10 lekcí. Skupina max. 6 dětí.",
+      "id": "run-2027-01-ut",
+      "label": "Úterý 16:00–17:00 — start 12. ledna 2027",
+      "description": "Online, každý týden, 60 minut, 10 lekcí. Skupina nejvýš 6 studentů. Týdny jarních prázdnin a Velikonoc vynecháváme. Přesná data lekcí potvrdíme po registraci.",
       "format": "skupina",
       "capacity": 6,
       "filled": 0,
-      "startsOn": "2026-04-07"
+      "startsOn": "2027-01-12",
+      "weekday": 2,
+      "lessonTime": "16:00",
+      "recurrence": "weekly",
+      "active": true
+    },
+    {
+      "id": "run-2027-01-ct",
+      "label": "Čtvrtek 16:00–17:00 — start 14. ledna 2027",
+      "description": "Online, každý týden, 60 minut, 10 lekcí. Skupina nejvýš 6 studentů. Týdny jarních prázdnin a Velikonoc vynecháváme. Přesná data lekcí potvrdíme po registraci.",
+      "format": "skupina",
+      "capacity": 6,
+      "filled": 0,
+      "startsOn": "2027-01-14",
+      "weekday": 4,
+      "lessonTime": "16:00",
+      "recurrence": "weekly",
+      "active": true
     }
   ]
 }

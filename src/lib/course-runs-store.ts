@@ -4,7 +4,11 @@ import { cache } from "react";
 import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import { defaultCourseRuns, type CourseRun } from "@/data/course-runs";
-import { filterUpcomingCourseRuns } from "@/lib/course-run-visibility";
+import {
+  filterUpcomingCourseRuns,
+  pickCourseRunSource,
+  pragueTodayIso,
+} from "@/lib/course-run-visibility";
 import { prepareRunsForSave } from "@/lib/course-runs-admin-utils";
 import { getSupabaseAdmin } from "@/lib/supabase-admin";
 
@@ -213,34 +217,26 @@ type ResolvedCourseRuns = {
 /** `cache()` memoizuje výsledek po dobu jednoho requestu — bez toho se termíny čtou opakovaně. */
 const resolveCourseRuns = cache(async (): Promise<ResolvedCourseRuns> => {
   const fromDb = await loadFromSupabase();
-  if (fromDb !== null && fromDb.length > 0) {
-    return { runs: fromDb, source: "supabase" };
-  }
-
   const redis = getRedis();
-  let fromRedis: CourseRun[] | null = null;
-  if (redis) {
-    fromRedis = await loadFromRedis(redis);
-    if (fromRedis !== null && fromRedis.length > 0) {
-      return { runs: fromRedis, source: "redis" };
-    }
-  }
-
+  const fromRedis = redis ? await loadFromRedis(redis) : null;
   const fromFile = await loadFromFile();
-  if (fromFile !== null && fromFile.length > 0) {
-    return { runs: fromFile, source: "file" };
+  const picked = pickCourseRunSource(
+    [
+      { source: "supabase", runs: fromDb },
+      { source: "redis", runs: fromRedis },
+      { source: "file", runs: fromFile },
+      { source: "defaults", runs: defaultCourseRuns },
+    ],
+    pragueTodayIso(),
+  );
+  if (
+    picked.source === "supabase" ||
+    picked.source === "redis" ||
+    picked.source === "file" ||
+    picked.source === "defaults"
+  ) {
+    return { runs: picked.runs, source: picked.source };
   }
-
-  if (fromDb !== null) {
-    return { runs: fromDb, source: "supabase" };
-  }
-  if (fromRedis !== null) {
-    return { runs: fromRedis, source: "redis" };
-  }
-  if (fromFile !== null) {
-    return { runs: fromFile, source: "file" };
-  }
-
   return { runs: defaultCourseRuns, source: "defaults" };
 });
 

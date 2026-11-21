@@ -293,9 +293,10 @@ export function RegistrationForm({
             Termín skupiny (volitelně)
           </legend>
           <p className="text-xs font-medium leading-relaxed text-slate-600">
-            Vyberte termín, který vám sedí. Kurz v daném termínu startuje až po
-            naplnění všech míst — u každého vidíte, kolik míst už je obsazeno.
-            Přihláška je do té doby nezávazná.
+            Vyberte úterní, nebo čtvrteční skupinu. Kurz v daném termínu startuje
+            až po naplnění všech míst — u každého vidíte, kolik míst už je
+            obsazeno. Přihláška je do té doby nezávazná. Týdny jarních prázdnin
+            a Velikonoc vynecháváme a přesná data lekcí potvrdíme po registraci.
           </p>
           <label className="flex cursor-pointer items-start gap-2 rounded-xl border border-violet-200 bg-white/90 px-3 py-2.5 text-base font-semibold text-slate-800 has-[:checked]:border-violet-400 sm:text-sm">
             <input

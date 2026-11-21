@@ -25,12 +25,12 @@ export const RECURRENCE_OPTIONS: {
   {
     value: "biweekly",
     label: "Jednou za 14 dní",
-    hint: "Standard u kroužku — 10 lekcí v cca 20 týdnech",
+    hint: "Starší rozvrh kroužku — 10 lekcí ob týden",
   },
   {
     value: "weekly",
     label: "Každý týden",
-    hint: "Lekce v každém kalendářním týdnu",
+    hint: "Jarní skupiny 2027 — lekce každý týden, kromě prázdnin",
   },
   {
     value: "none",
@@ -56,7 +56,7 @@ export function weekdayShort(weekday: number | undefined): string {
 }
 
 export function defaultRecurrenceForFormat(format: CourseFormat): CourseRecurrence {
-  return format === "skupina" ? "biweekly" : "biweekly";
+  return format === "skupina" ? "weekly" : "weekly";
 }
 
 /** Doplní chybějící pole rozvrhu z data startu (starší záznamy). */

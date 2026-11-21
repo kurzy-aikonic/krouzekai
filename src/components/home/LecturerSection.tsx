@@ -1,55 +1,17 @@
-import Image from "next/image";
 import { hasPublicLecturer, lecturerProfile } from "@/data/lecturer";
 import { showCorporateReferences } from "@/lib/site-config";
 
 const COMPANIES = ["Česká spořitelna", "ČEZ", "Škoda Auto"] as const;
 
-function CompanyChips() {
+function CompanyNote() {
+  if (!showCorporateReferences) return null;
   return (
-    <ul className="mt-4 flex flex-wrap gap-2" aria-label="Firmy, se kterými tým spolupracuje">
-      {COMPANIES.map((company) => (
-        <li
-          key={company}
-          className="rounded-full border border-violet-200 bg-white px-3 py-1.5 text-sm font-bold text-violet-900"
-        >
-          {company}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function Claims({ withLecturer }: { withLecturer: boolean }) {
-  if (!showCorporateReferences) {
-    if (withLecturer) return null;
-    return (
-      <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-800">
-        Stejný tým školí zaměstnance českých firem.
+    <div className="mt-5 border-t border-white/10 pt-4">
+      <p className="text-sm leading-relaxed text-white/70">
+        Kroužek pořádá Aikonic training. Tým má za sebou přes 2&nbsp;500
+        proškolených lidí v Česku a spolupráci s firmami jako{" "}
+        {COMPANIES.join(", ").replace(/, ([^,]*)$/, " a $1")}.
       </p>
-    );
-  }
-
-  if (withLecturer) {
-    return (
-      <div className="mt-4">
-        <p className="max-w-2xl text-base leading-relaxed text-slate-800">
-          Tým AIKONIC má za sebou přes 2&nbsp;500 proškolených lidí v Česku a
-          spolupráci s firmami jako Česká spořitelna, ČEZ nebo Škoda Auto.
-        </p>
-        <CompanyChips />
-      </div>
-    );
-  }
-
-  return (
-    <div className="mt-3">
-      <p className="max-w-2xl text-base leading-relaxed text-slate-800">
-        Kroužek vedou lektoři z týmu AIKONIC. Tým má za sebou přes 2&nbsp;500
-        proškolených lidí v Česku a spolupráci s firmami jako Česká spořitelna,
-        ČEZ nebo Škoda Auto. Na kroužku učíme stejným praktickým způsobem, bez
-        zbytečné teorie, a dítě odchází s hotovým výsledkem.
-      </p>
-      <CompanyChips />
     </div>
   );
 }
@@ -61,6 +23,12 @@ export function LecturerSection() {
   const profileHref = lecturer.profileUrl.startsWith("http")
     ? lecturer.profileUrl
     : "";
+  const initials = lecturer.name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
 
   return (
     <section className="mt-16" aria-labelledby="lecturer-heading">
@@ -68,44 +36,58 @@ export function LecturerSection() {
         id="lecturer-heading"
         className="font-display text-2xl font-extrabold text-[var(--magic-ink)] sm:text-3xl"
       >
-        Kdo vaše dítě učí
+        Kdo kroužek vede
       </h2>
       {visible ? (
-        <div className="mt-6 flex flex-col gap-5 rounded-3xl border border-violet-200 bg-white p-5 shadow-sm sm:flex-row sm:p-7">
+        <div className="mt-6 flex flex-col gap-5 rounded-3xl border border-white/10 bg-[#100d18] p-5 text-white shadow-sm sm:flex-row sm:p-7">
           {lecturer.photoSrc ? (
-            <Image
-              src={lecturer.photoSrc}
-              alt={lecturer.photoAlt || lecturer.name}
-              width={160}
-              height={160}
-              className="h-28 w-28 shrink-0 rounded-2xl object-cover sm:h-36 sm:w-36"
-            />
-          ) : null}
+            <picture className="shrink-0">
+              {lecturer.photoAvif ? (
+                <source type="image/avif" srcSet={lecturer.photoAvif} />
+              ) : null}
+              <img
+                src={lecturer.photoSrc}
+                alt={lecturer.photoAlt || lecturer.name}
+                width={960}
+                height={1200}
+                className="h-36 w-36 rounded-2xl border border-white/10 object-cover object-top shadow-[0_12px_40px_rgba(0,0,0,0.45)] sm:h-44 sm:w-44"
+              />
+            </picture>
+          ) : (
+            <div
+              className="flex h-36 w-36 shrink-0 items-center justify-center rounded-2xl border border-orange-400/40 bg-[#07060f] font-display text-3xl font-extrabold text-orange-400 sm:h-44 sm:w-44"
+              aria-hidden
+            >
+              {initials}
+            </div>
+          )}
           <div>
-            <p className="font-display text-xl font-extrabold text-[var(--magic-ink)]">
+            <p className="font-display text-xl font-extrabold text-white">
               {lecturer.name}
             </p>
             {lecturer.role ? (
-              <p className="mt-1 text-sm font-semibold text-violet-800">
+              <p className="mt-1 text-sm font-semibold text-orange-300">
                 {lecturer.role}
               </p>
             ) : null}
-            <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-800">
+            <p className="mt-3 max-w-2xl text-base leading-relaxed text-white/85">
               {lecturer.bio}
             </p>
             {profileHref ? (
               <a
                 href={profileHref}
-                className="mt-3 inline-flex min-h-11 items-center font-bold text-violet-800 underline decoration-violet-300 underline-offset-4"
+                className="mt-3 inline-flex min-h-11 items-center font-bold text-orange-300 underline decoration-orange-400/40 underline-offset-4"
               >
-                Profil lektora
+                Web ElevAItion
               </a>
             ) : null}
-            <Claims withLecturer />
+            <CompanyNote />
           </div>
         </div>
       ) : (
-        <Claims withLecturer={false} />
+        <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-800">
+          Lektora kroužku doplníme, jakmile bude potvrzený.
+        </p>
       )}
     </section>
   );

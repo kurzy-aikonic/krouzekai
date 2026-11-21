@@ -1,3 +1,4 @@
+import { lecturerProfile } from "@/data/lecturer";
 import { site } from "@/lib/site-config";
 import { coursePriceCzk } from "@/lib/course-pricing-store";
 import { listPublicCourseRuns } from "@/lib/course-runs-store";
@@ -44,7 +45,7 @@ export async function HomeJsonLd() {
         "@type": "Schedule",
         startDate: run.startsOn,
         repeatFrequency:
-          recurrenceToRepeatFrequency[run.recurrence ?? "biweekly"] ?? "P2W",
+          recurrenceToRepeatFrequency[run.recurrence ?? "weekly"] ?? "P1W",
         repeatCount: site.pricing.lessons,
       },
     }));
@@ -59,6 +60,17 @@ export async function HomeJsonLd() {
         description: rootSchemaDescription(),
         provider: { "@id": orgId },
         educationalLevel: `teenageři ${site.audience.ageMin}–${site.audience.ageMax} let`,
+        instructor: {
+          "@type": "Person",
+          name: lecturerProfile.name,
+          jobTitle: lecturerProfile.role,
+          url: lecturerProfile.profileUrl,
+          image: absoluteUrl(lecturerProfile.photoSrc),
+          homeLocation: {
+            "@type": "Place",
+            name: "Praha",
+          },
+        },
         teaches: [
           "vibecoding",
           "prompt engineering",
@@ -74,7 +86,7 @@ export async function HomeJsonLd() {
                   courseWorkload: `PT${site.pricing.lessons}H`,
                   courseSchedule: {
                     "@type": "Schedule",
-                    repeatFrequency: "P2W",
+                    repeatFrequency: "P1W",
                     repeatCount: site.pricing.lessons,
                   },
                 },

@@ -14,7 +14,7 @@ export const metadata: Metadata = pageMetadata({
   title: "Termíny AI kroužku — aktuální běhy",
   description: metaDescriptions.aktualniBehy,
   path: "/aktualni-behy",
-  keywords: ["termíny AI kroužku", "AI kroužek zápis 2026"],
+  keywords: ["termíny AI kroužku", "AI kroužek jaro 2027"],
 });
 
 export const revalidate = 300;
@@ -47,9 +47,11 @@ export default async function AktualniBehyPage() {
       <div className="mx-auto max-w-4xl px-6 py-12 sm:px-6 sm:py-16">
         <h1 className="page-h1">Aktuální termíny</h1>
         <p className="mt-4 text-base leading-relaxed text-slate-700">
-          Tady jsou jen termíny, které ještě nezačaly. Skupinu otevřeme, jakmile
-          se naplní její kapacita. Do potvrzení objednávky nic neplatíte a
-          přihlášku můžete zrušit.
+          Tady jsou jen termíny, které ještě nezačaly. Jarní skupiny běží každý
+          týden online. Skupinu otevřeme, jakmile se naplní její kapacita. Do
+          potvrzení objednávky nic neplatíte a přihlášku můžete zrušit. Týdny
+          jarních prázdnin a Velikonoc vynecháváme a přesná data lekcí potvrdíme
+          po registraci.
         </p>
         {runs.length === 0 ? (
           <div className="mt-10">

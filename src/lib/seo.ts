@@ -19,7 +19,7 @@ export function absoluteUrl(path: string): string {
 
 /** Krátký popis služby pro schema.org (Organization / WebSite / Course). */
 export function rootSchemaDescription(): string {
-  return `Online kroužek pro teenagery ${site.audience.ageMin}–${site.audience.ageMax} let: ${site.pricing.lessonMinutes} minut jednou za 14 dní, ${site.pricing.lessons} lekcí. Vlastní hra, aplikace nebo web s AI, bez klasického programování.`;
+  return `Online kroužek pro teenagery ${site.audience.ageMin}–${site.audience.ageMax} let: ${site.pricing.lessonMinutes} minut každý týden, ${site.pricing.lessons} lekcí. Vlastní hra, aplikace nebo web s AI, bez klasického programování.`;
 }
 
 export const seoKeywords = [
