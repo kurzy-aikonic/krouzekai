@@ -54,7 +54,29 @@ export default async function RegistracePotvrzeniPage({
       : null;
 
   const formatLabel = format === "individual" ? "Individuální 1:1" : "Skupinový kurz";
-  const registrationCode = (record?.registrationCode ?? code).trim();
+  const registrationCode = (record?.registrationCode ?? "").trim();
+
+  if (!record) {
+    return (
+      <div className="mx-auto max-w-2xl px-6 py-12 sm:px-6 sm:py-16">
+        <h1 className="page-h1">Potvrzení přihlášky</h1>
+        <p className="mt-4 text-base leading-relaxed text-slate-700">
+          Pokud jste právě odeslali přihlášku, potvrzení vám přijde e-mailem.
+          Když e-mail nedorazí, napište na{" "}
+          <a
+            href={`mailto:${site.contactEmail}`}
+            className="font-bold text-violet-700 underline"
+          >
+            {site.contactEmail}
+          </a>
+          .
+        </p>
+        <Link href="/" className="btn-magic-outline mt-6 inline-flex">
+          Zpět na úvod
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -81,8 +103,8 @@ export default async function RegistracePotvrzeniPage({
             Mise zahájena!
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-emerald-900 sm:text-base">
-            Děkujeme za registraci do {site.name}. Ozveme se vám do 24 hodin a
-            společně doladíme finální zařazení, termín i organizační detaily.
+            Děkujeme za registraci do {site.nameInflected}. Ozveme se vám do 24
+            hodin a společně doladíme zařazení, termín i organizační detaily.
           </p>
         </div>
         {emailStatus === "failed" ? (
@@ -150,8 +172,9 @@ export default async function RegistracePotvrzeniPage({
               pokročilý / AI tvůrce) a domluvíme konkrétní termín.
             </li>
             <li>
-              <strong>3)</strong> Zašleme fakturu a po úhradě organizační informace
-              k první lekci.
+              <strong>3)</strong> Fakturu pošleme až ve chvíli, kdy je skupina
+              plná a objednávku potvrdíme. U individuální výuky až po potvrzení
+              objednávky. Pak pošleme i organizační informace k první lekci.
             </li>
           </ol>
         </section>
@@ -161,8 +184,7 @@ export default async function RegistracePotvrzeniPage({
             Co připravit před první lekcí
           </h2>
           <ul className="mt-4 space-y-2 text-sm leading-relaxed text-slate-700">
-            <li>Notebook nebo počítač se stabilním internetem.</li>
-            <li>Klidné místo a funkční mikrofon.</li>
+            <li>{site.equipment}</li>
             <li>
               Chuť tvořit — technické věci i práci s AI dítě provedeme krok za
               krokem.
@@ -176,7 +198,7 @@ export default async function RegistracePotvrzeniPage({
               href={`/platba?registrace=${encodeURIComponent(registrationCode)}`}
               className="btn-magic"
             >
-              Přehled k platbě 💳
+              Přehled k platbě
             </Link>
           ) : null}
           <Link href="/rodic/prihlaseni" className="btn-magic-outline">

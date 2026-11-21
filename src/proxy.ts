@@ -18,6 +18,15 @@ function sameOrigin(request: NextRequest, originHeader: string): boolean {
 }
 
 export async function proxy(request: NextRequest) {
+  const host = request.headers.get("host")?.split(":")[0]?.toLowerCase();
+  if (host === "krouzekumeleinteligence.cz") {
+    const url = request.nextUrl.clone();
+    url.protocol = "https";
+    url.hostname = "www.krouzekumeleinteligence.cz";
+    url.port = "";
+    return NextResponse.redirect(url, 308);
+  }
+
   const { pathname } = request.nextUrl;
 
   if (
@@ -47,5 +56,10 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/:path*", "/platba", "/registrace/potvrzeni"],
+  matcher: [
+    "/api/:path*",
+    "/platba",
+    "/registrace/potvrzeni",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)",
+  ],
 };

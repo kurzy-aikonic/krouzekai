@@ -4,9 +4,9 @@ const name = site.nameInflected;
 
 /** Sjednocené meta popisy (cca 150–165 znaků) pro výsledky ve vyhledávání a sdílení. */
 export const metaDescriptions = {
-  home: `Online kroužek pro teenagery ${site.audience.ageMin}–${site.audience.ageMax} let. Vlastní hra nebo web s AI, malá skupina, ${site.pricing.lessons} lekcí. Platba až po potvrzení skupiny.`,
+  home: `Online kroužek, doporučený věk ${site.audience.ageMin}–${site.audience.ageMax} let. Vlastní hra nebo web s AI, malá skupina, ${site.pricing.lessons} lekcí. Platba až po potvrzení skupiny.`,
 
-  registrace: `Přihláška do ${name} pro teenagery ${site.audience.ageMin}–${site.audience.ageMax} let. Odesláním vzniká návrh smlouvy a do potvrzení objednávky nic neplatíte.`,
+  registrace: `Přihláška do ${name}. Doporučený věk ${site.audience.ageMin}–${site.audience.ageMax} let. Odesláním vzniká návrh smlouvy a do potvrzení objednávky nic neplatíte.`,
 
   jakProbiha: `Jak probíhá ${site.name}: ${site.pricing.lessonMinutes} minut každý týden, celkem ${site.pricing.lessons} lekcí. Průběh, technické požadavky a role rodiče.`,
 

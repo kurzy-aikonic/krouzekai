@@ -35,6 +35,9 @@ export function variableSymbolFromRegistrationId(id: string): string {
   return n.toString().padStart(10, "0");
 }
 
+/** Brána není napojená, dokud `createCheckoutSession` nevrací adresu. */
+export const onlineCheckoutEnabled = false;
+
 /** Vytvoří platební session u brány — doplníš implementaci. */
 export async function createCheckoutSession(args: {
   product: PaymentProduct;

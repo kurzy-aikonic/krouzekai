@@ -51,7 +51,7 @@ export default async function AktualniBehyPage() {
           týden online. Skupinu otevřeme, jakmile se naplní její kapacita. Do
           potvrzení objednávky nic neplatíte a přihlášku můžete zrušit. Týdny
           jarních prázdnin a Velikonoc vynecháváme a přesná data lekcí potvrdíme
-          po registraci.
+          po registraci. Individuální výuku 1:1 ({site.pricing.individualCourse.toLocaleString("cs-CZ")} Kč za {site.pricing.lessons} lekcí) domluvíme zvlášť v přihlášce.
         </p>
         {runs.length === 0 ? (
           <div className="mt-10">

@@ -66,7 +66,7 @@ export function CourseRunPublicCard({
           <dd className="font-bold text-white">{when}</dd>
         </div>
         <div>
-          <dt className="text-sm font-semibold text-white/60">První lekce</dt>
+          <dt className="text-sm font-semibold text-white/60">Plánovaný start</dt>
           <dd className="font-bold text-white">
             {formatIsoDateLongCs(run.startsOn)}
           </dd>

@@ -208,6 +208,12 @@ export default function OchranaOsobnichUdajuPage() {
               rodiče, případně interní notifikace).
             </li>
             <li>
+              <strong>
+                Ukládání přihlášek, čekací listiny a přístupu rodiče
+              </strong>{" "}
+              — služba Supabase (databáze v EU, region Frankfurt).
+            </li>
+            <li>
               <strong>Ochrana formuláře před spamem</strong> —{" "}
               <strong>Cloudflare Turnstile</strong>, pokud je na formuláři
               zobrazené ověření. Bez nastavených klíčů se widget nenačítá.

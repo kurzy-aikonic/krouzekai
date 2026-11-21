@@ -1,17 +1,26 @@
 import { hasPublicLecturer, lecturerProfile } from "@/data/lecturer";
-import { showCorporateReferences } from "@/lib/site-config";
+import { aikonicGoogleReviewsUrl } from "@/lib/site-config";
 
-const COMPANIES = ["Česká spořitelna", "ČEZ", "Škoda Auto"] as const;
-
-function CompanyNote() {
-  if (!showCorporateReferences) return null;
+function ReferenceLinks() {
   return (
     <div className="mt-5 border-t border-white/10 pt-4">
-      <p className="text-sm leading-relaxed text-white/70">
-        Kroužek pořádá Aikonic training. Tým má za sebou přes 2&nbsp;500
-        proškolených lidí v Česku a spolupráci s firmami jako{" "}
-        {COMPANIES.join(", ").replace(/, ([^,]*)$/, " a $1")}.
+      <p className="text-sm leading-relaxed text-white/75">
+        Pavol učí pod značkou ElevAItion. Na webu{" "}
+        <a
+          href="https://elevaition.cz/"
+          className="font-bold text-orange-300 underline decoration-orange-400/40 underline-offset-4"
+        >
+          elevaition.cz
+        </a>{" "}
+        je jeho praxe: víc než dvacet let vedení týmů a firem a poslední tři
+        roky každodenní práce s AI.
       </p>
+      <a
+        href={aikonicGoogleReviewsUrl}
+        className="mt-3 inline-flex min-h-11 items-center font-bold text-orange-300 underline decoration-orange-400/40 underline-offset-4"
+      >
+        Hodnocení Aikonic na Google
+      </a>
     </div>
   );
 }
@@ -81,7 +90,7 @@ export function LecturerSection() {
                 Web ElevAItion
               </a>
             ) : null}
-            <CompanyNote />
+            <ReferenceLinks />
           </div>
         </div>
       ) : (

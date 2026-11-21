@@ -122,7 +122,7 @@ export function WaitlistForm({
           htmlFor="wl-childName"
           className="block font-display text-sm font-extrabold text-[var(--magic-ink)]"
         >
-          Jméno dítěte (nepovinné)
+          Jméno účastníka (nepovinné)
         </label>
         <input
           id="wl-childName"
@@ -135,7 +135,7 @@ export function WaitlistForm({
 
       <div className="space-y-4 border-t border-dashed border-violet-200 pt-5">
         <p className="font-display text-base font-extrabold text-[var(--magic-ink)]">
-          Zákonný zástupce
+          Zákonný zástupce nebo zletilý účastník
         </p>
         <div>
           <label

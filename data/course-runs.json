@@ -3,7 +3,7 @@
     {
       "id": "run-2027-01-ut",
       "label": "Úterý 16:00–17:00 — start 12. ledna 2027",
-      "description": "Online, každý týden, 60 minut, 10 lekcí. Skupina nejvýš 6 studentů. Týdny jarních prázdnin a Velikonoc vynecháváme. Přesná data lekcí potvrdíme po registraci.",
+      "description": "Online, každý týden, 60 minut, 10 lekcí. Skupinu otevřeme, až se naplní kapacita 6 míst. Když se do té doby nenaplní, navrhneme nový termín. Týdny jarních prázdnin (upřesníme podle rozvrhu skupiny) a Velikonoc vynecháváme. Harmonogram 10 lekcí pošleme v potvrzení.",
       "format": "skupina",
       "capacity": 6,
       "filled": 0,
@@ -16,7 +16,7 @@
     {
       "id": "run-2027-01-ct",
       "label": "Čtvrtek 16:00–17:00 — start 14. ledna 2027",
-      "description": "Online, každý týden, 60 minut, 10 lekcí. Skupina nejvýš 6 studentů. Týdny jarních prázdnin a Velikonoc vynecháváme. Přesná data lekcí potvrdíme po registraci.",
+      "description": "Online, každý týden, 60 minut, 10 lekcí. Skupinu otevřeme, až se naplní kapacita 6 míst. Když se do té doby nenaplní, navrhneme nový termín. Týdny jarních prázdnin (upřesníme podle rozvrhu skupiny) a Velikonoc vynecháváme. Harmonogram 10 lekcí pošleme v potvrzení.",
       "format": "skupina",
       "capacity": 6,
       "filled": 0,

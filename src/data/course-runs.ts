@@ -41,11 +41,10 @@ export type CourseRun = {
   active?: boolean;
 };
 
-/** Platí pro jarní skupiny 2027. Přesný kalendář lekcí se posílá až po registraci. */
-export const springHolidayNote =
-  "Týdny jarních prázdnin a Velikonoc vynecháváme. Přesná data lekcí potvrdíme po registraci.";
+/** Text u jarních skupin: kapacita, náhradní termín a prázdniny. */
+export const springHolidayNote = `Skupinu otevřeme, až se naplní kapacita ${site.pricing.groupMaxStudents} míst. Když se do té doby nenaplní, navrhneme nový termín. Týdny jarních prázdnin (upřesníme podle rozvrhu skupiny) a Velikonoc vynecháváme. Harmonogram ${site.pricing.lessons} lekcí pošleme v potvrzení.`;
 
-const springGroupDescription = `Online, každý týden, ${site.pricing.lessonMinutes} minut, ${site.pricing.lessons} lekcí. Skupina nejvýš ${site.pricing.groupMaxStudents} studentů. ${springHolidayNote}`;
+const springGroupDescription = `Online, každý týden, ${site.pricing.lessonMinutes} minut, ${site.pricing.lessons} lekcí. ${springHolidayNote}`;
 
 /**
  * Výchozí běhy, pokud v databázi ani v souboru není žádný budoucí termín.

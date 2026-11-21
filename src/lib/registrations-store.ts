@@ -142,6 +142,10 @@ function normalizeRecord(
     runId: runIdFromParsed(parsed),
     childName: str(parsed.childName),
     childAge: num(parsed.childAge),
+    registrantRole:
+      parsed.registrantRole === "guardian" || parsed.registrantRole === "self"
+        ? parsed.registrantRole
+        : undefined,
     parentName: str(parsed.parentName),
     parentEmail: str(parsed.parentEmail),
     parentPhone: str(parsed.parentPhone),

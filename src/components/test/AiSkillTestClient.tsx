@@ -39,12 +39,12 @@ function shuffleQuestions(
 }
 
 export function AiSkillTestClient() {
-  const [baseQuestions, setBaseQuestions] = useState(() =>
-    shuffleQuestions(AI_SKILL_TEST_QUESTIONS),
-  );
-  const [proQuestions, setProQuestions] = useState(() =>
-    shuffleQuestions(AI_SKILL_PRO_CONFIRMATION_QUESTIONS),
-  );
+  const [baseQuestions, setBaseQuestions] = useState(() => [
+    ...AI_SKILL_TEST_QUESTIONS,
+  ]);
+  const [proQuestions, setProQuestions] = useState(() => [
+    ...AI_SKILL_PRO_CONFIRMATION_QUESTIONS,
+  ]);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [proAnswers, setProAnswers] = useState<Record<string, number>>({});
   const [showProConfirmation, setShowProConfirmation] = useState(false);
@@ -106,6 +106,13 @@ export function AiSkillTestClient() {
     setBaseQuestions(shuffleQuestions(AI_SKILL_TEST_QUESTIONS));
     setProQuestions(shuffleQuestions(AI_SKILL_PRO_CONFIRMATION_QUESTIONS));
   }
+
+  useEffect(() => {
+    // Zamíchání až po shodném prvním vykreslení, jinak server a prohlížeč nesedí (React #418).
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- jednorázové zamíchání po hydrataci
+    setBaseQuestions(shuffleQuestions(AI_SKILL_TEST_QUESTIONS));
+    setProQuestions(shuffleQuestions(AI_SKILL_PRO_CONFIRMATION_QUESTIONS));
+  }, []);
 
   useEffect(() => {
     if (!finalResult) return;

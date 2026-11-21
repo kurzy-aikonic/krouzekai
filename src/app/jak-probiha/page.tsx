@@ -18,7 +18,7 @@ const blocks = [
   },
   {
     title: "Co dítě potřebuje u sebe",
-    body: "Notebook nebo tablet, stabilnější připojení, klid na soustředění. Mikrofon je užitečný; kamera podle domluvy a pohodlí rodiny.",
+    body: `${site.equipment} Kamera podle domluvy a pohodlí rodiny.`,
   },
   {
     title: "Jak lekce strukturujeme",

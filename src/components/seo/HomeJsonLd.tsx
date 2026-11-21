@@ -59,7 +59,7 @@ export async function HomeJsonLd() {
         name: site.name,
         description: rootSchemaDescription(),
         provider: { "@id": orgId },
-        educationalLevel: `teenageři ${site.audience.ageMin}–${site.audience.ageMax} let`,
+        educationalLevel: `doporučený věk ${site.audience.ageMin}–${site.audience.ageMax} let`,
         instructor: {
           "@type": "Person",
           name: lecturerProfile.name,
